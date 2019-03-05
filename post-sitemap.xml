@@ -87,7 +87,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2014/06/03/msic/oop/</loc>
+        <loc>https://readailib.com/2016/04/01/openstack/how-to-contribute/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -95,7 +95,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/04/01/openstack/how-to-contribute/</loc>
+        <loc>https://readailib.com/2014/06/03/msic/oop/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -135,7 +135,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2015/11/28/linux/ubuntu/haproxy/</loc>
+        <loc>https://readailib.com/2015/10/29/linux/ubuntu/keepalived/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -143,7 +143,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2015/10/29/linux/ubuntu/keepalived/</loc>
+        <loc>https://readailib.com/2015/11/28/linux/ubuntu/haproxy/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -167,14 +167,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2015/11/04/linux/ubuntu/apache2-proxy/</loc>
-        <lastmod>2019-03-05T14:37:50.226Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://readailib.com/2015/10/03/linux/centos/centos-pxe/</loc>
         <lastmod>2019-03-05T14:37:50.226Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -183,7 +175,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/05/26/linux/ubuntu/corosync-pacemaker/</loc>
+        <loc>https://readailib.com/2015/11/04/linux/ubuntu/apache2-proxy/</loc>
         <lastmod>2019-03-05T14:37:50.226Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -199,6 +191,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2016/05/26/linux/ubuntu/corosync-pacemaker/</loc>
+        <lastmod>2019-03-05T14:37:50.226Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2016/04/21/linux/ubuntu/dm-cache/</loc>
         <lastmod>2019-03-05T14:37:50.226Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -207,7 +207,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/01/08/kubernetes/rbac-sa-kubectl/</loc>
+        <loc>https://readailib.com/2018/06/25/kubernetes/k8x-exec-api/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -215,7 +215,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/06/25/kubernetes/k8x-exec-api/</loc>
+        <loc>https://readailib.com/2018/01/08/kubernetes/rbac-sa-kubectl/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -263,6 +263,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2018/03/21/kubernetes/k8s-federation/</loc>
+        <lastmod>2019-03-05T14:37:50.224Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2018/07/19/kubernetes/k8s-external-dns/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -279,14 +287,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/03/21/kubernetes/k8s-federation/</loc>
-        <lastmod>2019-03-05T14:37:50.224Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://readailib.com/2017/03/25/kubernetes/helm-quickstart/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -295,7 +295,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/10/23/kubernetes/deploy/minikube/</loc>
+        <loc>https://readailib.com/2019/01/22/kubernetes/deploy/minikube-multi-node/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -303,7 +303,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2019/01/22/kubernetes/deploy/minikube-multi-node/</loc>
+        <loc>https://readailib.com/2016/10/23/kubernetes/deploy/minikube/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -495,14 +495,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/07/01/devops/prometheus-ha/</loc>
-        <lastmod>2019-03-05T14:37:50.217Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://readailib.com/2016/02/11/devops/graphite/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -511,7 +503,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/06/10/devops/prometheus-intro/</loc>
+        <loc>https://readailib.com/2018/07/01/devops/prometheus-ha/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -527,6 +519,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2018/06/10/devops/prometheus-intro/</loc>
+        <lastmod>2019-03-05T14:37:50.217Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2016/02/18/devops/ansible/ansible-playbook/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -535,7 +535,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/02/17/devops/ansible/ansible-adhoc/</loc>
+        <loc>https://readailib.com/2016/02/16/devops/ansible/ansible-basic/</loc>
         <lastmod>2019-03-05T14:37:50.216Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -551,7 +551,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/02/16/devops/ansible/ansible-basic/</loc>
+        <loc>https://readailib.com/2016/02/17/devops/ansible/ansible-adhoc/</loc>
         <lastmod>2019-03-05T14:37:50.216Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -631,7 +631,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/06/24/data-engineer/build-spark/</loc>
+        <loc>https://readailib.com/2016/04/04/data-engineer/apache-flume/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -639,7 +639,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/04/04/data-engineer/apache-flume/</loc>
+        <loc>https://readailib.com/2016/06/24/data-engineer/build-spark/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -671,14 +671,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/01/02/container/docker-registry/</loc>
-        <lastmod>2019-03-05T14:37:50.211Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://readailib.com/2018/02/17/container/docker-nvidia-install/</loc>
         <lastmod>2019-03-05T14:37:50.211Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -687,7 +679,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/11/16/container/docker-swarm/</loc>
+        <loc>https://readailib.com/2016/01/02/container/docker-registry/</loc>
         <lastmod>2019-03-05T14:37:50.211Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -703,8 +695,8 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2018/02/11/ceph/luminous-crush-issue/</loc>
-        <lastmod>2019-03-05T14:37:50.210Z</lastmod>
+        <loc>https://readailib.com/2016/11/16/container/docker-swarm/</loc>
+        <lastmod>2019-03-05T14:37:50.211Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -720,6 +712,14 @@
 
     <url>
         <loc>https://readailib.com/2016/01/05/container/docker-network/</loc>
+        <lastmod>2019-03-05T14:37:50.210Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://readailib.com/2018/02/11/ceph/luminous-crush-issue/</loc>
         <lastmod>2019-03-05T14:37:50.210Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -751,7 +751,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/11/28/ceph/deploy/ceph-deploy-bluestore/</loc>
+        <loc>https://readailib.com/2016/02/15/ceph/deploy/ceph-ansible/</loc>
         <lastmod>2019-03-05T14:37:50.209Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -759,7 +759,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2016/02/15/ceph/deploy/ceph-ansible/</loc>
+        <loc>https://readailib.com/2016/11/28/ceph/deploy/ceph-deploy-bluestore/</loc>
         <lastmod>2019-03-05T14:37:50.209Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -799,7 +799,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2017/05/26/blockchain/geth-monitoring/</loc>
+        <loc>https://readailib.com/2017/05/27/blockchain/browser-solidity/</loc>
         <lastmod>2019-03-05T14:37:50.206Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -807,7 +807,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2017/05/27/blockchain/browser-solidity/</loc>
+        <loc>https://readailib.com/2017/05/26/blockchain/geth-monitoring/</loc>
         <lastmod>2019-03-05T14:37:50.206Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

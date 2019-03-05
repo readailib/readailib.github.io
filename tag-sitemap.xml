@@ -394,6 +394,13 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/tags/SSD/</loc>
+        <lastmod>2019-03-05T14:37:50.227Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://readailib.com/tags/Load-Balancer/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -408,28 +415,7 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/SSD/</loc>
-        <lastmod>2019-03-05T14:37:50.227Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/Linux/</loc>
-        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Programming/</loc>
-        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/OOP/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -444,6 +430,20 @@
 
     <url>
         <loc>https://readailib.com/tags/Python/</loc>
+        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Programming/</loc>
+        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/OOP/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
