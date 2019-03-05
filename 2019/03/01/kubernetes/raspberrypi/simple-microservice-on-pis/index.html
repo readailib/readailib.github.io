@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          部署微服务到树莓派的kubernetes集群 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
+                            
+                              <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
+                            
+                              <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                            
+                              <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
+                            
+                        </div>
+                        <h1>部署微服务到树莓派的kubernetes集群</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2019-03-01
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>最近一直在如何将微服务部署在我的边缘机器上（树莓派），通过kubernetes管理。然后就开始了今天的项目成果，为此特别对此总结。</p>
+<p>本次的微服务我使用的golang，主要因为golang的天然适合开发云端服务的特性并且golang的轻便，包的管理方便等特点。并且golang的docker镜像稍微小，占用空间小。</p>
+<a id="more"></a>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>那么下面就开始吧，本次的环境主要分为两台机器，分别我的本地计算机（这里使用的Mac），另外就是我需要部署的环境（有三个树莓派节点组成的kubernetes集群）。</p>
+<p>这里你需要：</p>
+<ul>
+<li>熟悉go语言</li>
+<li>熟悉微服务</li>
+<li>熟悉Docker</li>
+<li>熟悉kubernetes的部署与基本管理任务</li>
+<li>熟悉Linux</li>
+</ul>
+<p>本章主要参考了下面的文章：</p>
+<ul>
+<li><a href="https://41sh.cn/?id=16" target="_blank" rel="noopener">边缘智能-在树莓派上部署kubernetes集群</a></li>
+<li><a href="https://github.com/rh01/deploy-golang-applicaton-on-kubernetes" target="_blank" rel="noopener">https://github.com/rh01/deploy-golang-applicaton-on-kubernetes</a></li>
+<li><a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></li>
+</ul>
+<h2 id="编写golang的应用"><a href="#编写golang的应用" class="headerlink" title="编写golang的应用"></a>编写golang的应用</h2><p><strong>本小节全部在我们本地的计算机中做的！</strong></p>
+<p>在本地创建项目文件夹goappk8s，并且将该文件夹设置成临时的 GOPATH环境变量的Value值。</p>
+<pre><code class="bash">$ mkdir -pv k8sapp/src
+$ export GOPATH=/User/rh01/k8sapp/
+</code></pre>
+<p>然后在<strong>src</strong>目录下面添加 golang 代码：</p>
+<pre><code class="bash">$ mkdir -pv github.com/rh01/goappk8s &amp;&amp; cd github.com/rh01/goappk8s
+$ cat &lt;&lt; EOF &gt;&gt; main.go
+package main
+
+import (
+    &quot;github.com/gin-gonic/gin&quot;
+    &quot;net/http&quot;
+)
+
+func main() {
+    router := gin.Default()
+    router.GET(&quot;/ping&quot;, func(c *gin.Context) {
+        c.String(http.StatusOK, &quot;PONG&quot;)
+    })
+    router.Run(&quot;:8080&quot;)
+}
+EOF
+</code></pre>
+<blockquote>
+<p>注：上面的代码取自 <a href="https://github.com/cnych/goappk8s" target="_blank" rel="noopener">https://github.com/cnych/goappk8s</a></p>
+<p>另外上面的代码主要是创建了一个微服务，主要实现PING的功能</p>
+</blockquote>
+<p>可以看到上面的代码中，我们导入了第三方包 github.com/gin-gonic/gin，这时可以手动将该依赖包下载下来放置到<strong>GOPATH</strong>下面，这里使用了 <strong>govendor</strong> 来进行管理，当然你可以使用其他的包管理工具，比如：dep、glid或者利用go mod 等等。</p>
+<p>在 <strong>github.com/rh01/goappk8s</strong> 目录下面执行下面的操作：</p>
+<blockquote class="colorquote info"><p><strong>如何安装 govendor：</strong></p>
+<p>在Mac中可以使用brew工具或者使用下面的命令</p>
+<pre><code class="bash">$ go get -u github.com/kardianos/govendor
+</code></pre>
+</blockquote>
+<p>下面我们使用govendor来将依赖包缓存到本地项目中，方便移植和项目管理。</p>
+<pre><code class="bash"># 初始化本地项目文件夹为使用vendor管理包
+$ govendor init
+# 将依赖包缓存到本地
+$ govendor fetch github.com/gin-gonic/gin
+</code></pre>
+<blockquote>
+<p>上面 fetch 需要设置代理才能通过，还是老办法：</p>
+<pre><code class="bash">$ export http_proxy=&quot;http://127.0.0.1:12333&quot;
+$ export https_proxy=&quot;http://127.0.0.1:12333&quot;
+</code></pre>
+</blockquote>
+<p>这样一个非常小的微服务应用就做完了，这时需要测试一下，看看是否正常运行。这时切换到 <strong>GOPARH</strong> 文件夹。执行下面的语句</p>
+<pre><code class="bash">$ go install github.com/rh01/goappk8s &amp;&amp; ./bin/goappk8s
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in &quot;debug&quot; mode. Switch to &quot;release&quot; mode in production.
+ - using env:   export GIN_MODE=release
+ - using code:  gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --&gt; main.main.func1 (3 handlers)
+[GIN-debug] Listening and serving HTTP on :8080
+</code></pre>
+<p>这时会打印出如上面所示的日志信息，这时我们可以通过 curl 来访问。</p>
+<pre><code class="bash">$ curl localhost:8080/ping
+PONG
+</code></pre>
+<p>这时我们的服务是已经正常可以运行的了。</p>
+<h2 id="打包成Docker镜像（使用ARM）"><a href="#打包成Docker镜像（使用ARM）" class="headerlink" title="打包成Docker镜像（使用ARM）"></a>打包成Docker镜像（使用ARM）</h2><p>这里主要使用了 Docker 的多阶段构建来打造一个非常小的镜像，这对我们的边缘端来讲，是非常必要的，因为他们的资源是非常有限的。</p>
+<blockquote>
+<p>有关 Docker镜像的多阶段构建以及Docker镜像优化问题，请详见我之前的一篇文章：</p>
+<ul>
+<li><a href="https://www.41sh.cn/?id=25" target="_blank" rel="noopener">https://www.41sh.cn/?id=25</a></li>
+</ul>
+</blockquote>
+<p>下面我们看一下Dockerfile文件吧。</p>
+<pre><code class="dockerfile">FROM golang AS build-env
+ADD . /go/src/app
+WORKDIR /go/src/app
+
+ENV http_proxy http://192.168.1.9:12333
+ENV https_proxy http://192.168.1.9:12333
+
+RUN go get -u -v github.com/kardianos/govendor
+RUN govendor sync
+RUN GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server
+
+
+
+FROM armhf/alpine:latest
+RUN apk add -U tzdata
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
+COPY --from=build-env /go/src/app/app-server /usr/local/bin/app-server
+EXPOSE 8080
+CMD [ &quot;app-server&quot; ]
+</code></pre>
+<blockquote class="colorquote info"><p>这里也参考了知乎的这片文章：<a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></p>
+<p>主要修改如下：</p>
+<p>\1.  增加了</p>
+<pre><code class="dockerfile"><span class="keyword">ENV</span> http_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
+<span class="keyword">ENV</span> https_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
+</code></pre>
+<p>这是因为国内的网络环境，我们需要添加代理，才能拉取相关的依赖包</p>
+<p>\2.  修改了</p>
+<pre><code class="dockerfile"><span class="keyword">RUN</span><span class="bash"> GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server</span>
+</code></pre>
+<p> 这是因为我们需要在树莓派 arm架构下去编译和运行golang程序，因此需要交叉编译。</p>
+<p>\3. 修改了</p>
+<pre><code class="dockerfile"><span class="keyword">FROM</span> armhf/alpine:latest
+</code></pre>
+<p>这个也是因为硬件架构的不同进行相应的修改</p>
+</blockquote>
+<p>然后构建<code>Docker</code>镜像：</p>
+<pre><code class="bash">$ docker build -t rh02/goappk8s:v1.0.0 .
+.......(省略了)
+Successfully built 00751f94d8a9
+Successfully tagged cnych/goappk8s:v1.0.0
+$ docker push rh02/goappk8s:v1.0.0
+</code></pre>
+<p>上面的操作可以将我们本地的镜像<code>rh02/goappk8s:v1.0.0</code>推送到公共的<code>dockerhub</code>上面去（前提是你得先注册了dockerhub）。</p>
+<h2 id="将服务部署在kubernetes"><a href="#将服务部署在kubernetes" class="headerlink" title="将服务部署在kubernetes"></a>将服务部署在kubernetes</h2><p>如果要将微服务部署在kubernetes上，只需要写一个yaml文件，定义好你需要的资源对象即可，下面先给出我们的部署的yaml文件内容。</p>
+<pre><code class="yaml">---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: goapp-deploy
+  namespace: kube-apps
+  labels:
+    k8s-app: goappk8s
+spec:
+  replicas: 2
+  revisionHistoryLimit: 10
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: goappk8s
+    spec:
+      containers:
+      - image: rh02/goappk8s:v1.1.0
+        imagePullPolicy: Always
+        name: goappk8s
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 50m
+            memory: 50Mi
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goapp-svc
+  namespace: kube-apps
+  labels:
+    k8s-app: goappk8s
+spec:
+  ports:
+    - name: api
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    k8s-app: goappk8s
+
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: goapp-ingress
+spec:
+  rules:
+  - host: k8sapp1.41sh.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: goapp-svc
+          servicePort: api
+</code></pre>
+<blockquote>
+<p>这里的k8sapp1.41sh.cn 需要解析为ingress的node。详细可以参考 <a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></p>
+</blockquote>
+<p>因为我们编写了一个无状态的应用，因此上面主要创建了三个资源对象，分别为deployment（部署），service（服务）和ingress（主要负责负载均衡和提供一种访问的方式）对象。</p>
+<p>使用kubectl来创建这三个资源对象。</p>
+<pre><code class="bash">$ kubectl apply -f deployment.yaml
+deployment &quot;goapp-deploy&quot; created
+service &quot;goapp-svc&quot; created
+ingress &quot;goapp-ingress&quot; created
+</code></pre>
+<p>这时我们需要创建一个traefik的ingress应用，用来处理ingress的请求。</p>
+<pre><code class="bash">$ kubectl label node edge-node2 ingress-controller=traefik 
+$ kubectl apply -f traefik.yaml
+</code></pre>
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>这时，我们都已经做完了，这时我们可以打开我们的dashboard看看怎么样。并且可以通过在浏览器中访问 <a href="http://k8sapp1.41sh.cn/ping" target="_blank" rel="noopener">http://k8sapp1.41sh.cn/ping</a> 来访问我们的微服务。</p>
+<p>下面是成果截图。</p>
+<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423865486307.png" alt="屏幕快照 2019-03-01 下午3.03.48.png"></p>
+<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423899753911.png" alt="屏幕快照 2019-03-01 下午3.04.39.png"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/" data-toggle="tooltip" data-placement="top" title="在树莓派kubernetes集群部署gRPC框架编写的微服务">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
+                        
+                          <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                        
+                          <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
+    var disqus_url = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

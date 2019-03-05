@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="https://readailib.com/2019/03/06/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">
+    <link rel="canonical" href="https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -96,12 +96,14 @@
                             
                               <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                             
+                              <a class="tag" href="/tags/#REST" title="REST">REST</a>
+                            
                         </div>
                         <h1>在树莓派kubernetes集群部署gRPC框架编写的微服务</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by ShenHengheng on
-                            2019-03-06
+                            2019-03-05
                         </span>
                     </div>
                 
@@ -148,14 +150,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -300,8 +302,14 @@
 <li>一个启动好的树莓派kubernetes集群(参考: <a href="https://41sh.cn/?id=16" target="_blank" rel="noopener">边缘智能-在树莓派上部署kubernetes集群</a>)</li>
 <li>protobuf工具(参考 <a href="https://github.com/google/protobuf,从release页下载对应的操作系统的版本即可" target="_blank" rel="noopener">https://github.com/google/protobuf,从release页下载对应的操作系统的版本即可</a>)</li>
 <li>Docker (参考: <a href="https://docs.docker.com/engine/installation/" target="_blank" rel="noopener">https://docs.docker.com/engine/installation/</a>)</li>
-<li>kubectl工具 (参考: <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">https://kubernetes.io/docs/tasks/tools/install-kubectl/</a>)<br>本次文章主要参考: </li>
-<li><a href="https://outcrawl.com/getting-started-microservices-go-grpc-kubernetes" target="_blank" rel="noopener">Getting Started with Microservices using Go, gRPC and Kubernetes</a><br>代码:</li>
+<li>kubectl工具 (参考: <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">https://kubernetes.io/docs/tasks/tools/install-kubectl/</a>)</li>
+</ul>
+<p>本文章参考: </p>
+<ul>
+<li><a href="https://outcrawl.com/getting-started-microservices-go-grpc-kubernetes" target="_blank" rel="noopener">Getting Started with Microservices using Go, gRPC and Kubernetes</a></li>
+</ul>
+<p>本文章的实例代码:</p>
+<ul>
 <li><a href="https://github.com/rh01/grpc-microservice-k8s" target="_blank" rel="noopener">https://github.com/rh01/grpc-microservice-k8s</a></li>
 </ul>
 <h2 id="定义我们的protobuf文件"><a href="#定义我们的protobuf文件" class="headerlink" title="定义我们的protobuf文件"></a>定义我们的protobuf文件</h2><p>protobuf是google的一个序列化结构化数据工具,它可以让人们定义好相关的结构,使用protoc工具自动生成对应的代码.类似的结构化工具还有thrift.</p>
@@ -607,6 +615,10 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
                 <ul class="pager">
                     
                     
+                        <li class="next">
+                            <a href="/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/" data-toggle="tooltip" data-placement="top" title="部署微服务到树莓派的kubernetes集群">Next Post &rarr;</a>
+                        </li>
+                    
                 </ul>
 
                 <!-- duoshuo Share start -->
@@ -664,6 +676,8 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
                         
                           <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                         
+                          <a class="tag" href="/tags/#REST" title="REST">REST</a>
+                        
                     </div>
                 </section>
                 
@@ -701,8 +715,8 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "shenhengheng";
-    var disqus_identifier = "https://readailib.com/2019/03/06/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
-    var disqus_url = "https://readailib.com/2019/03/06/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
+    var disqus_identifier = "https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
+    var disqus_url = "https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
