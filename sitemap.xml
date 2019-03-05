@@ -3,7 +3,7 @@
 
     <sitemap>
         <loc>https://readailib.com/post-sitemap.xml</loc>
-        <lastmod>2019-03-05T14:37:50.231Z</lastmod>
+        <lastmod>2019-03-05T16:18:42.138Z</lastmod>
     </sitemap>
 
     <sitemap>
@@ -12,13 +12,8 @@
     </sitemap>
 
     <sitemap>
-        <loc>https://readailib.com/category-sitemap.xml</loc>
-        <lastmod>2019-03-05T14:37:50.208Z</lastmod>
-    </sitemap>
-
-    <sitemap>
         <loc>https://readailib.com/tag-sitemap.xml</loc>
-        <lastmod>2019-03-05T14:37:50.208Z</lastmod>
+        <lastmod>2019-03-05T16:18:42.138Z</lastmod>
     </sitemap>
 
 </sitemapindex>

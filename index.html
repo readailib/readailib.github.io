@@ -284,324 +284,34 @@
 
 <div class="post-preview">
 
-    <a href="/2019/02/05/kubernetes/k8s-leader-election/">
+    <a href="/2019/03/06/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">
         <h2 class="post-title">
-            了解與實作 Kubernetes Leader Election 功能
+            post
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            ...
+            今天带着大家如何在树莓派kubernetes集群中部署微服务,这次文章和上次文章的区别就是这个涉及两个微服务,如何使两个微服务在kubernetes中实现服务之间的调用可能是与上次的不同之处,这次也使用Google的开源框架gRPC框架来加快微服务的开发.
+
+本次教程需要准备:
+
+一个启动好的树莓派kubernetes集群(参考: 边缘智能-在树莓派上部署kubernetes集群)
+prot......
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by ShenHengheng on
-            2019-02-05
+            2019-03-06
         </p>
         <div class="tags">
             
-              <a href="/tags/#Golang" title="Golang">Golang</a>
+              <a href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
             
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+              <a href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
             
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/01/22/kubernetes/deploy/minikube-multi-node/">
-        <h2 class="post-title">
-            利用 Minikube 快速建立測試用 Kubernetes 叢集
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本文將說明如何透過 Minikube 建立多節點 Kubernetes 叢集。一般來說 Minikube 僅提供單節點功能，即透過虛擬機建立僅有一個具備 Master/Node 節點的 Kubernetes 叢集，但由時候需要測試多節點功能，因此自己改了一下 Minikube 來支援最新版本(v1.13.2)的多節點部署，且 CNI Plugin 採用 Calico，以方便測試 Networ......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2019-01-22
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Docker" title="Docker">Docker</a>
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Calico" title="Calico">Calico</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/08/12/kubernetes/deploy/k8s-ansible-ha/">
-        <h2 class="post-title">
-            開發 Ansible Playbooks 部署 Kubernetes v1.11.x HA 叢集
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本篇將介紹如何透過 Ansible Playbooks 來快速部署多節點 Kubernetes，一般自建 Kubernetes 叢集時，很多初步入門都會透過 kubeadm 或腳本來部署，雖然 kubeadm 簡化了很多流程，但是還是需要很多手動操作過程，這使得當節點超過 5 - 8 台時就覺得很麻煩，因此許多人會撰寫腳本來解決這個問題，但是腳本的靈活性不佳，一旦設定過程過於龐大時也會造成其......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-08-12
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Docker" title="Docker">Docker</a>
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Ansible" title="Ansible">Ansible</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/27/kubernetes/knative-intro/">
-        <h2 class="post-title">
-            初探 Knative 基本功能與概念
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-Knative 是基於 Kubernetes 平台建構、部署與管理現代 Serverless 工作負載的開源專案，其目標是要幫助雲端供應商與企業平臺營運商替任何雲端環境的開發者、操作者等提供 Serverless 服務體驗。Knative 採用了 Kubernetes 概念來建構函式與應用程式，並以 Istio 實現了叢集內的網路路由，以及進入服務的外部連接，這讓開發者在部署或執行變得更加......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-07-27
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Serverless" title="Serverless">Serverless</a>
-            
-              <a href="/tags/#Istio" title="Istio">Istio</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/19/kubernetes/k8s-external-dns/">
-        <h2 class="post-title">
-            以 ExternalDNS 自動同步 Kubernetes Ingress 與 Service DNS 資源紀錄
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本篇說明如何透過 CoreDNS 自建一套 DNS 服務，並利用 Kubernetes ExternalDNS 同步 Kubernetes 的 Ingress 與 Service API object 中的域名(Domain Name)來產生資源紀錄(Record Resources)，讓使用者能夠透過自建 DNS 服務來導向到 Kubernetes 上的應用服務。
-
-使用元件功能介紹
-Co......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-07-19
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#CoreDNS" title="CoreDNS">CoreDNS</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/17/kubernetes/deploy/kubeadm-v1.11-ha/">
-        <h2 class="post-title">
-            利用 kubeadm 部署 Kubernetes v1.11.x HA 叢集
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本篇將說明如何透過 Kubeadm 來部署 Kubernetes v1.11 版本的 High Availability 叢集，而本安裝主要是參考官方文件中的 Creating Highly Available Clusters with kubeadm 內容來進行，這邊將透過 HAProxy 與 Keepalived 的結合來實現控制面的 Load Balancer 與 VIP。
-
-Kub......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-07-17
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Calico" title="Calico">Calico</a>
-            
-              <a href="/tags/#kubeadm" title="kubeadm">kubeadm</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/09/kubernetes/deploy/manual-v1.11/">
-        <h2 class="post-title">
-            Kubernetes v1.11.x HA 全手動苦工安裝教學(TL;DR)
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本篇延續過往手動安裝方式來部署 Kubernetes v1.11.x 版本的 High Availability 叢集，而此次教學將直接透過裸機進行部署 Kubernetes 叢集。以手動安裝的目標是學習 Kubernetes 各元件關析、流程、設定與部署方式。若不想這麼累的話，可以參考 Picking the Right Solution 來選擇自己最喜歡的方式。
-
-
-Kubernetes......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-07-09
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Docker" title="Docker">Docker</a>
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Calico" title="Calico">Calico</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/01/devops/prometheus-ha/">
-        <h2 class="post-title">
-            Prometheus 高可靠實現方式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            前面幾篇提到了 Prometheus 儲存系統與 Federation 功能，其中在儲存系統可以得知 Local on-disk 方式雖然能夠帶來很好的效能，但是卻也存在著單點故障的問題，並且限制了 Prometehsu 的可擴展性，引發資料的持久等問題，也因此 Prometheus 提供了遠端儲存(Remote storage)的特性來解決擴展性問題。
-而除了儲存問題外，另一方面就是要考量......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-07-01
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#DevOps" title="DevOps">DevOps</a>
-            
-              <a href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
-            
-              <a href="/tags/#CNCF" title="CNCF">CNCF</a>
-            
-              <a href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/06/29/devops/prometheus-federation/">
-        <h2 class="post-title">
-            了解 Prometheus Federation 功能
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Prometheus 在效能上是能夠以單個 Server 支撐百萬個時間序列，當然根據不同規模的改變，Promethes 是能夠進行擴展的，這邊將介紹 Prometheus Federation 來達到此效果。
-Prometheus Federation 允許一台 Prometheus Server 從另一台 Prometheus Server 刮取選定的時間序列資料。Federation ......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-06-29
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#DevOps" title="DevOps">DevOps</a>
-            
-              <a href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
-            
-              <a href="/tags/#CNCF" title="CNCF">CNCF</a>
-            
-              <a href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/06/25/kubernetes/k8x-exec-api/">
-        <h2 class="post-title">
-            Kubernetes exec API 串接分析
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            本篇將說明 Kubernetes exec API 的運作方式，並以簡單範例進行開發在前後端上。雖然 Kubernetes 提供了不同資源的 RESTful API 來進行 CRUD 操作，但是部分 API 並非單純的回傳一個資料，有些是需要透過 SPDY 或 WebSocket 建立長連線串流，這種 API 以 exec、attach 為主，目標是對一個 Pod 執行指定指令，或者進入該 ......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2018-06-25
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+              <a href="/tags/#Edge computing" title="Edge computing">Edge computing</a>
             
         </div>
     
@@ -615,10 +325,6 @@ Prometheus Federation 允許一台 Prometheus Server 從另一台 Prometheus Ser
 
 <ul class="pager">
     
-    
-        <li class="next">
-            <a href="/archives/2/">Older Posts &rarr;</a>
-        </li>
     
 </ul>
 
@@ -721,23 +427,7 @@ Prometheus Federation 允許一台 Prometheus Server 從另一台 Prometheus Ser
     <ul>
       
         <li>
-          <a href="/2019/02/05/kubernetes/k8s-leader-election/">了解與實作 Kubernetes Leader Election 功能</a>
-        </li>
-      
-        <li>
-          <a href="/2019/01/22/kubernetes/deploy/minikube-multi-node/">利用 Minikube 快速建立測試用 Kubernetes 叢集</a>
-        </li>
-      
-        <li>
-          <a href="/2018/08/12/kubernetes/deploy/k8s-ansible-ha/">開發 Ansible Playbooks 部署 Kubernetes v1.11.x HA 叢集</a>
-        </li>
-      
-        <li>
-          <a href="/2018/07/27/kubernetes/knative-intro/">初探 Knative 基本功能與概念</a>
-        </li>
-      
-        <li>
-          <a href="/2018/07/19/kubernetes/k8s-external-dns/">以 ExternalDNS 自動同步 Kubernetes Ingress 與 Service DNS 資源紀錄</a>
+          <a href="/2019/03/06/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">post</a>
         </li>
       
     </ul>
@@ -751,170 +441,6 @@ Prometheus Federation 允許一台 Prometheus Server 從另一台 Prometheus Ser
     <!-- no hr -->
     <h5><a href="/tags/">FEATURED TAGS</a></h5>
     <div class="tags">
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-            <a href="/tags/#Docker" title="Docker" rel="31">Docker</a>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-            <a href="/tags/#Storage" title="Storage" rel="15">Storage</a>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-            <a href="/tags/#DevOps" title="DevOps" rel="14">DevOps</a>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="14">Linux</a>
-            
-        
-            
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="35">Kubernetes</a>
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
-        
-            
         
             
         
