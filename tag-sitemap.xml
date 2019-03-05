@@ -184,14 +184,14 @@
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Data-Collect/</loc>
+        <loc>https://readailib.github.io/tags/Visualization/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Visualization/</loc>
+        <loc>https://readailib.github.io/tags/Data-Collect/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -324,14 +324,14 @@
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/CoreDNS/</loc>
+        <loc>https://readailib.github.io/tags/Federation/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Federation/</loc>
+        <loc>https://readailib.github.io/tags/CoreDNS/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -422,20 +422,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Git/</loc>
-        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.github.io/tags/Python/</loc>
-        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.github.io/tags/Programming/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -444,6 +430,20 @@
 
     <url>
         <loc>https://readailib.github.io/tags/OOP/</loc>
+        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.github.io/tags/Git/</loc>
+        <lastmod>2019-03-05T14:37:50.228Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.github.io/tags/Python/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
