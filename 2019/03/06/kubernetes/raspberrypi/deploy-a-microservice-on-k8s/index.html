@@ -304,7 +304,7 @@
 <li><a href="https://outcrawl.com/getting-started-microservices-go-grpc-kubernetes" target="_blank" rel="noopener">Getting Started with Microservices using Go, gRPC and Kubernetes</a><br>代码:</li>
 <li><a href="https://github.com/rh01/grpc-microservice-k8s" target="_blank" rel="noopener">https://github.com/rh01/grpc-microservice-k8s</a></li>
 </ul>
-<h2 id="0x01-定义我们的protobuf文件"><a href="#0x01-定义我们的protobuf文件" class="headerlink" title="0x01 定义我们的protobuf文件"></a>0x01 定义我们的protobuf文件</h2><p>protobuf是google的一个序列化结构化数据工具,它可以让人们定义好相关的结构,使用protoc工具自动生成对应的代码.类似的结构化工具还有thrift.</p>
+<h2 id="定义我们的protobuf文件"><a href="#定义我们的protobuf文件" class="headerlink" title="定义我们的protobuf文件"></a>定义我们的protobuf文件</h2><p>protobuf是google的一个序列化结构化数据工具,它可以让人们定义好相关的结构,使用protoc工具自动生成对应的代码.类似的结构化工具还有thrift.</p>
 <blockquote>
 <p>微服务:这里我主要实现一个最大公约数的功能,输入两个数值,返回这两个数的最大公约数.</p>
 </blockquote>
@@ -351,7 +351,7 @@ $ go get -u github.com/golang/protobuf/protoc-gen-go
 </code></pre>
 </blockquote>
 <p>这时应该生成了 gcd.pb.go 程序.</p>
-<h2 id="0x02-最大公约数服务"><a href="#0x02-最大公约数服务" class="headerlink" title="0x02 最大公约数服务"></a>0x02 最大公约数服务</h2><h3 id="定义服务端"><a href="#定义服务端" class="headerlink" title="定义服务端"></a>定义服务端</h3><p>gcd 服务将会使用上一步生成的代码进行实现gcd计算服务.</p>
+<h2 id="最大公约数服务"><a href="#最大公约数服务" class="headerlink" title="最大公约数服务"></a>最大公约数服务</h2><h3 id="定义服务端"><a href="#定义服务端" class="headerlink" title="定义服务端"></a>定义服务端</h3><p>gcd 服务将会使用上一步生成的代码进行实现gcd计算服务.</p>
 <pre><code class="bash">$ cd ~/go/src/github.com/rh01/mini-deploy-app/
 $ mkdir -p gcd
 $ vim main.go
@@ -401,7 +401,7 @@ func (s *server) Compute(ctx context.Context, r *pb.GCDRequest) (*pb.GCDResponse
     return &amp;pb.GCDResponse{Result: a}, nil
 }
 </code></pre>
-<h2 id="0x03-定义RESTFul客户端"><a href="#0x03-定义RESTFul客户端" class="headerlink" title="0x03 定义RESTFul客户端"></a>0x03 定义RESTFul客户端</h2><p>前端使用 <a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">gin</a> 框架,主要是提供一个REST风格的访问方式和调用我们定义的gcd服务端执行实际的计算任务.</p>
+<h2 id="定义RESTFul客户端"><a href="#定义RESTFul客户端" class="headerlink" title="定义RESTFul客户端"></a>定义RESTFul客户端</h2><p>前端使用 <a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">gin</a> 框架,主要是提供一个REST风格的访问方式和调用我们定义的gcd服务端执行实际的计算任务.</p>
 <pre><code class="go">$ cd ~/go/src/github.com/rh01/mini-deploy-app/
 $ mkdir -p api
 $ vim main.go
@@ -458,7 +458,7 @@ func main() {
         log.Fatalf(&quot;Failed to run server: %v&quot;, err)
     }
 </code></pre>
-<h2 id="0x04-构建Docker镜像"><a href="#0x04-构建Docker镜像" class="headerlink" title="0x04 构建Docker镜像"></a>0x04 构建Docker镜像</h2><p>下面是我定义的Dockerfile文件,因为有两个服务,所以这里分成两个Docker镜像,一个是gcd服务,另外一个是提供RESTAPI访问的客户端api.</p>
+<h2 id="构建Docker镜像"><a href="#构建Docker镜像" class="headerlink" title="构建Docker镜像"></a>构建Docker镜像</h2><p>下面是我定义的Dockerfile文件,因为有两个服务,所以这里分成两个Docker镜像,一个是gcd服务,另外一个是提供RESTAPI访问的客户端api.</p>
 <blockquote>
 <p>有关Docker的多阶段构建参考: <a href="https://www.41sh.cn/?id=61" target="_blank" rel="noopener">[实战] 将golang编写的微服务部署在树莓派搭建的kubernetes集群</a></p>
 </blockquote>
@@ -512,7 +512,7 @@ CMD [ &quot;api&quot; ]
 <pre><code class="bash">$ docker build -t rh02/apiserver:v1.0.0 -f Dockerfile.api . 
 $ docker build -t rh02/gcdserver:v1.0.0 -f Dockerfile.gcd .
 </code></pre>
-<h2 id="0x05-部署到kubernetes"><a href="#0x05-部署到kubernetes" class="headerlink" title="0x05 部署到kubernetes"></a>0x05 部署到kubernetes</h2><p>定义两个Deployment和对应的两个Service,并且将gcd服务的名字写成我们api服务调用的名字:gcd-service.</p>
+<h2 id="部署到kubernetes"><a href="#部署到kubernetes" class="headerlink" title="部署到kubernetes"></a>部署到kubernetes</h2><p>定义两个Deployment和对应的两个Service,并且将gcd服务的名字写成我们api服务调用的名字:gcd-service.</p>
 <p>下面是gcd的deployment和service的定义: gcd.yaml</p>
 <pre><code class="yaml">apiVersion: apps/v1beta1
 kind: Deployment
@@ -598,7 +598,7 @@ gcd-deployment-544390878-0zgc8   1/1       Running   0          2s
 gcd-deployment-544390878-p78g0   1/1       Running   0          2s
 gcd-deployment-544390878-r26nx   1/1       Running   0          2s
 </code></pre>
-<h2 id="0x06-尾声"><a href="#0x06-尾声" class="headerlink" title="0x06 尾声"></a>0x06 尾声</h2><p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903051551771763579640.png" alt="截图_2019-03-05_15-42-18.png"></p>
+<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903051551771763579640.png" alt="截图_2019-03-05_15-42-18.png"></p>
 <p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903051551771802295607.png" alt="截图_2019-03-05_15-43-02.png"></p>
 
                 
@@ -635,7 +635,7 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x01-定义我们的protobuf文件"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">0x01 定义我们的protobuf文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x02-最大公约数服务"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">0x02 最大公约数服务</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#定义服务端"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">定义服务端</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x03-定义RESTFul客户端"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">0x03 定义RESTFul客户端</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x04-构建Docker镜像"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">0x04 构建Docker镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x05-部署到kubernetes"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">0x05 部署到kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#0x06-尾声"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">0x06 尾声</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#定义我们的protobuf文件"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">定义我们的protobuf文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#最大公约数服务"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">最大公约数服务</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#定义服务端"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">定义服务端</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#定义RESTFul客户端"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">定义RESTFul客户端</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#构建Docker镜像"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">构建Docker镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署到kubernetes"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">部署到kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#尾声"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">尾声</span></a></li></ol>
         
         </div>
       </aside>
