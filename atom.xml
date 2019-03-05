@@ -32,15 +32,15 @@
     </summary>
     
     
-      <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
-    
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
       <category term="Edge computing" scheme="https://readailib.com/tags/Edge-computing/"/>
     
       <category term="gRPC" scheme="https://readailib.com/tags/gRPC/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="REST" scheme="https://readailib.com/tags/REST/"/>
     
@@ -67,17 +67,17 @@
       <category term="Microservice" scheme="https://readailib.com/categories/Kubernetes/Microservice/"/>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
-    
       <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="Edge Computing" scheme="https://readailib.com/tags/Edge-Computing/"/>
     
       <category term="Gin" scheme="https://readailib.com/tags/Gin/"/>
     
       <category term="Simple Example" scheme="https://readailib.com/tags/Simple-Example/"/>
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
   </entry>
   
