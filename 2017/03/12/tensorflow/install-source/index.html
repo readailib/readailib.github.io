@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Ubuntu 16.04 安裝 TensorFlow GPU GTX 1060 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2017/03/12/tensorflow/install-source/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#TensorFlow" title="TensorFlow">TensorFlow</a>
+                            
+                              <a class="tag" href="/tags/#Machine Learning" title="Machine Learning">Machine Learning</a>
+                            
+                              <a class="tag" href="/tags/#Ubuntu" title="Ubuntu">Ubuntu</a>
+                            
+                        </div>
+                        <h1>Ubuntu 16.04 安裝 TensorFlow GPU GTX 1060</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2017-03-12
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>本篇主要因為自己買了一片<code>Nvidia GTX 1060 6G</code>顯卡，但是購買至今只用來玩過一個遊戲，因此才拿來試跑 TensorFlow。</p>
+<a id="more"></a>
+<p>本次安裝硬體與規格如下：</p>
+<ul>
+<li>作業系統: Ubuntu 16.04 Desktop</li>
+<li>GPU: GeForce® GTX 1060 6G</li>
+<li>NVIDIA Driver: nvidia-367</li>
+<li>Python: 2.7+</li>
+<li>TensorFlow: r1.0.1</li>
+<li>CUDA: v8.0</li>
+<li>cuDNN: v5.1</li>
+</ul>
+<h1 id="環境部署"><a href="#環境部署" class="headerlink" title="環境部署"></a>環境部署</h1><p>如果要安裝 TensorFlow with GPU support 的話，需要滿足以下幾點：</p>
+<ul>
+<li>Nvidia Driver.</li>
+<li>已安裝 CUDA® Toolkit 8.0.</li>
+<li>已安裝 cuDNN v5.1.</li>
+<li>GPU card with CUDA Compute Capability 6.1(GTX 10-series).</li>
+<li>libcupti-dev 函式庫.</li>
+</ul>
+<h2 id="Nvidia-Driver-安裝"><a href="#Nvidia-Driver-安裝" class="headerlink" title="Nvidia Driver 安裝"></a>Nvidia Driver 安裝</h2><p>由於預設 Ubuntu 的 Nvidia 版本比較舊，或者並沒有安裝相關驅動，因此這邊需要安裝顯卡對應的版本才能夠正常使用，可以透過以下方式進行：</p>
+<pre><code class="sh">$ sudo add-apt-repository -y ppa:graphics-drivers/ppa
+$ sudo apt-get update
+$ sudo apt-get install -y nvidia-367
+</code></pre>
+<p>完成後，需重新啟動機器。</p>
+<h2 id="CUDA-Toolkit-8-0-安裝"><a href="#CUDA-Toolkit-8-0-安裝" class="headerlink" title="CUDA Toolkit 8.0 安裝"></a>CUDA Toolkit 8.0 安裝</h2><p>由於 TensorFlow 支援 GPU 運算時，會需要使用到 CUDA Toolkit 相關功能，可以到 <a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener">CUDA Toolkit</a> 頁面下載，這邊會下載 Ubuntu Run file 檔案，來進行安裝：</p>
+<pre><code class="sh">$ wget &quot;https://developer.nvidia.com/compute/cuda/8.0/Prod2/local_installers/cuda_8.0.61_375.26_linux-run&quot;
+$ sudo chmod u+x cuda_8.0.61_375.26_linux-run
+$ ./cuda_8.0.61_375.26_linux-run
+
+Do you accept the previously read EULA?
+accept/decline/quit: accept
+Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 361.77?
+(y)es/(n)o/(q)uit: n
+Install the CUDA 8.0 Toolkit?
+(y)es/(n)o/(q)uit: y
+Enter Toolkit Location
+[ default is /usr/local/cuda-8.0]: enter
+Do you want to install a symbolic link at /usr/local/cuda?
+(y)es/(n)o/(q)uit:y
+Install the CUDA 8.0 Samples?
+(y)es/(n)o/(q)uit:y
+Enter CUDA Samples Location
+[ defualt is /home/kylebai ]: enter
+</code></pre>
+<blockquote>
+<p>這邊<code>enter</code>為鍵盤直接按壓，而不是輸入 enter。</p>
+</blockquote>
+<p>安裝完成後，編輯 Home 目錄底下的<code>.bashrc</code>檔案加入以下內容：</p>
+<pre><code class="sh">export PATH=${PATH}:/usr/local/cuda-8.0/bin
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64
+</code></pre>
+<p>最後 Source Bash 檔案與測試 CUDA Toolkit：</p>
+<pre><code class="sh">$ source .bashrc
+$ sudo nvidia-smi
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 375.39                 Driver Version: 375.39                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 106...  Off  | 0000:01:00.0      On |                  N/A |
+| 28%   29C    P8     6W / 120W |    130MiB /  6069MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID  Type  Process name                               Usage      |
+|=============================================================================|
+|    0      1165    G   /usr/lib/xorg/Xorg                              98MiB |
+|    0      1764    G   compiz                                          29MiB |
++-----------------------------------------------------------------------------+
+</code></pre>
+<h2 id="cuDNN-5-1-安裝"><a href="#cuDNN-5-1-安裝" class="headerlink" title="cuDNN 5.1 安裝"></a>cuDNN 5.1 安裝</h2><p><a href="https://developer.nvidia.com/rdp/cudnn-download" target="_blank" rel="noopener">NVIDIA cuDNN</a> 是一個深度神經網路運算的 GPU 加速原函式庫，這邊需要點選前面的連結，下載<code>cuDNN v5.1 Library for Linux</code>檔案：</p>
+<pre><code class="sh">$ tar xvf cudnn-8.0-linux-x64-v5.1.tgz
+$ sudo cp cuda/include/cudnn.h /usr/local/cuda/include/
+$ sudo cp cuda/lib64/libcudnn* /usr/local/cuda/lib64/
+</code></pre>
+<h2 id="TensorFlow-GPU-套件建構"><a href="#TensorFlow-GPU-套件建構" class="headerlink" title="TensorFlow GPU 套件建構"></a>TensorFlow GPU 套件建構</h2><p>本次教學將透過 <a href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener">Source code</a> 建構安裝檔，再進行安裝 TensorFlow，首先安裝相依套件：</p>
+<pre><code class="sh">$ sudo add-apt-repository -y ppa:webupd8team/java
+$ sudo apt-get update
+$ sudo apt-get install -y libcupti-dev python-numpy python-dev python-setuptools python-pip python-wheel git oracle-java8-installer
+$ echo &quot;deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8&quot; | sudo tee /etc/apt/sources.list.d/bazel.list
+$ curl -s &quot;https://storage.googleapis.com/bazel-apt/doc/apt-key.pub.gpg&quot; | sudo apt-key add -
+$ sudo apt-get update &amp;&amp; sudo apt-get -y install bazel
+$ sudo apt-get upgrade -y bazel
+</code></pre>
+<p>接著取得 TensorFlow 專案原始碼，然後進入到 TensorFlow 專案目錄進行 bazel 設定：</p>
+<pre><code class="sh">$ git clone &quot;https://github.com/tensorflow/tensorflow&quot;
+$ cd tensorflow
+$ ./configure
+
+...
+Do you wish to build TensorFlow with CUDA support? [y/N] y
+Please specify the Cuda SDK version you want to use, e.g. 7.0. [Leave empty to use system default]: 8.0
+Please specify the cuDNN version you want to use. [Leave empty to use system default]: 5
+Please note that each additional compute capability significantly increases your build time and binary size.
+[Default is: &quot;3.5,5.2&quot;]: 6.1
+...
+Configuration finished
+</code></pre>
+<blockquote>
+<p><code>6.1</code>為 GTX 10-series 系列顯卡，其他可以查看 <a href="https://developer.nvidia.com/cuda-gpus" target="_blank" rel="noopener">CUDA GPUS</a>。這邊除了上述特定要輸入外，其餘都是直接鍵盤<code>enter</code>。</p>
+</blockquote>
+<p>當完成組態後，即可透過 bazel 進行建構 pip 套件腳本：</p>
+<pre><code class="sh">$ bazel build --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
+</code></pre>
+<p>當腳本建構完成後，即可透過以下指令來建構 .whl 檔案：</p>
+<pre><code class="sh">$ bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tf_pkg
+</code></pre>
+<p>完成後，可以在<code>/tmp/tf_pkg</code>目錄底下找到安裝檔<code>tensorflow-1.0.1-py2-none-any.whl</code>，最後就可以透過 pip 來進行安裝了：</p>
+<pre><code class="sh">$ sudo pip install /tmp/tf_pkg/tensorflow-1.0.1-cp27-cp27mu-linux_x86_64.whl
+</code></pre>
+<h2 id="測試安裝結果"><a href="#測試安裝結果" class="headerlink" title="測試安裝結果"></a>測試安裝結果</h2><p>最後透過簡單程式來驗證安裝是否成功：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; simple.py
+import tensorflow as tf
+
+hello = tf.constant(&#39;Hello, TensorFlow!&#39;)
+sess = tf.Session()
+print(sess.run(hello))
+EOF
+
+$ python simple.py
+...
+roperties:
+name: GeForce GTX 1060 6GB
+major: 6 minor: 1 memoryClockRate (GHz) 1.7845
+pciBusID 0000:01:00.0
+Total memory: 5.93GiB
+Free memory: 5.74GiB
+2017-03-12 21:43:56.477084: I tensorflow/core/common_runtime/gpu/gpu_device.cc:908] DMA: 0
+2017-03-12 21:43:56.477092: I tensorflow/core/common_runtime/gpu/gpu_device.cc:918] 0:   Y
+2017-03-12 21:43:56.503464: I tensorflow/core/common_runtime/gpu/gpu_device.cc:977] Creating TensorFlow device (/gpu:0) -&gt; (device: 0, name: GeForce GTX 1060 6GB, pci bus id: 0000:01:00.0)
+Hello, TensorFlow!
+</code></pre>
+<blockquote>
+<p><code>...</code>部分會顯示一些 GPU 使用狀態。</p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/03/17/kubernetes/deploy/kubespray-baremetal/" data-toggle="tooltip" data-placement="top" title="Kubespray 部署實體機 Kubernetes v1.6 叢集">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/02/17/kubernetes/deploy/kube-ansible-vagrant/" data-toggle="tooltip" data-placement="top" title="kube-ansible 快速部署 HA 測試環境">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#環境部署"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">環境部署</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Nvidia-Driver-安裝"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">Nvidia Driver 安裝</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#CUDA-Toolkit-8-0-安裝"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">CUDA Toolkit 8.0 安裝</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#cuDNN-5-1-安裝"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">cuDNN 5.1 安裝</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#TensorFlow-GPU-套件建構"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">TensorFlow GPU 套件建構</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#測試安裝結果"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">測試安裝結果</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#TensorFlow" title="TensorFlow">TensorFlow</a>
+                        
+                          <a class="tag" href="/tags/#Machine Learning" title="Machine Learning">Machine Learning</a>
+                        
+                          <a class="tag" href="/tags/#Ubuntu" title="Ubuntu">Ubuntu</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2017/03/12/tensorflow/install-source/";
+    var disqus_url = "https://readailib.github.io/2017/03/12/tensorflow/install-source/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

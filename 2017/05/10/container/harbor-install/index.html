@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Enterprise 的 Docker registry 平台 Harbor - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2017/05/10/container/harbor-install/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Linux Container" title="Linux Container">Linux Container</a>
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Docker registry" title="Docker registry">Docker registry</a>
+                            
+                        </div>
+                        <h1>Enterprise 的 Docker registry 平台 Harbor</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2017-05-10
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Harbor 是一個企業級 Registry 伺服器用於儲存和分散 Docker Image 的，透過新增一些企業常用的功能，例如：安全性、身分驗證和管理等功能擴展了開源的 <a href="https://github.com/docker/distribution" target="_blank" rel="noopener">Docker Distribution</a>。作為一個企業級的私有 Registry 伺服器，Harbor 提供了更好的效能與安全性。Harbor 支援安裝多個 Registry 並將 Image 在多個 Registry 做 replicated。除此之外，Harbor 亦提供了高級的安全性功能，像是用戶管理(user managment)，存取控制(access control)和活動審核(activity auditing)。</p>
+<p><img src="/images/docker/harbor_logo.png" alt><br><a id="more"></a></p>
+<h2 id="功能特色"><a href="#功能特色" class="headerlink" title="功能特色"></a>功能特色</h2><ul>
+<li><strong>基於角色為基礎的存取控制(Role based access control)</strong>：使用者和 Repository 透過 Project 進行組織管理，一個使用者在同一個 Project 下，對於每個 Image 可以有不同權限。</li>
+<li><strong>基於 Policy 的 Image 複製</strong>：Image 可以在多得 Registry instance 中同步複製。適合於附載平衡、高可用性、混合雲與多雲的情境。</li>
+<li><strong>支援 LDAP/AD</strong>：Harbor 可以整合企業已有的 LDAP/AD，來管理使用者的認證與授權。</li>
+<li><strong>使用者的圖形化介面</strong>：使用者可以透過瀏覽器，查詢 Image 和管理 Project</li>
+<li><strong>審核管理</strong>：所有對 Repositroy 的操作都被記錄。</li>
+<li><strong>RESTful API</strong>：RESTful APIs 提供給管理的操作，可以輕易的整合額外的系統。</li>
+<li><strong>快速部署</strong>：提供 Online installer 與 Offline installer。</li>
+</ul>
+<h2 id="安裝指南"><a href="#安裝指南" class="headerlink" title="安裝指南"></a>安裝指南</h2><p>Harbor 提供兩種方法進行安裝：</p>
+<ol>
+<li>Online installer<br> 這種安裝方式會從 Docker hub 下載 Harbor 所需的映像檔，因此 installer 檔案較輕量。</li>
+<li>Offline installer<br> 當無任何網際網路連接的情況下使用此種安裝方式，預先將所需的映像檔打包，因此 installer 檔案較大。</li>
+</ol>
+<h3 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h3><p>Harbor 會部署數個 Docker container，所以部署的主機需要能支援 Docker 的 Linux distribution。而部署主機需要安裝以下套件：</p>
+<ul>
+<li>Python 版本<code>2.7+</code>。</li>
+<li>Docker Engine 版本 <code>1.10+</code>。Docker 安裝方式，請參考：<a href="https://docs.docker.com/engine/installation/" target="_blank" rel="noopener">Install Docker</a></li>
+<li>Docker Compose 版本 <code>1.6.0+</code>。Docker Compose 安裝方式，請參考：<a href="https://docs.docker.com/compose/install/" target="_blank" rel="noopener">Install Docker Compose</a></li>
+</ul>
+<blockquote>
+<p>官方安裝指南說明是 Linux 且要支援 Docker，但 Windows 支援 Docker 部署 Harbor 還需要驗證是否可行。</p>
+</blockquote>
+<p>安裝步驟大致可分為以下階段：</p>
+<ol>
+<li>下載 installer</li>
+<li>設定 Harbor</li>
+<li>執行安裝腳本</li>
+</ol>
+<h4 id="下載-installer"><a href="#下載-installer" class="headerlink" title="下載 installer"></a>下載 installer</h4><p>installer 的二進制檔案可以從 <a href="https://github.com/vmware/harbor/releases" target="_blank" rel="noopener">release page</a> 下載，選擇您需要 Online installer 或者 Offline installer，下載完成後，使用<code>tar</code>將 package 解壓縮：</p>
+<p>Online installer：</p>
+<pre><code class="sh">$ tar xvf harbor-online-installer-&lt;version&gt;.tgz
+</code></pre>
+<p>Offline installer：</p>
+<pre><code class="sh">$ tar xvf harbor-offline-installer-&lt;version&gt;.tgz
+</code></pre>
+<h4 id="設定-Harbor"><a href="#設定-Harbor" class="headerlink" title="設定 Harbor"></a>設定 Harbor</h4><p>Harbor 的設定與參數都在<code>harbor.cfg</code>中。</p>
+<p><code>harbor.cfg</code>中的參數分為<strong>required parameters</strong>與<strong>optional parameters</strong></p>
+<ul>
+<li><strong>required parameters</strong><br>  這類的參數是必須設定的，且會影響使用者更新<code>harbor.cfg</code>後，重新執行安裝腳本來重新安裝 Harbor。</li>
+<li><strong>optional parameters</strong><br>  這類的參數為使用者自行決定是否設定，且只會在第一次安裝時，這些參數的配置才會生效。而 Harbor 啟動後，可以透過 Web UI 進行修改。</li>
+</ul>
+<h5 id="Configuring-storage-backend-optional"><a href="#Configuring-storage-backend-optional" class="headerlink" title="Configuring storage backend (optional)"></a>Configuring storage backend (optional)</h5><p>預設的情況下，Harbor 會將 Docker image 儲存在本機的檔案系統上，在生產環境中，您可以考慮使用其他 storage backend 而不是本機的檔案系統，像是 S3, OpenStack Swift, Ceph 等。而僅需更改 <code>common/templates/registry/config.yml</code>。以下為一個接 OpenStack Swift 的範例：</p>
+<pre><code class="sh">storage:
+  swift:
+    username: admin
+    password: ADMIN_PASS
+    authurl: http://keystone_addr:35357/v3/auth
+    tenant: admin
+    domain: default
+    region: regionOne
+    container: docker_images
+</code></pre>
+<blockquote>
+<p>更多 storage backend 的資訊，請參考：<a href="https://docs.docker.com/registry/configuration/" target="_blank" rel="noopener">Registry Configuration Reference</a>。<br>另外官方提供的是改 <code>common/templates/registry/config.yml</code>，感覺寫錯，需再測試其正確性。</p>
+</blockquote>
+<h4 id="執行安裝腳本"><a href="#執行安裝腳本" class="headerlink" title="執行安裝腳本"></a>執行安裝腳本</h4><p>一旦<code>harbor.cfg</code>與 storage backend (optional) 設定完成後，可以透過<code>install.sh</code>腳本開始安裝 Harbor。從 Harbor 1.1.0 版本之後，已經整合<code>Notary</code>，但是預設的情況下安裝是不包含<code>Notary</code>支援：</p>
+<pre><code class="sh">$ sudo ./install.sh
+</code></pre>
+<blockquote>
+<p>Online installer 會從 Docker hub 下載 Harbor 所需的映像檔，因此會花較久的時間。</p>
+</blockquote>
+<p>如果安裝過程正常，您可以打開瀏覽器並輸入在<code>harbor.cfg</code>中設定的<code>hostname</code>，來存取 Harbor 的 Web UI。<br><img src="https://i.imgur.com/jBVsr49.png" alt="Harbor Web UI"></p>
+<blockquote>
+<p>預設的管理者帳號密碼為 <code>admin</code>/<code>Harbor12345</code>。</p>
+</blockquote>
+<h4 id="開始使用-Harbor"><a href="#開始使用-Harbor" class="headerlink" title="開始使用 Harbor"></a>開始使用 Harbor</h4><p>登入成功後，可以創建一個新的 Project，並使用 Docker command 進行登入，但在登入之前，需要對 Docker daemon 新增<code>--insecure-registry</code>參數。新增<code>--insecure-registry</code>參數至<code>/etc/default/docker</code>中：</p>
+<pre><code class="sh">DOCKER_OPTS=&quot;--insecure-registry &lt;your harbor.cfg hostname&gt;&quot;
+</code></pre>
+<blockquote>
+<p>其他細節，請參考：<a href="https://docs.docker.com/registry/insecure/#deploying-a-plain-http-registry" target="_blank" rel="noopener">Test an insecure registry</a>。<br>若在<code>Ubuntu 16.04</code>的作業系統版本，需要修改<code>/lib/systemd/system/docker.service</code>檔案，並加入一下內容。另外在 CentOS 7.x 版本則不需要加入<code>-H fd://</code>資訊：</p>
+<pre><code class="sh">EnvironmentFile=/etc/default/docker
+ExecStart=/usr/bin/dockerd -H fd:// $DOCKER_OPTS
+</code></pre>
+</blockquote>
+<p>修改完成後，重新啟動服務：</p>
+<pre><code class="sh">$ sudo systemctl daemon-reload
+</code></pre>
+<p>服務重啟成功後，透過 Docker command 進行 login：</p>
+<pre><code class="sh">$ docker login &lt;your harbor.cfg hostname&gt;
+</code></pre>
+<p>將映像檔上 tag 之後，上傳至 Harbor：</p>
+<pre><code class="sh">$ docker tag ubuntu:&lt;your harbor.cfg hostname&gt;/&lt;your project&gt;/ubuntu:16.04
+$ docker push &lt;your harbor.cfg hostname&gt;/&lt;your project&gt;/ubunut:16.04
+</code></pre>
+<p>從 Harbor 抓取上傳的映像檔：</p>
+<pre><code class="sh">$ docker pull &lt;your harbor.cfg hostname&gt;/&lt;your project&gt;/ubunut:16.04
+</code></pre>
+<blockquote>
+<p>更多使用者操作，請參考：<a href="https://github.com/vmware/harbor/blob/master/docs/user_guide.md" target="_blank" rel="noopener">Harbor User Guide</a>。</p>
+</blockquote>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/05/25/blockchain/multi-node-geth/" data-toggle="tooltip" data-placement="top" title="建立 Go Ethereum 私有網路鏈">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/04/23/container/linuxkit/" data-toggle="tooltip" data-placement="top" title="品嚐 Moby LinuxKit 的 Linux 作業系統">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#功能特色"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">功能特色</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安裝指南"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安裝指南</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#事前準備"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">事前準備</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#下載-installer"><span class="toc-nav-number">2.1.1.</span> <span class="toc-nav-text">下載 installer</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#設定-Harbor"><span class="toc-nav-number">2.1.2.</span> <span class="toc-nav-text">設定 Harbor</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-5"><a class="toc-nav-link" href="#Configuring-storage-backend-optional"><span class="toc-nav-number">2.1.2.1.</span> <span class="toc-nav-text">Configuring storage backend (optional)</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#執行安裝腳本"><span class="toc-nav-number">2.1.3.</span> <span class="toc-nav-text">執行安裝腳本</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#開始使用-Harbor"><span class="toc-nav-number">2.1.4.</span> <span class="toc-nav-text">開始使用 Harbor</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Linux Container" title="Linux Container">Linux Container</a>
+                        
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Docker registry" title="Docker registry">Docker registry</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2017/05/10/container/harbor-install/";
+    var disqus_url = "https://readailib.github.io/2017/05/10/container/harbor-install/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

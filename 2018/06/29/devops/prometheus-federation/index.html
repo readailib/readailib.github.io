@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          了解 Prometheus Federation 功能 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2018/06/29/devops/prometheus-federation/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                            
+                              <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                            
+                              <a class="tag" href="/tags/#CNCF" title="CNCF">CNCF</a>
+                            
+                              <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                            
+                        </div>
+                        <h1>了解 Prometheus Federation 功能</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2018-06-29
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Prometheus 在效能上是能夠以單個 Server 支撐百萬個時間序列，當然根據不同規模的改變，Promethes 是能夠進行擴展的，這邊將介紹 Prometheus Federation 來達到此效果。</p>
+<p>Prometheus Federation 允許一台 Prometheus Server 從另一台 Prometheus Server 刮取選定的時間序列資料。Federation 提供 Prometheus 擴展能力，這能夠讓 Prometheus 節點擴展至多個，並且能夠實現高可靠性(High Availability)與切片(Sharding)。對於 Prometheus 的 Federation 有不同的使用方式，一般分為<code>Cross-service federation</code>與<code>Hierarchical federation</code>。</p>
+<a id="more"></a>
+<h2 id="Cross-service-federation"><a href="#Cross-service-federation" class="headerlink" title="Cross-service federation"></a>Cross-service federation</h2><p>這種方式的 Federation 會將一個 Prometheus Server 設定成從另一個 Prometheus Server 中獲取選中的時間序列資料，使得這個 Prometheus 能夠對兩個資料來源進行查詢(Query)與警告(Alert)，比如說有一個 Prometheus A 收集了多個服務叢集排程器曝露的資訊使用資訊(CPU、Memory 等)，而另一個在叢集上的 Promethues B 則只收集應用程式指定的服務 Metrics，這時想讓 Prometheus B 收集 Prometheus A 的資源使用量的話，就可以利用 Federation 來取得。</p>
+<p>又或者假設想要監控 mysqld 與 node 的資訊，但是這兩個在不同叢集中，這時可以採用一個 Master Prometheus + 兩個 Sharding Prometheus，其中 Sharding Prometheus 一個收集 node_exporter 的 Metrics，另一個則收集 mysql_exporter，最後 Master Prometheus 透過 Federation 來匯總兩個 Sharding 的時間序列資料。</p>
+<p><img src="https://i.imgur.com/ism3t0M.png" alt></p>
+<h2 id="Hierarchical-federation"><a href="#Hierarchical-federation" class="headerlink" title="Hierarchical federation"></a>Hierarchical federation</h2><p>這種方式能夠讓 Prometheus 擴展到多個資料中心，或者多個節點數量，當建立一個 Federation 叢集時，其拓樸結構會類似一個樹狀結構，並且每一層級會有所對應的級別，比如說較高層級的 Prometheus Server 會從大量低層級的 Prometheus Server 中檢索或聚合時間序列資料。</p>
+<p><img src="https://i.imgur.com/dOinJCq.png" alt></p>
+<p>這種方式適合當單一的 Prometheus 收集 Metrics 的任務(Job)量過大而無法負荷時，可將任務的實例(Instance)進行水平擴展，讓任務的目標實例拆分到不同 Prometheus 中，再由當前資料中心的主 Prometheus 來收集聚合。</p>
+<h2 id="Federation-部署"><a href="#Federation-部署" class="headerlink" title="Federation 部署"></a>Federation 部署</h2><h3 id="節點資訊"><a href="#節點資訊" class="headerlink" title="節點資訊"></a>節點資訊</h3><p>測試環境將利用當一節點執行多個 Prometheus 來模擬，作業系統採用<code>Ubuntu 16.04 Server</code>，測試環境為實體機器：</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Role</th>
+<th>Port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prometheus-global</td>
+<td>Master</td>
+<td>9090</td>
+</tr>
+<tr>
+<td>Prometheus-node</td>
+<td>Collector</td>
+<td>9091</td>
+</tr>
+<tr>
+<td>Prometheus-docker</td>
+<td>Collector</td>
+<td>9092</td>
+</tr>
+</tbody>
+</table>
+<h3 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h3><p>開始安裝前需要確保以下條件已達成：</p>
+<ul>
+<li>安裝與設定 Dockerd 提供 Metrics：</li>
+</ul>
+<pre><code class="sh">$ curl -fsSL &quot;https://get.docker.com/&quot; | sh
+
+# 編輯 /etc/docker/daemon.json 加入下面內容
+$ sudo vim /etc/docker/daemon.json
+{
+ &quot;metrics-addr&quot; : &quot;127.0.0.1:9323&quot;,
+ &quot;experimental&quot; : true
+}
+
+# 完成後重新啟動
+$ sudo systemctl restart docker
+$ curl 127.0.0.1:9323/metrics
+</code></pre>
+<ul>
+<li>透過 Docker 部署 Node Exporter：</li>
+</ul>
+<pre><code class="sh">$ docker run -d \
+  --net=&quot;host&quot; \
+  --pid=&quot;host&quot; \
+  --name node-exporter \
+  quay.io/prometheus/node-exporter
+
+$ curl 127.0.0.1:9100/metrics
+</code></pre>
+<ul>
+<li>在模擬節點下載 Prometheus 伺服器執行檔：</li>
+</ul>
+<pre><code class="sh">$ wget https://github.com/prometheus/prometheus/releases/download/v2.3.0/prometheus-2.3.0.linux-amd64.tar.gz
+$ tar xvfz prometheus-*.tar.gz
+$ mv prometheus-2.3.0.linux-amd64 prometheus-2.3.0
+$ cd prometheus-2.3.0
+</code></pre>
+<h3 id="部署-Prometheus-Federation"><a href="#部署-Prometheus-Federation" class="headerlink" title="部署 Prometheus Federation"></a>部署 Prometheus Federation</h3><p>首先新增三個設定檔案，分別給 Global、Docker 與 Node 使用。</p>
+<p>新增一個檔案<code>prometheus-docker.yml</code>，並加入以下內容:</p>
+<pre><code class="yaml=">global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+      server: &#39;docker-monitor&#39;
+scrape_configs:
+  - job_name: &#39;docker&#39;
+    scrape_interval: 5s
+    static_configs:
+      - targets: [&#39;localhost:9323&#39;]
+</code></pre>
+<p>新增一個檔案<code>prometheus-node.yml</code>，並加入以下內容:</p>
+<pre><code class="yaml=">global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+      server: &#39;node-monitor&#39;
+scrape_configs:
+  - job_name: &#39;node&#39;
+    scrape_interval: 5s
+    static_configs:
+      - targets: [&#39;localhost:9100&#39;]
+</code></pre>
+<p>新增一個檔案<code>prometheus-global.yml</code>，並加入以下內容:</p>
+<pre><code class="yaml=">global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  external_labels:
+      server: &#39;global-monitor&#39;
+scrape_configs:
+  - job_name: &#39;federate&#39;
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: &#39;/federate&#39;
+    params:
+      &#39;match[]&#39;:
+        - &#39;{job=~&quot;prometheus.*&quot;}&#39;
+        - &#39;{job=&quot;docker&quot;}&#39;
+        - &#39;{job=&quot;node&quot;}&#39;
+    static_configs:
+      - targets:
+        - &#39;localhost:9091&#39;
+        - &#39;localhost:9092&#39;
+</code></pre>
+<blockquote>
+<ul>
+<li>當設定 Federation 時，將透過 URL 中的 macth[] 參數指定需要獲取的時間序列資料，match[] 必須是一個向量選擇器資訊，如 up 或者 <code>{job=&quot;api-server&quot;}</code> 等。</li>
+<li>設定<code>honor_labels</code>是避免資料衝突。</li>
+</ul>
+</blockquote>
+<p>完成後，開啟三個 Terminal 來啟動 Prometheus Server：</p>
+<pre><code class="sh"># 啟動收集 Docker metrics 的 Prometheus server
+$ ./prometheus --config.file=prometheus-docker.yml \
+     --storage.tsdb.path=./data-docker \
+     --web.listen-address=&quot;0.0.0.0:9092&quot;
+
+# 啟動收集 Node metrics 的 Prometheus server
+$ ./prometheus --config.file=prometheus-node.yml \
+     --storage.tsdb.path=./data-node \
+     --web.listen-address=&quot;0.0.0.0:9091&quot;
+
+# 啟動收集 Global 的 Prometheus server
+$ ./prometheus --config.file=prometheus-global.yml \
+     --storage.tsdb.path=./data-global \
+     --web.listen-address=&quot;0.0.0.0:9090&quot;
+</code></pre>
+<p>正常啟動後分別透過瀏覽器觀察<code>:9090</code>、<code>:9091</code>與<code>:9092</code>會發現 Master 會擁有 Node 與 Docker 的 Metrics，而其他兩者只會有自己所屬 Metrics。</p>
+<blockquote>
+<p>注意，在 Alert 部分還是建議在各自 Sharding 的 Prometheus Server 處理，因為放到 Global 有可能會有接延遲。</p>
+</blockquote>
+<h3 id="部署-Grafana"><a href="#部署-Grafana" class="headerlink" title="部署 Grafana"></a>部署 Grafana</h3><p>在測試節點透過 Docker 部署 Grafana 來提供資料視覺化用：</p>
+<pre><code class="sh">$ docker run \
+  -d \
+  -p 3000:3000 \
+  --name=grafana \
+  -e &quot;GF_SECURITY_ADMIN_PASSWORD=secret&quot; \
+  grafana/grafana
+</code></pre>
+<p>完成後透過瀏覽器查看<code>:3000</code>，並設定 Grafana 將 Prometheus Global 資料做呈現，請至<code>Configuration</code>的<code>Data Sources</code>進行設定。</p>
+<p><img src="https://i.imgur.com/vqGFTXA.png" alt></p>
+<p>接著分別下載以下 Dashbaord JSON 檔案：</p>
+<ul>
+<li><a href="https://grafana.com/api/dashboards/1860/revisions/12/download" target="_blank" rel="noopener">Node Exporter Server Metrics</a></li>
+<li><a href="https://grafana.com/api/dashboards/1229/revisions/3/download" target="_blank" rel="noopener">Docker Metrics</a></li>
+</ul>
+<p>並在 Grafana 點選 Import 選擇上面兩個下載的 JSON 檔案。</p>
+<p><img src="https://i.imgur.com/RdwP0vl.png" alt></p>
+<p>Import 後選擇 Prometheus data source：</p>
+<p><img src="https://i.imgur.com/0NprMK4.png" alt></p>
+<p>確認沒問題後點選<code>Import</code>，這時候就可以在 Dashboard 看到視覺化的 Metrics 了。</p>
+<p><img src="https://i.imgur.com/AgSahRP.png" alt></p>
+<p>Docker Metrics 資訊：</p>
+<p><img src="https://i.imgur.com/Tjpc4Fs.png" alt></p>
+<p>更多的 Dashboard 可以至官方 <a href="https://grafana.com/dashboards" target="_blank" rel="noopener">Dashboards</a> 尋找。</p>
+<h2 id="Prometheus-Federation-不適用地方"><a href="#Prometheus-Federation-不適用地方" class="headerlink" title="Prometheus Federation 不適用地方"></a>Prometheus Federation 不適用地方</h2><p>經上述兩者說明，可以知道 Prometheus Federation 大多被用來從另一個 Prometheus 拉取受限或聚合的時間序列資料集，但是不只上述功能，該 Prometheus 本身還是要肩負警報(Alert)與圖形(Graph)資料查詢工作。而什麼狀況是 Prometheus Federation 不適用的？那就是使用在從另一個 Prometheus 拉取大量時間序列(甚至所有時間序列資料)，並且只從該 Prometheus 做警報(Alert)與圖形(Graph)處理。</p>
+<p>這邊列出三個原因：</p>
+<ul>
+<li><p><strong>效能(Performance)與縮放(Scaling)問題</strong>：Prometheus 的限制因素主要是一台機器所能處理的時間序列資料量，然而讓所有資料路由到一個 Global 的 Prometheus Server 將限制這台 Server 所能處理的監控。取而代之，若只拉取聚合的時間序列資料，只限於一個資料中心的 Prometheus 能夠處理，因此請允許新增資料中心來避免擴大 Global Prometheus。而 Federation 請求本身也能夠大量地服務於接收 Prometheus。</p>
+</li>
+<li><p><strong>可靠性(Reliability)</strong>：如果需要進行警報(Alert)的資料從一個 Prometheus 移動到另一個時，那麼這樣就會多出一個額外的故障點。當牽扯到諸如互聯網之類的廣域網路連接時，是特別危險的。在可能的情況下，應該盡量將警報(Alert)推送到 Federation 層級較深的 Prometheus上。</p>
+</li>
+<li><p><strong>正確性(Correctness)</strong>：由於工作原理關析，Federation 會在被刮取(scraped)後的某一段時間拉取資料，並且可能因 Race 問題而遺失一些資料。雖然這問題在 Global Promethesu 能夠被容忍，但是用於處理警報(Alert)與圖表查詢的資料中心 Prometheus 就可能造成問題。</p>
+</li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/07/01/devops/prometheus-ha/" data-toggle="tooltip" data-placement="top" title="Prometheus 高可靠實現方式">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/06/25/kubernetes/k8x-exec-api/" data-toggle="tooltip" data-placement="top" title="Kubernetes exec API 串接分析">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Cross-service-federation"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Cross-service federation</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Hierarchical-federation"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Hierarchical federation</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Federation-部署"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Federation 部署</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#節點資訊"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">節點資訊</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#事前準備"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">事前準備</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#部署-Prometheus-Federation"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">部署 Prometheus Federation</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#部署-Grafana"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">部署 Grafana</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Prometheus-Federation-不適用地方"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Prometheus Federation 不適用地方</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                        
+                          <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                        
+                          <a class="tag" href="/tags/#CNCF" title="CNCF">CNCF</a>
+                        
+                          <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2018/06/29/devops/prometheus-federation/";
+    var disqus_url = "https://readailib.github.io/2018/06/29/devops/prometheus-federation/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

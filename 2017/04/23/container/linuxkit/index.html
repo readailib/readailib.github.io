@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          品嚐 Moby LinuxKit 的 Linux 作業系統 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2017/04/23/container/linuxkit/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                            
+                              <a class="tag" href="/tags/#Moby" title="Moby">Moby</a>
+                            
+                              <a class="tag" href="/tags/#Microkernel" title="Microkernel">Microkernel</a>
+                            
+                        </div>
+                        <h1>品嚐 Moby LinuxKit 的 Linux 作業系統</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2017-04-23
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="https://github.com/linuxkit/linuxkit" target="_blank" rel="noopener">LinuxKit</a> 是 <a href="http://www.nebulaworks.com/blog/2017/04/22/docker-captains-dockercon-2017-review/" target="_blank" rel="noopener">DockerCon 2017</a> 中推出的工具之一，其主要是以 Container 來建立最小、不可變的 Linux 作業系統映像檔框架，Docker 公司一直透過 LinuxKit 來建立相關產品，如 Docker for Mac 等。由於要最快的了解功能，因此這邊透過建立簡單的映像檔來學習。</p>
+<p><img src="/images/docker/linux-kit.png" alt></p>
+<a id="more"></a>
+<p>在開始前需要準備完成一些事情：</p>
+<ul>
+<li>安裝 Git client。</li>
+<li>安裝 Docker engine，這邊建立使用 Docker-ce 17.04.0。</li>
+<li>安裝 GUN make 工具。</li>
+<li>安裝 GUN tar 工具。</li>
+</ul>
+<h2 id="建構-Moby-工具"><a href="#建構-Moby-工具" class="headerlink" title="建構 Moby 工具"></a>建構 Moby 工具</h2><p>首先我們要建構名為 Moby 的工具，這個工具主要提供指定的 YAML 檔來執行描述的建構流程與功能，並利用 Docker 來建構出 Linux 作業系統。在本教學中，最後我們會利用 <a href="https://github.com/mist64/xhyve" target="_blank" rel="noopener">xhyve</a> 這個 OS X 的虛擬化來提供執行系統實例，當然也可以透過官方的 <a href="https://github.com/moby/hyperkit" target="_blank" rel="noopener">HyperKit</a> 來進行。</p>
+<p>首先透過 Git 來抓取 LinuxKit repos，並進入建構 Moby：</p>
+<pre><code class="sh">$ git clone https://github.com/linuxkit/linuxkit.git
+$ cd linuxkit
+$ make &amp;&amp; sudo make install
+$ moby version
+moby version 0.0
+commit: 34d508562d7821cb812dd7b9caf4d9fbcdbc9fef
+</code></pre>
+<h3 id="建立-Linux-映像檔"><a href="#建立-Linux-映像檔" class="headerlink" title="建立 Linux 映像檔"></a>建立 Linux 映像檔</h3><p>當完成建構 Moby 工具後，就可以透過撰寫 YAML 檔來描述 Linux 的建構功能與流程了，這邊建立一個 Docker + SSH 的 Linux 映像檔。首先建立檔名為<code>docker-sshd.yml</code>的檔案，然後加入以下內容：</p>
+<pre><code class="yaml">kernel:
+  image: &quot;linuxkit/kernel:4.9.x&quot;
+  cmdline: &quot;console=ttyS0 console=tty0 page_poison=1&quot;
+init:
+  - linuxkit/init:63eed9ca7a09d2ce4c0c5e7238ac005fa44f564b
+  - linuxkit/runc:b0fb122e10dbb7e4e45115177a61a3f8d68c19a9
+  - linuxkit/containerd:18eaf72f3f4f9a9f29ca1951f66df701f873060b
+  - linuxkit/ca-certificates:e091a05fbf7c5e16f18b23602febd45dd690ba2f
+onboot:
+  - name: sysctl
+    image: &quot;linuxkit/sysctl:1f5ec5d5e6f7a7a1b3d2ff9dd9e36fd6fb14756a&quot;
+    net: host
+    pid: host
+    ipc: host
+    capabilities:
+     - CAP_SYS_ADMIN
+    readonly: true
+  - name: sysfs
+    image: linuxkit/sysfs:6c1d06f28ddd9681799d3950cddf044b930b221c
+  - name: binfmt
+    image: &quot;linuxkit/binfmt:c7e69ebd918a237dd086a5c58dd888df772746bd&quot;
+    binds:
+     - /proc/sys/fs/binfmt_misc:/binfmt_misc
+    readonly: true
+  - name: format
+    image: &quot;linuxkit/format:53748000acf515549d398e6ae68545c26c0f3a2e&quot;
+    binds:
+     - /dev:/dev
+    capabilities:
+     - CAP_SYS_ADMIN
+     - CAP_MKNOD
+  - name: mount
+    image: &quot;linuxkit/mount:d2669e7c8ddda99fa0618a414d44261eba6e299a&quot;
+    binds:
+     - /dev:/dev
+     - /var:/var:rshared,rbind
+    capabilities:
+     - CAP_SYS_ADMIN
+    rootfsPropagation: shared
+    command: [&quot;/mount.sh&quot;, &quot;/var/lib/docker&quot;]
+services:
+  - name: rngd
+    image: &quot;linuxkit/rngd:c42fd499690b2cb6e4e6cb99e41dfafca1cf5b14&quot;
+    capabilities:
+     - CAP_SYS_ADMIN
+    oomScoreAdj: -800
+    readonly: true
+  - name: dhcpcd
+    image: &quot;linuxkit/dhcpcd:57a8ef29d3a910645b2b24c124f9ce9ef53ce703&quot;
+    binds:
+     - /var:/var
+     - /tmp/etc:/etc
+    capabilities:
+     - CAP_NET_ADMIN
+     - CAP_NET_BIND_SERVICE
+     - CAP_NET_RAW
+    net: host
+    oomScoreAdj: -800
+  - name: ntpd
+    image: &quot;linuxkit/openntpd:a570316d7fc49ca1daa29bd945499f4963d227af&quot;
+    capabilities:
+      - CAP_SYS_TIME
+      - CAP_SYS_NICE
+      - CAP_SYS_CHROOT
+      - CAP_SETUID
+      - CAP_SETGID
+    net: host
+  - name: docker
+    image: &quot;linuxkit/docker-ce:741bf21513328f674e0cdcaa55492b0b75974e08&quot;
+    capabilities:
+     - all
+    net: host
+    mounts:
+     - type: cgroup
+       options: [&quot;rw&quot;,&quot;nosuid&quot;,&quot;noexec&quot;,&quot;nodev&quot;,&quot;relatime&quot;]
+    binds:
+     - /var/lib/docker:/var/lib/docker
+     - /lib/modules:/lib/modules
+  - name: sshd
+    image: &quot;linuxkit/sshd:e108d208adf692c8a0954f602743e0eec445364e&quot;
+    capabilities:
+    - all
+    net: host
+    pid: host
+    binds:
+      - /root/.ssh:/root/.ssh
+      - /etc/resolv.conf:/etc/resolv.conf
+  - name: test-docker-bench
+    image: &quot;linuxkit/test-docker-bench:2f941429d874c5dcf05e38005affb4f10192e1a8&quot;
+    ipc: host
+    pid: host
+    net: host
+    binds:
+    - /run:/var/run
+    capabilities:
+    - all
+files:
+  - path: etc/docker/daemon.json
+    contents: &#39;{&quot;debug&quot;: true}&#39;
+  - path: root/.ssh/authorized_keys
+    contents: &#39;SSH_KEY&#39;
+trust:
+  image:
+    - linuxkit/kernel
+    - linuxkit/binfmt
+    - linuxkit/rngd
+outputs:
+  - format: kernel+initrd
+  - format: iso-bios
+</code></pre>
+<blockquote>
+<p><code>P.S.</code>請修改<code>SSH_KEY</code>內容為你的系統 ssh public key。</p>
+</blockquote>
+<p>這邊說明幾個 YAML 格式意義：</p>
+<ul>
+<li><strong>kernel</strong>: 指定 Docker 映像檔的核心版本，會包含一個 Linux 核心與檔案系統的 tar 檔，會將核心建構在<code>/kernel</code>目錄中。</li>
+<li><strong>init</strong>: 是一個 Docker Container 的 init 行程基礎，裡面包含<code>init</code>、<code>containerd</code>、<code>runC</code>與其他等工具。</li>
+<li><strong>onboot</strong>: 指定要建構的系統層級工具，會依據定義順序來執行，該類型如: dhcpd 與 ntpd 等。</li>
+<li><strong>services</strong>: 指定要建構服務，通常會是系統開啟後執行，如 ngnix、apache2。</li>
+<li><strong>files</strong>:要複製到該 Linux 系統映像檔中的檔案。</li>
+<li><strong>outputs</strong>:輸出的映像檔格式。</li>
+</ul>
+<blockquote>
+<p>更多 YAML 格式說明可以參考官方 <a href="https://github.com/linuxkit/linuxkit/blob/master/docs/yaml.md" target="_blank" rel="noopener">LinuxKit YAML</a>。目前 LinuxKit 的映像檔來源可以參考 <a href="https://hub.docker.com/u/linuxkit/" target="_blank" rel="noopener">Docker Hub</a></p>
+</blockquote>
+<p>撰寫完後，就可以透過 Moby 工具進行建構 Linux 映像檔了：</p>
+<pre><code class="sh">$ moby build docker-sshd.yml
+Extract kernel image: linuxkit/kernel:4.9.x
+Pull image: linuxkit/kernel:4.9.x
+...
+Create outputs:
+  docker-sshd-kernel docker-sshd-initrd.img docker-sshd-cmdline
+  docker-sshd.iso
+</code></pre>
+<p>完成後會看到以下幾個檔案：</p>
+<ul>
+<li>docker-sshd-kernel: 為 RAW Kernel 映像檔.</li>
+<li>docker-sshd-initrd.img: 為初始化 RAW Disk 檔案.</li>
+<li>docker-sshd-cmdline: Command line options 檔案.</li>
+<li>docker-sshd.iso: Docker SSHD ISO 格式映像檔.</li>
+</ul>
+<h3 id="測試映像檔"><a href="#測試映像檔" class="headerlink" title="測試映像檔"></a>測試映像檔</h3><p>當完成建構映像檔後，就可以透過一些工具來進行測試，這邊採用 <a href="https://github.com/mist64/xhyve" target="_blank" rel="noopener">xhyve</a> 來執行實例，首先透過 Git 取得 xhyve repos，並建構與安裝：</p>
+<pre><code class="sh">$ git clone https://github.com/mist64/xhyve
+$ cd xhyve
+$ make &amp;&amp; cp build/xhyve /usr/local/bin/
+$ xhyve
+Usage: xhyve [-behuwxMACHPWY] [-c vcpus] [-g &lt;gdb port&gt;] [-l &lt;lpc&gt;]
+             [-m mem] [-p vcpu:hostcpu] [-s &lt;pci&gt;] [-U uuid] -f &lt;fw&gt;
+</code></pre>
+<blockquote>
+<p>xhyve 是 FreeBSD 虛擬化技術 bhyve 的 OS X 版本，是以  <a href="https://developer.apple.com/library/mac/documentation/DriversKernelHardware/Reference/Hypervisor/index.html" target="_blank" rel="noopener">Hypervisor.framework</a> 為基底的上層工具，這是除了 VirtualBox 與 VMwar 的另外選擇，並且該工具非常的輕巧，只有幾 KB 的容量。</p>
+</blockquote>
+<p>接著撰寫 xhyve 腳本來啟動映像檔：</p>
+<pre><code class="sh">#!/bin/sh
+
+KERNEL=&quot;docker-sshd-kernel&quot;
+INITRD=&quot;docker-sshd-initrd.img&quot;
+CMDLINE=&quot;console=ttyS0 console=tty0 page_poison=1&quot;
+
+MEM=&quot;-m 1G&quot;
+PCI_DEV=&quot;-s 0:0,hostbridge -s 31,lpc&quot;
+LPC_DEV=&quot;-l com1,stdio&quot;
+ACPI=&quot;-A&quot;
+#SMP=&quot;-c 2&quot;
+
+# sudo if you want networking enabled
+NET=&quot;-s 2:0,virtio-net&quot;
+
+xhyve $ACPI $MEM $SMP $PCI_DEV $LPC_DEV $NET -f kexec,$KERNEL,$INITRD,&quot;$CMDLINE&quot;
+</code></pre>
+<blockquote>
+<p>修改<code>KERNEL</code>與<code>INITRD</code>為 docker-sshd 的映像檔。</p>
+</blockquote>
+<p>完成後就可以進行啟動測試：</p>
+<pre><code>$ chmod u+x run.sh
+$ sudo ./run.sh
+Welcome to LinuxKit
+
+                        ##         .
+                  ## ## ##        ==
+               ## ## ## ## ##    ===
+           /&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;\___/ ===
+      ~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
+           \______ o           __/
+             \    \         __/
+              \____\_______/
+...
+/ # ls
+bin         etc         lib         root        srv         usr
+containers  home        media       run         sys         var
+dev         init        proc        sbin        tmp
+/ # ip
+...
+4: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    inet 192.168.64.4/24 brd 192.168.64.255 scope global eth0
+       valid_lft forever preferred_lft forever
+14: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN
+    inet 172.17.0.1/16 scope global docker0
+       valid_lft forever preferred_lft forever
+</code></pre><h3 id="驗證映像檔服務"><a href="#驗證映像檔服務" class="headerlink" title="驗證映像檔服務"></a>驗證映像檔服務</h3><p>當看到上述結果後，表示作業系統開啟無誤，這時候我們要測試系統服務是否正常，首先透過 SSH 來進行測試，在剛剛新增的 ssh public key 主機上執行以下：</p>
+<pre><code>$ ssh root@192.168.64.4
+moby-aa16c789d03b:~# uname -r
+4.9.25-linuxkit
+
+moby-aa16c789d03b:~# exit
+</code></pre><p>查看 Docker 是否啟動：</p>
+<pre><code>moby-aa16c789d03b:~# netstat -xp
+Active UNIX domain sockets (w/o servers)
+Proto RefCnt Flags       Type       State         I-Node PID/Program name    Path
+unix  2      [ ]         DGRAM                     33822 606/dhcpcd
+unix  3      [ ]         STREAM     CONNECTED      33965 748/ntpd: dns engin
+unix  3      [ ]         STREAM     CONNECTED      33960 747/ntpd: ntp engin
+unix  3      [ ]         STREAM     CONNECTED      33964 747/ntpd: ntp engin
+unix  3      [ ]         STREAM     CONNECTED      33959 642/ntpd
+unix  3      [ ]         STREAM     CONNECTED      34141 739/dockerd
+unix  3      [ ]         STREAM     CONNECTED      34142 751/docker-containe /var/run/docker/libcontainerd/docker-containerd.sock
+</code></pre><p>最後關閉虛擬機可以透過以下指令完成：</p>
+<pre><code>moby-aa16c789d03b:~# halt
+Terminated
+</code></pre>
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/05/10/container/harbor-install/" data-toggle="tooltip" data-placement="top" title="Enterprise 的 Docker registry 平台 Harbor">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/04/10/tensorflow/intro/" data-toggle="tooltip" data-placement="top" title="TensorFlow 基本使用與分散式概念">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#建構-Moby-工具"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">建構 Moby 工具</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#建立-Linux-映像檔"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">建立 Linux 映像檔</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#測試映像檔"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">測試映像檔</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#驗證映像檔服務"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">驗證映像檔服務</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                          <a class="tag" href="/tags/#Moby" title="Moby">Moby</a>
+                        
+                          <a class="tag" href="/tags/#Microkernel" title="Microkernel">Microkernel</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2017/04/23/container/linuxkit/";
+    var disqus_url = "https://readailib.github.io/2017/04/23/container/linuxkit/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

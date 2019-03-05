@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Prometheus 高可靠實現方式 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2018/07/01/devops/prometheus-ha/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                            
+                              <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                            
+                              <a class="tag" href="/tags/#CNCF" title="CNCF">CNCF</a>
+                            
+                              <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                            
+                        </div>
+                        <h1>Prometheus 高可靠實現方式</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2018-07-01
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>前面幾篇提到了 Prometheus 儲存系統與 Federation 功能，其中在儲存系統可以得知 Local on-disk 方式雖然能夠帶來很好的效能，但是卻也存在著單點故障的問題，並且限制了 Prometehsu 的可擴展性，引發資料的持久等問題，也因此 Prometheus 提供了遠端儲存(Remote storage)的特性來解決擴展性問題。</p>
+<p>而除了儲存問題外，另一方面就是要考量單一 Prometheus 在大規模環境下的採集樣本效能與乘載量(所能夠處理的時間序列資料)，因此這時候可以利用 Federation 來將不同監測任務劃分到不同實例當中，以解決單台 Prometheus 無法有效處理的狀況。</p>
+<p>而本節主要探討各種 Prometheus 的高可靠(High Availability)架構。</p>
+<blockquote class="colorquote info"><p>這邊不探討 Alert Manager 如何實現高可靠性架構。</p>
+</blockquote>
+<h2 id="服務的高可靠性架構-最基本的-HA"><a href="#服務的高可靠性架構-最基本的-HA" class="headerlink" title="服務的高可靠性架構(最基本的 HA)"></a>服務的高可靠性架構(最基本的 HA)</h2><p>從前面介紹可以得知 Promehteus 是以 Pull-based 進行設計，因此收集時間序列資料(Mtertics)都是透過 Prometheus 本身主動發起，而為了保證 Prometheus 服務能夠正常運作，這邊只需要建立多台 Prometheus 節點來收集同樣的 Metrics(同樣的 Exporter target)即可。</p>
+<p><img src="https://i.imgur.com/ryuQexH.png" alt></p>
+<p>這種做法雖然能夠保證服務的高可靠，但是並無法解決不同 Prometheus Server 之間的資料<code>一致性</code>問題，也無法讓取得的資料進行<code>長時間儲存</code>，且當規模大到單一 Prometheus 無法負荷時，將延伸出效能瓶頸問題，因此這種架構只適合在小規模叢集進行監測，且 Prometheus Server 處於的環境比較不嚴苛，也不會頻繁發生遷移狀況與儲存長週期的資料(Long-term store)。</p>
+<p>上述總結：</p>
+<ul>
+<li><strong>Pros</strong>:<ul>
+<li>服務能夠提供可靠性</li>
+<li>適合小規模監測、只需要短期資料儲存(5ms)、不用經常遷移節點</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:<ul>
+<li>無法動態擴展</li>
+<li>資料會有不一致問題</li>
+<li>資料無法長時間儲存</li>
+<li>不適合在頻繁遷移的狀況</li>
+<li>當乘載量過大時，單一 Prometheus Server 會無法負荷</li>
+</ul>
+</li>
+</ul>
+<h2 id="服務高可靠性結合遠端儲存-基本-HA-Remote-Storage"><a href="#服務高可靠性結合遠端儲存-基本-HA-Remote-Storage" class="headerlink" title="服務高可靠性結合遠端儲存(基本 HA + Remote Storage)"></a>服務高可靠性結合遠端儲存(基本 HA + Remote Storage)</h2><p>這種架構即在基本 HA 上加入遠端儲存功能，讓 Prometheus Server 的讀寫來至第三方儲存系統。</p>
+<p><img src="https://image.ibb.co/iNkteo/prometheus_remote_ha_storage.png" alt></p>
+<p>該架構解決了資料持久性儲存問題，且當 Prometheus Server 發生故障或者當機時，重新啟動能夠快速的恢復資料，同時 Prometheus Server 能夠更好睇進行遷移，但是這只適合在較小規模的監測使用。</p>
+<p>上述總結：</p>
+<ul>
+<li><strong>Pros</strong>:<ul>
+<li>服務能夠提供可靠性</li>
+<li>適合小規模監測</li>
+<li>資料能夠被持久性保存在第三方儲存系統</li>
+<li>Prometheus Server 能夠遷移</li>
+<li>能夠達到資料復原</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:<ul>
+<li>不適合大規模監測</li>
+<li>當乘載量過大時，單一 Prometheus Server 會無法負荷</li>
+</ul>
+</li>
+</ul>
+<h2 id="服務高可靠性結合遠端儲存與聯邦-基本-HA-Remote-Storage-Federation"><a href="#服務高可靠性結合遠端儲存與聯邦-基本-HA-Remote-Storage-Federation" class="headerlink" title="服務高可靠性結合遠端儲存與聯邦(基本 HA + Remote Storage + Federation)"></a>服務高可靠性結合遠端儲存與聯邦(基本 HA + Remote Storage + Federation)</h2><p>這種架構主要是解決單一 Promethes Server 無法處理大量資料收集任務問題，並且加強 Prometheus 的擴展性，透過將不同收集任務劃分到不同 Prometheus 實例上。</p>
+<p><img src="https://i.imgur.com/JAwV0cH.png" alt></p>
+<p>該架構通常有兩種使用場景：</p>
+<ul>
+<li><p><strong>單一資料中心，但是有大量的收集任務</strong>：這種場景下 Prometheus Server 可能會發生效能上瓶頸，主要是單一 Prometheus Server 要乘載大量的資料收集任務，這時候就能夠透過 Federation 來將不同類型的任務分到不同的子 Prometheus Server 上，再由最上層進行聚合資料。</p>
+</li>
+<li><p><strong>多資料中心</strong>：在多資料中心下，這種架構也能夠適用，當不同資料中心的 Exporter 無法讓最上層的 Prometheus 去拉取資料時，就能透過 Federation 來進行分層處理，在每個資料中心建置一組收集該資料中心的子 Prometheus Server，再由最上層的 Prometheus 來進行抓取，並且也能夠依據每個收集任務的乘載量來部署與劃分層級，但是這需要確保上下層的 Prometheus Server 彼此能夠互相溝通。</p>
+</li>
+</ul>
+<p>上述總結：</p>
+<ul>
+<li><strong>Pros</strong>:<ul>
+<li>服務能夠提供可靠性</li>
+<li>資料能夠被持久性保存在第三方儲存系統</li>
+<li>Prometheus Server 能夠遷移</li>
+<li>能夠達到資料復原</li>
+<li>能夠依據不同任務進行層級劃分</li>
+<li>適合不同規模監測</li>
+<li>能夠很好的擴展 Prometheus Server</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:<ul>
+<li>部署架構複雜</li>
+<li>維護困難性增加</li>
+<li>在 Kubernetes 上部署不易</li>
+</ul>
+</li>
+</ul>
+<h2 id="單一收集任務的實例-Scrape-Target-過多問題"><a href="#單一收集任務的實例-Scrape-Target-過多問題" class="headerlink" title="單一收集任務的實例(Scrape Target)過多問題"></a>單一收集任務的實例(Scrape Target)過多問題</h2><p>這問題可能發生在單個 Job 設定太多 Target 數，這時候透過 Federation 來區分可能也無法解決問題，這種情況下只能透過在實例(Instance)級別進行功能劃分。這種做法是將不同實例的資料收集劃分到不同 Prometheus Server 實例，再透過 <code>Relabel</code> 設定來確保當前的 Prometheus Server 只收集當前收集任務的一部分實例監測資料。</p>
+<p>一個簡單範例組態檔：</p>
+<pre><code class="yaml=">global:
+  external_labels:
+    slave: 1  # This is the 2nd slave. This prevents clashes between slaves.
+scrape_configs:
+  - job_name: some_job
+    # Add usual service discovery here, such as static_configs
+    relabel_configs:
+    - source_labels: [__address__]
+      modulus:       4    # 4 slaves
+      target_label:  __tmp_hash
+      action:        hashmod
+    - source_labels: [__tmp_hash]
+      regex:         ^1$  # This is the 2nd slave
+      action:        keep
+</code></pre>
+<h2 id="Refers"><a href="#Refers" class="headerlink" title="Refers"></a>Refers</h2><ul>
+<li><a href="https://prometheus.io/docs/introduction/faq/#can-prometheus-be-made-highly-available" target="_blank" rel="noopener">https://prometheus.io/docs/introduction/faq/#can-prometheus-be-made-highly-available</a></li>
+<li><a href="https://github.com/coreos/prometheus-operator/blob/master/Documentation/high-availability.md" target="_blank" rel="noopener">https://github.com/coreos/prometheus-operator/blob/master/Documentation/high-availability.md</a></li>
+<li><a href="https://github.com/coreos/prometheus-operator" target="_blank" rel="noopener">https://github.com/coreos/prometheus-operator</a></li>
+<li><a href="https://coreos.com/operators/prometheus/docs/latest/high-availability.html" target="_blank" rel="noopener">https://coreos.com/operators/prometheus/docs/latest/high-availability.html</a></li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/07/09/kubernetes/deploy/manual-v1.11/" data-toggle="tooltip" data-placement="top" title="Kubernetes v1.11.x HA 全手動苦工安裝教學(TL;DR)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/06/29/devops/prometheus-federation/" data-toggle="tooltip" data-placement="top" title="了解 Prometheus Federation 功能">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#服務的高可靠性架構-最基本的-HA"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">服務的高可靠性架構(最基本的 HA)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#服務高可靠性結合遠端儲存-基本-HA-Remote-Storage"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">服務高可靠性結合遠端儲存(基本 HA + Remote Storage)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#服務高可靠性結合遠端儲存與聯邦-基本-HA-Remote-Storage-Federation"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">服務高可靠性結合遠端儲存與聯邦(基本 HA + Remote Storage + Federation)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#單一收集任務的實例-Scrape-Target-過多問題"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">單一收集任務的實例(Scrape Target)過多問題</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Refers"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Refers</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                        
+                          <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                        
+                          <a class="tag" href="/tags/#CNCF" title="CNCF">CNCF</a>
+                        
+                          <a class="tag" href="/tags/#Prometheus" title="Prometheus">Prometheus</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2018/07/01/devops/prometheus-ha/";
+    var disqus_url = "https://readailib.github.io/2018/07/01/devops/prometheus-ha/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

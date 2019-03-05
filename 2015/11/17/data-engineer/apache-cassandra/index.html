@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Apache Cassandra 分散式資料庫 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2015/11/17/data-engineer/apache-cassandra/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                            
+                              <a class="tag" href="/tags/#Database" title="Database">Database</a>
+                            
+                              <a class="tag" href="/tags/#NoSQL" title="NoSQL">NoSQL</a>
+                            
+                        </div>
+                        <h1>Apache Cassandra 分散式資料庫</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2015-11-17
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Cassandra 是最初由 Facebook 開發，之後貢獻給 Apache 基金會維護的分散式 NoSQL 資料庫系統，一般被認為 Amazon Dyname 與 Google BigTable 的結合體，主要是分散性像 Dynamo，然而資料模型卻如 BigTable。目前有多家公司採用，可運行上千台節點來提供超過 200 TB 的資料。</p>
+<p>Cassandra 擁有幾個特點，也因為這些特點讓許多人選擇使用該資料庫，以下幾個項目簡單列出其特點：</p>
+<ul>
+<li>完全去中心化，且不是主從架構的備份</li>
+<li>統一類型的節點</li>
+<li>以 P2P 協定串連起網路，清除 SPOF（Single Point Of Failure）問題</li>
+<li>高擴展性，新增與刪除節點容易</li>
+<li>可呼叫的一致性，並支援強一致性與弱一致性</li>
+<li>支援跨區域的叢集架構</li>
+<li>每個區域儲存一份完整資料，來提供存取局部性、容錯與災難復原</li>
+<li><strong>寫入效能理論上比讀取好（但近期有證實現在讀取也很不錯），適合串流資料儲存</strong></li>
+<li>比 HBase 的隨機存取效能要好上許多，但不擅長區間掃描</li>
+<li>可作為 HBase 的即時查詢快取。</li>
+</ul>
+<a id="more"></a>
+<p><img src="/images/spark/cassandra_arch.png" alt></p>
+<p>若要瞭解更多 Cassandra 可以閱讀 <a href="http://wiki.apache.org/cassandra/GettingStarted" target="_blank" rel="noopener">Cassandra Wiki
+</a>。</p>
+<h2 id="部署多節點叢集"><a href="#部署多節點叢集" class="headerlink" title="部署多節點叢集"></a>部署多節點叢集</h2><p>本節將安裝一個簡單的 Cassandra 叢集，來提供 NoSQL 資料庫以存取資料，以下為節點配置：</p>
+<table>
+<thead>
+<tr>
+<th>IP Address</th>
+<th>HostName</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.17.0.2</td>
+<td>cassandra-1</td>
+</tr>
+<tr>
+<td>172.17.0.3</td>
+<td>cassandra-2</td>
+</tr>
+<tr>
+<td>172.17.0.4</td>
+<td>cassandra-3</td>
+</tr>
+</tbody>
+</table>
+<p>首先需在每個節點安裝 Java，這邊採用 Oracle 的 Java 來進行安裝：</p>
+<pre><code>$ sudo apt-get install -y software-properties-common
+$ sudo add-apt-repository -y ppa:webupd8team/java
+$ sudo apt-get update
+$ echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+$ echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+$ sudo apt-get -y install oracle-java7-installer
+</code></pre><blockquote>
+<p>若要安裝<code>java8</code>請修改成<code>oracle-java8-installer</code>。</p>
+</blockquote>
+<p>接著在各節點安裝 Cassandra 套件，這邊採用<code>apt-get</code>安裝，首先加入 Repository：</p>
+<pre><code class="sh">$ echo &quot;deb http://www.apache.org/dist/cassandra/debian 22x main&quot; | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list  
+</code></pre>
+<blockquote>
+<p>這邊安裝<code>2.2.x</code>版本，若要其他版本則修改<code>22x</code>，如改為<code>21x</code>。</p>
+</blockquote>
+<p>為了避免軟體套件更新軟體時有簽證警告，需加入 Apache 基金會與套件資源庫相關的三個公有金鑰：</p>
+<pre><code class="sh">$ gpg --keyserver pgp.mit.edu --recv-keys F758CE318D77295D
+$ gpg --export --armor F758CE318D77295D | sudo apt-key add -
+$ gpg --keyserver pgp.mit.edu --recv-keys 2B5C1B00
+$ gpg --export --armor 2B5C1B00 | sudo apt-key add -
+$ gpg --keyserver pgp.mit.edu --recv-keys 0353B12C
+$ gpg --export --armor 0353B12C | sudo apt-key add -
+</code></pre>
+<p>完成後更新 apt-get Repository：</p>
+<pre><code class="sh">$ sudo apt-get update
+</code></pre>
+<p>安裝 Cassandra NoSQL 於每個節點上：</p>
+<pre><code>$ sudo apt-get install -y cassandra
+</code></pre><p>完成後，我們必須開始配置各節點來組成一個叢集，先把每個節點的 Cassandra 服務關閉：</p>
+<pre><code class="sh">$ sudo service cassandra stop
+</code></pre>
+<p>關閉後，在每個節點編輯<code>/etc/cassandra/cassandra.yaml</code>檔案，並修改一下內容：</p>
+<pre><code class="sh">cluster_name: &#39;examples&#39;  
+num_tokens: 256  
+seed_provider:  
+    - class_name: org.apache.cassandra.locator.SimpleSeedProvider
+      parameters:
+          - seeds: &quot;172.17.0.2, 172.17.0.3, 172.17.0.4&quot;
+
+listen_address: 172.17.0.2  
+broadcast_address: 172.17.0.2
+rpc_address: 0.0.0.0  
+broadcast_rpc_address: 172.17.0.2
+</code></pre>
+<blockquote>
+<p>P.S. 這邊要注意不同節點會有不同，如<code>listen_address</code>與<code>seeds</code>等。</p>
+</blockquote>
+<p>都完成設定檔後，就可以重啟每台的 Cassandra 服務：</p>
+<pre><code class="sh">$ sudo service cassandra restart
+</code></pre>
+<p>當確認所有節點重新啟動後，在<code>其中一個節點</code>建立 keyspaces 來做 replication：</p>
+<pre><code class="sh">$ cqlsh
+cqlsh&gt; create keyspace Spark_smack WITH REPLICATION = { &#39;class&#39; : &#39;SimpleStrategy&#39;, &#39;replication_factor&#39; : &#39;3&#39; };  
+exit
+</code></pre>
+<blockquote>
+<p><code>Spark_smack</code> 該值是可以依個人名稱修改。</p>
+</blockquote>
+<p>建立完成後，可以使用<code>nodetool</code>指令來檢查是否成功：</p>
+<pre><code class="sh">$ nodetool status spark_smack
+
+Datacenter: datacenter1
+=======================
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load       Tokens       Owns (effective)  Host ID                               Rack
+UN  172.17.0.3  255.68 KB  256          100.0%            9c9eb117-f787-47bd-825f-3daf49eba489  rack1
+UN  172.17.0.2  252.03 KB  256          100.0%            7a4adb77-42d1-402f-b57b-4a40ad013e2c  rack1
+UN  172.17.0.4  127.2 KB   256          100.0%            5823fd78-45f2-4328-9470-f1053bb3fc3b  rack1
+</code></pre>
+<h2 id="驗證系統"><a href="#驗證系統" class="headerlink" title="驗證系統"></a>驗證系統</h2><p>我們透過 Client 程式來連到<code>cassandra-1</code>節點來驗證叢集是否建立成功：</p>
+<pre><code class="sh">$ cqlsh
+cqlsh&gt; use &lt;keyspace name&gt;;
+</code></pre>
+<blockquote>
+<p>這邊<code>&lt;keyspace name&gt;</code>範例為 spark_smack。</p>
+</blockquote>
+<p>然後建立一個資料表：</p>
+<pre><code class="sql">CREATE TABLE emp(  
+   emp_id int PRIMARY KEY,
+   emp_name text,
+   emp_city text,
+   emp_sal varint,
+   emp_phone varint
+   );
+</code></pre>
+<p>接著插入一筆資料到資料表：</p>
+<pre><code class="sql">INSERT INTO emp (emp_id, emp_name, emp_city )  
+  VALUES(1, &#39;Kyle&#39;, &#39;Taichung&#39; );
+</code></pre>
+<p>若都沒有任何錯誤的話，現在連接到其他節點來檢查是否有同步資料：</p>
+<pre><code class="sh">$ cqlsh
+cqlsh&gt; use spark_smack;
+cqlsh&gt; select * from emp;
+
+ emp_id | emp_city | emp_name | emp_phone | emp_sal
+--------+----------+----------+-----------+---------
+      1 | Taichung |     Kyle |      null |    null
+
+</code></pre>
+<blockquote>
+<p>P.S 若發生如以下錯誤，請依照指示解決：</p>
+<pre><code class="sh">Connection error: (&#39;Unable to connect to any servers&#39;, {&#39;127.0.0.1&#39;: error(111, &quot;Tried connecting to [(&#39;127.0.0.1&#39;, 9042)]. Last error: Connection refused&quot;)})
+</code></pre>
+</blockquote>
+<blockquote>
+<p>首先檢查設定檔<code>/etc/cassandra/cassandra.yaml</code>裡面的<code>rpc_address</code>是否為<code>0.0.0.0</code>。</p>
+</blockquote>
+<p>最後，若要復原與備份可以閱讀 <a href="http://blog.powerupcloud.com/2015/09/13/cassandra-backup-and-recovery/" target="_blank" rel="noopener">Cassandra Backup and Recovery</a>。</p>
+<h2 id="參考資源"><a href="#參考資源" class="headerlink" title="參考資源"></a>參考資源</h2><ul>
+<li><a href="https://www.byvoid.com/blog/cassandra-intro" target="_blank" rel="noopener">Cassandra简介</a></li>
+<li><a href="http://blog.powerupcloud.com/2016/01/10/install-and-configure-a-3-node-cassandra-cluster-on-ubuntu-14-04/" target="_blank" rel="noopener">Install and Configure a 3 node Cassandra Cluster on Ubuntu 14.04</a></li>
+<li><a href="http://www.infoq.com/cn/articles/cassandra-mythology" target="_blank" rel="noopener">關於 Cassandra 的錯誤觀點</a></li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/11/19/ceph/ceph-intro/" data-toggle="tooltip" data-placement="top" title="Ceph 分散式儲存系統介紹">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/10/kubernetes/k8s-intro/" data-toggle="tooltip" data-placement="top" title="Kuberentes 是什麼？">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署多節點叢集"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">部署多節點叢集</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#驗證系統"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">驗證系統</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#參考資源"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">參考資源</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                        
+                          <a class="tag" href="/tags/#Database" title="Database">Database</a>
+                        
+                          <a class="tag" href="/tags/#NoSQL" title="NoSQL">NoSQL</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2015/11/17/data-engineer/apache-cassandra/";
+    var disqus_url = "https://readailib.github.io/2015/11/17/data-engineer/apache-cassandra/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

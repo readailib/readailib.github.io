@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Kubernetes v1.6.x 全手動苦工安裝教學 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2016/12/16/kubernetes/deploy/manual-v1.6/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/images/kube/bg.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                        </div>
+                        <h1>Kubernetes v1.6.x 全手動苦工安裝教學</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2016-12-16
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Kubernetes 提供了許多雲端平台與作業系統的安裝方式，本章將以<code>全手動安裝方式</code>來部署，主要是學習與了解 Kubernetes 建置流程。若想要瞭解更多平台的部署可以參考 <a href="https://kubernetes.io/docs/getting-started-guides/" target="_blank" rel="noopener">Picking the Right Solution</a>來選擇自己最喜歡的方式。</p>
+<p>本次安裝版本為：</p>
+<ul>
+<li>Kubernetes v1.6.4</li>
+<li>Etcd v3.1.6</li>
+<li>Flannel v0.7.1</li>
+<li>Docker v17.05.0-ce</li>
+</ul>
+<a id="more"></a>
+<h2 id="預先準備資訊"><a href="#預先準備資訊" class="headerlink" title="預先準備資訊"></a>預先準備資訊</h2><p>本教學將以下列節點數與規格來進行部署 Kubernetes 叢集，作業系統可採用<code>Ubuntu 16.x</code>與<code>CentOS 7.x</code>：</p>
+<table>
+<thead>
+<tr>
+<th>IP Address</th>
+<th>Role</th>
+<th>CPU</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.16.35.12</td>
+<td>master</td>
+<td>1</td>
+<td>2G</td>
+</tr>
+<tr>
+<td>172.16.35.10</td>
+<td>node1</td>
+<td>1</td>
+<td>2G</td>
+</tr>
+<tr>
+<td>172.16.35.11</td>
+<td>node2</td>
+<td>1</td>
+<td>2G</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>這邊 master 為主要控制節點，node 為應用程式工作節點。</p>
+</blockquote>
+<p>首先安裝前要確認以下幾項都已將準備完成：</p>
+<ul>
+<li>所有節點彼此網路互通，並且不需要 SSH 密碼即可登入。</li>
+<li>所有防火牆與 SELinux 已關閉。如 CentOS：</li>
+</ul>
+<pre><code class="sh">$ systemctl stop firewalld &amp;&amp; systemctl disable firewalld
+$ setenforce 0
+</code></pre>
+<ul>
+<li>所有節點需要設定<code>/etc/host</code>解析到所有主機。</li>
+<li>所有節點需要安裝<code>Docker</code>或<code>rtk</code>引擎。這邊採用<code>Docker</code>來當作容器引擎，安裝方式如下：</li>
+</ul>
+<pre><code class="sh">$ curl -fsSL &quot;https://get.docker.com/&quot; | sh
+</code></pre>
+<blockquote>
+<p>不管是在 <code>Ubuntu</code> 或 <code>CentOS</code> 都只需要執行該指令就會自動安裝最新版 Docker。<br>CentOS 安裝完成後，需要再執行以下指令：</p>
+<pre><code class="sh">$ systemctl enable docker &amp;&amp; systemctl start docker
+</code></pre>
+</blockquote>
+<h2 id="Etcd-安裝與設定"><a href="#Etcd-安裝與設定" class="headerlink" title="Etcd 安裝與設定"></a>Etcd 安裝與設定</h2><p>在開始安裝 Kubernetes 之前，需要先將一些必要系統建置完成，其中 Etcd 就是 Kubernetes 最為需要的一環，Kubernetes 會將部分資訊儲存於 Etcd 上，來提供給其他節點索取，以確保整個叢集的狀態。</p>
+<p>首先在<code>master</code>節點下載 Etcd，並解壓縮放到 /opt 底下與安裝：</p>
+<pre><code class="sh">$ cd /opt
+$ wget -qO- &quot;https://github.com/coreos/etcd/releases/download/v3.1.6/etcd-v3.1.6-linux-amd64.tar.gz&quot; | tar -zx
+$ mv etcd-v3.1.6-linux-amd64 etcd
+$ cd etcd/ &amp;&amp; ln etcd /usr/bin/ &amp;&amp; ln etcdctl /usr/bin/
+</code></pre>
+<p>完成後新建 Etcd Group 與 User，並建立 Etcd 設定檔目錄：</p>
+<pre><code class="sh">$ groupadd etcd
+$ useradd -c &quot;Etcd user&quot; -g etcd -s /sbin/nologin -r etcd
+$ mkdir /etc/etcd
+</code></pre>
+<p>新增<code>/etc/etcd/etcd.conf</code>檔案，加入以下內容：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /etc/etcd/etcd.conf
+ETCD_NAME=master
+ETCD_DATA_DIR=/var/lib/etcd
+ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.16.35.12:2380
+ETCD_INITIAL_CLUSTER=master=http://172.16.35.12:2380
+ETCD_INITIAL_CLUSTER_STATE=new
+ETCD_INITIAL_CLUSTER_TOKEN=etcd-k8s-cluster
+ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380
+ETCD_ADVERTISE_CLIENT_URLS=http://172.16.35.12:2379
+ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+ETCD_PROXY=off
+EOF
+</code></pre>
+<blockquote>
+<p>P.S. 若與該教學 IP 不同的話，請用自己 IP 取代<code>172.16.35.12</code>。</p>
+</blockquote>
+<p>新增<code>/lib/systemd/system/etcd.service</code>來管理 Etcd，並加入以下內容：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /lib/systemd/system/etcd.service
+[Unit]
+Description=Etcd Service
+After=network.target
+
+[Service]
+Environment=ETCD_DATA_DIR=/var/lib/etcd/default
+EnvironmentFile=-/etc/etcd/etcd.conf
+Type=notify
+User=etcd
+PermissionsStartOnly=true
+ExecStart=/usr/bin/etcd
+Restart=always
+RestartSec=10
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+EOF
+</code></pre>
+<p>建立 var 存放資訊，然後啟動 Etcd 服務:</p>
+<pre><code class="sh">$ mkdir -p /var/lib/etcd &amp;&amp; chown etcd:etcd -R /var/lib/etcd
+$ systemctl enable etcd.service &amp;&amp; systemctl start etcd.service
+</code></pre>
+<p>透過簡單指令驗證：</p>
+<pre><code class="sh">$ etcdctl cluster-health
+member 95b428c288413b46 is healthy: got healthy result from http://172.16.35.12:2379
+cluster is healthy
+</code></pre>
+<p>接著回到<code>master</code>節點，新增一個<code>/tmp/flannel-config.json</code>檔，並加入以下內容：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /tmp/flannel-config.json
+{ &quot;Network&quot;: &quot;10.244.0.0/16&quot;, &quot;SubnetLen&quot;: 24, &quot;Backend&quot;: { &quot;Type&quot;: &quot;vxlan&quot; } }
+EOF
+</code></pre>
+<p>然後將 Flannel 網路設定儲存到 etcd 中：</p>
+<pre><code class="sh">$ etcdctl --no-sync set /atomic.io/network/config &lt; /tmp/flannel-config.json
+$ etcdctl ls /atomic.io/network/
+/atomic.io/network/config
+</code></pre>
+<h2 id="Flannel-安裝與設定"><a href="#Flannel-安裝與設定" class="headerlink" title="Flannel 安裝與設定"></a>Flannel 安裝與設定</h2><p>Flannel 是 CoreOS 團隊針對 Kubernetes 設計的一個<code>覆蓋網絡(Overlay Network)</code>工具，其目的在於幫助每一個使用 Kuberentes 的主機擁有一個完整的子網路。</p>
+<p>首先在<code>所有</code>節點下載 Flannel，並執行以下步驟。首先解壓縮放到 /opt 底下與安裝：</p>
+<pre><code class="sh">$ cd /opt &amp;&amp; mkdir flannel
+$ wget -qO- &quot;https://github.com/coreos/flannel/releases/download/v0.7.1/flannel-v0.7.1-linux-amd64.tar.gz&quot; | tar -zxC flannel/
+$ cd flannel/ &amp;&amp; ln flanneld /usr/bin/ &amp;&amp; ln mk-docker-opts.sh /usr/bin/
+</code></pre>
+<p>建立 Docker Drop-in 目錄，並新增<code>flannel.conf</code>檔案：</p>
+<pre><code class="sh">$ mkdir -p /etc/systemd/system/docker.service.d
+$ cat &lt;&lt;EOF &gt; /etc/systemd/system/docker.service.d/flannel.conf
+[Service]
+EnvironmentFile=-/run/flannel/docker
+EOF
+</code></pre>
+<p>新增<code>/etc/default/flanneld</code>檔案，加入以下內容：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /etc/default/flanneld
+FLANNEL_ETCD_ENDPOINTS=&quot;http://172.16.35.12:2379&quot;
+FLANNEL_ETCD_PREFIX=&quot;/atomic.io/network&quot;
+FLANNEL_OPTIONS=&quot;--iface=enp0s8&quot;
+EOF
+</code></pre>
+<blockquote>
+<p><code>FLANNEL_ETCD_ENDPOINTS</code> 請修改成自己的 <code>master</code> IP。<br><code>FLANNEL_OPTIONS</code>可以依據需求加入，這邊主要指定 flannel 使用的網卡。</p>
+</blockquote>
+<p>新增<code>/lib/systemd/system/flanneld.service</code>來管理 Flannel：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /lib/systemd/system/flanneld.service
+[Unit]
+Description=Flanneld Service
+After=network-online.target
+Wants=network-online.target
+After=etcd.service
+Before=docker.service
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/default/flanneld
+ExecStart=/usr/bin/flanneld -etcd-endpoints=\${FLANNEL_ETCD_ENDPOINTS} -etcd-prefix=\${FLANNEL_ETCD_PREFIX} \${FLANNEL_OPTIONS}
+ExecStartPost=/usr/bin/mk-docker-opts.sh -d /run/flannel/docker
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=docker.service
+EOF
+</code></pre>
+<p>之後到<code>每台</code>節點啟動 Flannel:</p>
+<pre><code class="sh">$ systemctl enable flanneld.service &amp;&amp; systemctl start flanneld.service
+</code></pre>
+<p>完成後透過以下指令簡單驗證：</p>
+<pre><code class="sh">$ ip -4 addr show flannel.1
+
+5: flannel.1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1450 qdisc noqueue state UNKNOWN group default
+    inet 10.244.11.0/32 scope global flannel.1
+       valid_lft forever preferred_lft forever
+</code></pre>
+<p>確認有網路後，修改<code>/lib/systemd/system/docker.service</code>檔案以下內容：</p>
+<pre><code>ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
+ExecStart=/usr/bin/dockerd -H fd:// $DOCKER_OPTS
+</code></pre><blockquote>
+<p>若是 CentOS 7 則不需要加入 <code>-H fd://</code>。</p>
+</blockquote>
+<p>重新啟動 Docker 來使用 Flannel：</p>
+<pre><code class="sh">$ systemctl daemon-reload &amp;&amp; systemctl restart docker
+$ ip -4 a show docker0
+
+4: docker0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default
+    inet 10.244.11.1/24 scope global docker0
+       valid_lft forever preferred_lft forever
+</code></pre>
+<p>最後在任一台節點去 Ping 其他節點的 docker0 網路，若 Ping 的到表示部署沒問題。</p>
+<h2 id="Kubernetes-Master-安裝與設定"><a href="#Kubernetes-Master-安裝與設定" class="headerlink" title="Kubernetes Master 安裝與設定"></a>Kubernetes Master 安裝與設定</h2><p>Master 是 Kubernetes 的大總管，主要建置<code>API Server</code>、<code>Controller Manager Server</code>與<code>Scheduler</code>來元件管理所有 Node。首先加入取得 Packages 來源並安裝：</p>
+<pre><code class="sh">$ curl -s &quot;https://packages.cloud.google.com/apt/doc/apt-key.gpg&quot; | apt-key add -
+$ echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list
+$ apt-get update &amp;&amp; apt-get install -y kubectl kubelet kubernetes-cni
+</code></pre>
+<blockquote>
+<p>CentOS 7 則使用以下指令安裝：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+       https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+$ yum install -y kubelet kubectl kubernetes-cni
+</code></pre>
+</blockquote>
+<p>然後準備 OpenSSL 的設定檔資訊：</p>
+<pre><code class="sh">$ mkdir -p /etc/kubernetes/pki
+$ DIR=/etc/kubernetes/pki
+$ cat &lt;&lt;EOF &gt; ${DIR}/openssl.conf
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster.local
+IP.1 = 192.160.0.1
+IP.2 = 172.16.35.12
+EOF
+</code></pre>
+<blockquote>
+<p><code>IP.2</code> 請修改成自己的<code>master</code> IP。<br>細節請參考<a href="https://coreos.com/kubernetes/docs/latest/openssl.html" target="_blank" rel="noopener">Cluster TLS using OpenSSL</a>。</p>
+</blockquote>
+<p>建立 OpenSSL Keypairs 與 Certificate：</p>
+<pre><code class="sh">DIR=/etc/kubernetes/pki
+
+openssl genrsa -out ${DIR}/ca-key.pem 2048
+openssl req -x509 -new -nodes -key ${DIR}/ca-key.pem -days 1000 -out ${DIR}/ca.pem -subj &#39;/CN=kube-ca&#39;
+openssl genrsa -out ${DIR}/admin-key.pem 2048
+openssl req -new -key ${DIR}/admin-key.pem -out ${DIR}/admin.csr -subj &#39;/CN=kube-admin&#39;
+openssl x509 -req -in ${DIR}/admin.csr -CA ${DIR}/ca.pem -CAkey ${DIR}/ca-key.pem -CAcreateserial -out ${DIR}/admin.pem -days 1000
+openssl genrsa -out ${DIR}/apiserver-key.pem 2048
+openssl req -new -key ${DIR}/apiserver-key.pem -out ${DIR}/apiserver.csr -subj &#39;/CN=kube-apiserver&#39; -config ${DIR}/openssl.conf
+openssl x509 -req -in ${DIR}/apiserver.csr -CA ${DIR}/ca.pem -CAkey ${DIR}/ca-key.pem -CAcreateserial -out ${DIR}/apiserver.pem -days 1000 -extensions v3_req -extfile ${DIR}/openssl.conf
+</code></pre>
+<blockquote>
+<p>細節請參考 <a href="https://coreos.com/kubernetes/docs/latest/openssl.html" target="_blank" rel="noopener">Cluster TLS using OpenSSL</a>。</p>
+</blockquote>
+<p>接著下載 Kubernetes 相關檔案至<code>/etc/kubernetes</code>：</p>
+<pre><code class="sh">cd /etc/kubernetes/
+URL=&quot;https://kairen.github.io/files/manual/master&quot;
+wget ${URL}/kube-apiserver.conf -O manifests/kube-apiserver.yml
+wget ${URL}/kube-controller-manager.conf -O manifests/kube-controller-manager.yml
+wget ${URL}/kube-scheduler.conf -O manifests/kube-scheduler.yml
+wget ${URL}/admin.conf -O admin.conf
+wget ${URL}/kubelet.conf -O kubelet
+cat &lt;&lt;EOF &gt; /etc/kubernetes/user.csv
+p@ssw0rd,admin,admin
+EOF
+</code></pre>
+<blockquote>
+<p>若<code>IP</code>與教學設定不同的話，請記得修改<code>kube-apiserver.yml</code>、<code>kube-controller-manager.yml</code>、<code>kube-scheduler.yml</code>與<code>admin.yml</code>。</p>
+</blockquote>
+<p>新增<code>/lib/systemd/system/kubelet.service</code>來管理 kubelet：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /lib/systemd/system/kubelet.service
+[Unit]
+Description=Kubernetes Kubelet Server
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/var/lib/kubelet
+EnvironmentFile=-/etc/kubernetes/kubelet
+ExecStart=/usr/bin/kubelet \$KUBELET_ADDRESS \$KUBELET_POD_INFRA_CONTAINER \
+\$KUBELET_ARGS \$KUBE_NODE_LABEL \$KUBE_LOGTOSTDERR \
+\$KUBE_ALLOW_PRIV \$KUBELET_NETWORK_ARGS \
+\$KUBELET_DNS_ARGS
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+</code></pre>
+<blockquote>
+<p><code>/etc/systemd/system/kubelet.service</code>為<code>CentOS 7</code>使用的路徑。</p>
+</blockquote>
+<p>最後建立 var 存放資訊，然後啟動 kubelet 服務:</p>
+<pre><code class="sh">$ mkdir -p /var/lib/kubelet
+$ systemctl daemon-reload &amp;&amp; systemctl restart kubelet.service
+</code></pre>
+<p>完成後會需要一段時間來下載與啟動元件，可以利用該指令來監看：</p>
+<pre><code class="sh">$ watch -n 1 netstat -ntlp
+tcp   0  0 127.0.0.1:10248  0.0.0.0:*  LISTEN  20613/kubelet
+tcp   0  0 127.0.0.1:10251  0.0.0.0:*  LISTEN  19968/kube-schedule
+tcp   0  0 127.0.0.1:10252  0.0.0.0:*  LISTEN  20815/kube-controll
+tcp6  0  0 :::8080          :::*       LISTEN  20333/kube-apiserve
+</code></pre>
+<blockquote>
+<p>若看到以上已經被 binding 後，就可以透過瀏覽器存取 <a href="https://172.16.35.12:6443/" target="_blank" rel="noopener">API Service</a>，並輸入帳號<code>admin</code>與密碼<code>p@ssw0rd</code>。</p>
+</blockquote>
+<p>透過簡單指令驗證：</p>
+<pre><code class="sh">$ kubectl get node
+NAME      STATUS         AGE
+master   Ready,master   1m
+
+$ kubectl get po --all-namespaces
+NAMESPACE     NAME                              READY     STATUS    RESTARTS   AGE
+kube-system   kube-apiserver-master1            1/1       Running   0          3m
+kube-system   kube-controller-manager-master1   1/1       Running   0          2m
+kube-system   kube-scheduler-master1            1/1       Running   0          2m
+</code></pre>
+<h2 id="Kubernetes-Node-安裝與設定"><a href="#Kubernetes-Node-安裝與設定" class="headerlink" title="Kubernetes Node 安裝與設定"></a>Kubernetes Node 安裝與設定</h2><p>Node 是主要的工作節點，上面將運行許多容器應用。到所有<code>node</code>節點加入取得 Packages 來源，並安裝：</p>
+<pre><code class="sh">$ curl -s &quot;https://packages.cloud.google.com/apt/doc/apt-key.gpg&quot; | apt-key add -
+$ echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list
+$ apt-get update &amp;&amp; apt-get install -y kubelet kubernetes-cni
+</code></pre>
+<blockquote>
+<p>CentOS 7 則使用以下指令安裝：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+       https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+$ yum install -y kubelet kubernetes-cni
+</code></pre>
+</blockquote>
+<p>然後準備 OpenSSL 的設定檔資訊：</p>
+<pre><code class="sh">$ mkdir -p /etc/kubernetes/pki
+$ DIR=/etc/kubernetes/pki
+$ cat &lt;&lt;EOF &gt; ${DIR}/openssl.conf
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+IP.1=172.16.35.10
+DNS.1=node1
+EOF
+</code></pre>
+<blockquote>
+<p>P.S. 這邊<code>IP.1</code>與<code>DNS.1</code>需要隨機器不同設定。細節請參考 <a href="https://coreos.com/kubernetes/docs/latest/openssl.html" target="_blank" rel="noopener">Cluster TLS using OpenSSL</a>。</p>
+</blockquote>
+<p>將<code>master1</code>上的 OpenSSL key 複製到<code>/etc/kubernetes/pki</code>：</p>
+<pre><code class="sh">for file in ca-key.pem ca.pem admin.pem admin-key.pem; do
+  scp /etc/kubernetes/pki/${file} &lt;NODE&gt;:/etc/kubernetes/pki/
+done
+</code></pre>
+<blockquote>
+<p>P.S. 該操作在<code>master1</code>執行。並記得修改<code>&lt;NODE&gt;</code>為所有工作節點。</p>
+</blockquote>
+<p>建立 OpenSSL Keypairs 與 Certificate：</p>
+<pre><code class="sh">DIR=/etc/kubernetes/pki
+
+openssl genrsa -out ${DIR}/node-key.pem 2048
+openssl req -new -key ${DIR}/node-key.pem -out ${DIR}/node.csr -subj &#39;/CN=kube-node&#39; -config ${DIR}/openssl.conf
+openssl x509 -req -in ${DIR}/node.csr -CA ${DIR}/ca.pem -CAkey ${DIR}/ca-key.pem -CAcreateserial -out ${DIR}/node.pem -days 1000 -extensions v3_req -extfile ${DIR}/openssl.conf
+</code></pre>
+<blockquote>
+<p>細節請參考 <a href="https://coreos.com/kubernetes/docs/latest/openssl.html" target="_blank" rel="noopener">Cluster TLS using OpenSSL</a>。</p>
+</blockquote>
+<p>接著下載 Kubernetes 相關檔案至<code>/etc/kubernetes/</code>：</p>
+<pre><code class="sh">cd /etc/kubernetes/
+URL=&quot;https://kairen.github.io/files/manual/node&quot;
+wget ${URL}/kubelet-user.conf -O kubelet-user.conf
+wget ${URL}/admin.conf -O admin.conf
+wget ${URL}/kubelet.conf -O kubelet
+</code></pre>
+<blockquote>
+<p>若<code>IP</code>與教學設定不同的話，請記得修改<code>kubelet-user.conf</code>與<code>admin.conf</code>。</p>
+</blockquote>
+<p>新增<code>/lib/systemd/system/kubelet.service</code>來管理 kubelet：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; /lib/systemd/system/kubelet.service
+[Unit]
+Description=Kubernetes Kubelet Server
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/var/lib/kubelet
+EnvironmentFile=-/etc/kubernetes/kubelet
+ExecStart=/usr/bin/kubelet \$KUBELET_ADDRESS \$KUBELET_POD_INFRA_CONTAINER \
+\$KUBELET_ARGS \$KUBE_LOGTOSTDERR \
+\$KUBE_ALLOW_PRIV \$KUBELET_NETWORK_ARGS \
+\$KUBELET_DNS_ARGS
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+</code></pre>
+<blockquote>
+<p><code>/etc/systemd/system/kubelet.service</code>為<code>CentOS 7</code>使用的路徑。</p>
+</blockquote>
+<p>最後建立 var 存放資訊，然後啟動 kubelet 服務:</p>
+<pre><code class="sh">$ mkdir -p /var/lib/kubelet
+$ systemctl daemon-reload &amp;&amp; systemctl restart kubelet.service
+</code></pre>
+<p>當所有節點都完成後，回到<code>master</code>透過簡單指令驗證：</p>
+<pre><code class="sh">$ kubectl get node
+NAME      STATUS         AGE       VERSION
+master1   Ready,master   17m       v1.6.4
+node1     Ready          20s       v1.6.4
+node2     Ready          18s       v1.6.4
+</code></pre>
+<h2 id="Kubernetes-Addons-部署"><a href="#Kubernetes-Addons-部署" class="headerlink" title="Kubernetes Addons 部署"></a>Kubernetes Addons 部署</h2><p>當環境都建置完成後，就可以進行部署附加元件，首先到<code>master1</code>，並進入<code>/etc/kubernetes/</code>目錄下載 Addon 檔案：</p>
+<pre><code class="sh">cd /etc/kubernetes/ &amp;&amp; mkdir addon
+URL=&quot;https://kairen.github.io/files/manual/addon&quot;
+wget ${URL}/kube-proxy.conf -O addon/kube-proxy.yml
+wget ${URL}/kube-dns.conf -O addon/kube-dns.yml
+wget ${URL}/kube-dash.conf -O addon/kube-dash.yml
+wget ${URL}/kube-monitor.conf -O addon/kube-monitor.yml
+</code></pre>
+<blockquote>
+<p>若<code>IP</code>與教學設定不同的話，請記得修改<code>&lt;YOUR_MASTER_IP&gt;</code>。</p>
+<pre><code class="sh">$ sed -i &#39;s/172.16.35.12/&lt;YOUR_MASTER_IP&gt;/g&#39; addon/kube-monitor.yml
+$ sed -i &#39;s/172.16.35.12/&lt;YOUR_MASTER_IP&gt;/g&#39; addon/kube-proxy.yml
+</code></pre>
+</blockquote>
+<p>接著透過 kubectl 來指定檔案建立附加元件：</p>
+<pre><code class="sh">$ kubectl apply -f addon/
+</code></pre>
+<blockquote>
+<p>若想要刪除則將<code>apply</code>改成<code>delete</code>即可。</p>
+</blockquote>
+<p>透過以下指令來驗證部署是否有效：</p>
+<pre><code class="sh">$ kubectl get po -n kube-system
+NAME                                   READY     STATUS    RESTARTS   AGE
+heapster-v1.2.0-1753406648-wsb3z       1/1       Running   0          2m
+influxdb-grafana-42195489-vtmnl        2/2       Running   0          2m
+kube-apiserver-master1                 1/1       Running   0          33m
+kube-controller-manager-master1        1/1       Running   0          33m
+kube-dns-3701766129-0p28b              3/3       Running   0          2m
+kube-proxy-amd64-44rft                 1/1       Running   0          2m
+kube-proxy-amd64-fz77b                 1/1       Running   0          2m
+kube-proxy-amd64-gqq2p                 1/1       Running   0          2m
+kube-scheduler-master1                 1/1       Running   0          33m
+kubernetes-dashboard-210558060-zw814   1/1       Running   2          2m
+</code></pre>
+<p>確定都啟動後，可以開啟 <a href="https://172.16.35.12:6443/ui" target="_blank" rel="noopener">https://172.16.35.12:6443/ui</a> 來查看。<br><img src="/images/kube/dash-preview.png" alt></p>
+<h2 id="簡單部署-Nginx-服務"><a href="#簡單部署-Nginx-服務" class="headerlink" title="簡單部署 Nginx 服務"></a>簡單部署 Nginx 服務</h2><p>Kubernetes 可以選擇使用指令直接建立應用程式與服務，或者撰寫 YAML 與 JSON 檔案來描述部署應用程式的配置，以下將建立一個簡單的 Nginx 服務：</p>
+<pre><code class="sh">$ kubectl run nginx --image=nginx --replicas=1 --port=80
+$ kubectl get pods -o wide
+NAME                    READY     STATUS    RESTARTS   AGE       IP            NODE
+nginx-158599303-k7cbt   1/1       Running   0          14s       10.244.24.3   node1
+</code></pre>
+<p>完成後要接著建立 svc(Service)，來提供外部網路存取應用程式，使用以下指令建立：</p>
+<pre><code class="sh">$ kubectl expose deploy nginx --port=80 --type=LoadBalancer --external-ip=172.16.35.12
+$ kubectl get svc
+
+NAME             CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
+svc/kubernetes   192.160.0.1      &lt;none&gt;          443/TCP        2h
+svc/nginx        192.160.57.181   ,172.16.35.12   80:32054/TCP   21s
+</code></pre>
+<blockquote>
+<p>這邊<code>type</code>可以選擇 NodePort 與 LoadBalancer。另外需隨機器 IP 不同而修改 <code>external-ip</code>。</p>
+</blockquote>
+<p>確認沒問題後即可在瀏覽器存取 <a href="http://172.16.35.12/。" target="_blank" rel="noopener">http://172.16.35.12/。</a></p>
+<h3 id="擴展服務數量"><a href="#擴展服務數量" class="headerlink" title="擴展服務數量"></a>擴展服務數量</h3><p>若叢集<code>node</code>節點增加了，而想讓 Nginx 服務提供可靠性的話，可以透過以下方式來擴展服務的副本：</p>
+<pre><code class="sh">$ kubectl scale deploy nginx --replicas=2
+
+$ kubectl get pods -o wide
+NAME                    READY     STATUS    RESTARTS   AGE       IP             NODE
+nginx-158599303-0h9lr   1/1       Running   0          25s       10.244.100.5   node2
+nginx-158599303-k7cbt   1/1       Running   0          1m        10.244.24.3    node1
+</code></pre>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/02/17/kubernetes/deploy/kube-ansible-vagrant/" data-toggle="tooltip" data-placement="top" title="kube-ansible 快速部署 HA 測試環境">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/12/03/ceph/ceph-spdk/" data-toggle="tooltip" data-placement="top" title="Ceph 使用 SPDK 加速 NVMe SSD">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#預先準備資訊"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">預先準備資訊</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Etcd-安裝與設定"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Etcd 安裝與設定</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Flannel-安裝與設定"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Flannel 安裝與設定</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Kubernetes-Master-安裝與設定"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Kubernetes Master 安裝與設定</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Kubernetes-Node-安裝與設定"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Kubernetes Node 安裝與設定</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Kubernetes-Addons-部署"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Kubernetes Addons 部署</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#簡單部署-Nginx-服務"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">簡單部署 Nginx 服務</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#擴展服務數量"><span class="toc-nav-number">7.1.</span> <span class="toc-nav-text">擴展服務數量</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2016/12/16/kubernetes/deploy/manual-v1.6/";
+    var disqus_url = "https://readailib.github.io/2016/12/16/kubernetes/deploy/manual-v1.6/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

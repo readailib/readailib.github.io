@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Docker 快速部署 Ceph 測試叢集 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2016/02/11/ceph/deploy/ceph-docker/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Ceph" title="Ceph">Ceph</a>
+                            
+                              <a class="tag" href="/tags/#Storage" title="Storage">Storage</a>
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                        </div>
+                        <h1>Docker 快速部署 Ceph 測試叢集</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2016-02-11
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>本節將介紹如何透過 <a href="https://github.com/ceph/ceph-docker" target="_blank" rel="noopener">ceph-docker</a> 工具安裝一個測試的 Ceph 環境，一個最簡單的 Ceph 儲存叢集至少要<code>1 Monitor</code>與<code>3 OSD</code>。另外部署 MDS 與 RGW 來進行簡單測試。</p>
+<p><img src="/images/ceph/docker-ceph.jpg" alt></p>
+<a id="more"></a>
+<h2 id="節點配置"><a href="#節點配置" class="headerlink" title="節點配置"></a>節點配置</h2><p>本安裝採用一台虛擬機器來提供部署，可使用 VBox 或 OpenStack 等建立，其環境資源大小如下：</p>
+<table>
+<thead>
+<tr>
+<th>hostname</th>
+<th>CPUs</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ceph-aio</td>
+<td>2vCPU</td>
+<td>4GB</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>若使用 Vagrant + VBox 的話，可以使用 <a href="https://gist.githubusercontent.com/kairen/c55a436718ddc22817ef820001aecb0f/raw/4be0a6cfa5087a4834494779b0809d76d701f67b/Vagrantfile" target="_blank" rel="noopener">Vagrantfile 腳本</a>。</p>
+</blockquote>
+<p>而該虛擬機要額外建立三顆虛擬區塊裝置，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Dev path</th>
+<th>Disk</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/dev/sdb</td>
+<td>20 GB</td>
+<td>osd-1 使用</td>
+</tr>
+<tr>
+<td>/dev/sdc</td>
+<td>20 GB</td>
+<td>osd-2 使用</td>
+</tr>
+<tr>
+<td>/dev/sdd</td>
+<td>20 GB</td>
+<td>osd-3 使用</td>
+</tr>
+</tbody>
+</table>
+<h2 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h2><p>首先在主機安裝 Docker Engine，可以透過以下指令進行安裝：</p>
+<pre><code class="sh">$ curl -fsSL https://get.docker.com/ | sh
+</code></pre>
+<h2 id="部署-Ceph-測試叢集"><a href="#部署-Ceph-測試叢集" class="headerlink" title="部署 Ceph 測試叢集"></a>部署 Ceph 測試叢集</h2><p>首先為了不與預設 Docker 網路共用，這邊額外建立一網路來提供給 Ceph 使用：</p>
+<pre><code class="sh">$ docker network create --driver bridge ceph-net
+$ docker network inspect ceph-net
+{
+    &quot;Subnet&quot;: &quot;172.18.0.0/16&quot;,
+    &quot;Gateway&quot;: &quot;172.18.0.1/16&quot;
+}
+</code></pre>
+<h3 id="建立-Monitor"><a href="#建立-Monitor" class="headerlink" title="建立 Monitor"></a>建立 Monitor</h3><p>完成網路建立後，就可以開始部署 Ceph 叢集了。一開始我們必須先建立 Monitor Container：</p>
+<pre><code class="sh">$ cd ~ &amp;&amp; DIR=$(pwd)
+$ sudo docker run -d --net=ceph-net \
+-v ${DIR}/ceph:/etc/ceph \
+-v ${DIR}/lib/ceph/:/var/lib/ceph/ \
+-e MON_IP=172.18.0.2 \
+-e CEPH_PUBLIC_NETWORK=172.18.0.0/16 \
+--name mon1 \
+ceph/daemon mon
+</code></pre>
+<blockquote>
+<p>若發生錯誤請刪除以下目錄。如以下指令：</p>
+<pre><code class="sh">$ sudo rm -rf ${DIR}/etc/ceph/
+$ sudo rm -rf ${DIR}/var/lib/ceph/
+</code></pre>
+</blockquote>
+<p>檢查是否正確部署：</p>
+<pre><code class="sh">$ docker exec -ti mon1 ceph -v
+ceph version 10.2.2 (45107e21c568dd033c2f0a3107dec8f0b0e58374)
+
+$ docker exec -ti mon1 ceph -s
+cluster 2c254496-e948-4abb-a6dc-9aea41bbb56a
+ health HEALTH_ERR
+        no osds
+ monmap e1: 1 mons at {1068f41de69a=172.18.0.2:6789/0}
+        election epoch 3, quorum 0 1068f41de69a
+ osdmap e1: 0 osds: 0 up, 0 in
+        flags sortbitwise
+  pgmap v2: 64 pgs, 1 pools, 0 bytes data, 0 objects
+        0 kB used, 0 kB / 0 kB avail
+              64 creating
+</code></pre>
+<h3 id="建立-OSD"><a href="#建立-OSD" class="headerlink" title="建立 OSD"></a>建立 OSD</h3><p>上面可以看到 Monitor 建立完成，但是會有錯誤，因為目前沒有 OSD。因此這邊將建立三個 OSD Container 來模擬叢集做實際儲存的功能，透過以下方式部署：</p>
+<pre><code class="sh">$ cd ~ &amp;&amp; DIR=$(pwd)
+$ sudo docker run -d --net=ceph-net \
+--privileged=true --pid=host \
+-v ${DIR}/ceph:/etc/ceph \
+-v ${DIR}/lib/ceph/:/var/lib/ceph/ \
+-v /dev/:/dev/ \
+-e OSD_DEVICE=/dev/sdb \
+-e OSD_TYPE=disk \
+-e OSD_FORCE_ZAP=1 \
+--name osd1 \
+ceph/daemon osd
+</code></pre>
+<blockquote>
+<p>若要建立多個 OSD，只需要修改<code>OSD_DEVICE</code>與<code>name</code>即可，這邊建議建立三個 OSD。因為預設 pool 採用三份副本，若節點數過少需要自行修改副本數或 CRUSH Map。</p>
+</blockquote>
+<p>完成後，可以透過以下指令檢查 Device 被使用：</p>
+<pre><code class="sh">$ docker exec -ti osd1 df | grep &quot;osd&quot;
+/dev/sdb1                     20857836   34924  20822912   1% /var/lib/ceph/osd/ceph-0
+</code></pre>
+<p>也可以直接透過 Monitor 來查看叢集安全狀態，如 PG 是否有誤等：</p>
+<pre><code class="sh">$ docker exec -ti mon1 ceph -s
+cluster 23fa3f2c-a401-46e0-abc1-d71b4625b348
+ health HEALTH_OK
+ monmap e2: 1 mons at {0b7ff674673f=172.18.0.2:6789/0}
+        election epoch 4, quorum 0 0b7ff674673f
+    mgr no daemons active
+ osdmap e15: 3 osds: 3 up, 3 in
+        flags sortbitwise,require_jewel_osds,require_kraken_osds
+  pgmap v29: 64 pgs, 1 pools, 0 bytes data, 0 objects
+        101 MB used, 61005 MB / 61106 MB avail
+              64 active+clean
+</code></pre>
+<h3 id="建立-RGW"><a href="#建立-RGW" class="headerlink" title="建立 RGW"></a>建立 RGW</h3><p>當完成一個 RAODS(MON+OSD)叢集後，即可建立物件儲存閘道(RAODS Gateway)提供 S3 與 Swift 相容的 API，來儲存檔案到叢集中，一個 RGW Container 建立如下所示：</p>
+<pre><code class="sh">$ cd ~ &amp;&amp; DIR=$(pwd)
+$ sudo docker run -d --net=ceph-net \
+-v ${DIR}/lib/ceph/:/var/lib/ceph/ \
+-v ${DIR}/ceph:/etc/ceph \
+-p 8080:8080 \
+--name rgw1 \
+ceph/daemon rgw
+</code></pre>
+<p>完成後，透過 curl 工具來測試是否正確部署：</p>
+<pre><code class="sh">$ curl -H &quot;Content-Type: application/json&quot; &quot;http://127.0.0.1:8080&quot;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;ListAllMyBucketsResult xmlns=&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&gt;&lt;Owner&gt;&lt;ID&gt;anonymous&lt;/ID&gt;&lt;DisplayName&gt;&lt;/DisplayName&gt;&lt;/Owner&gt;&lt;Buckets&gt;&lt;/Buckets&gt;&lt;/ListAllMyBucketsResult&gt;
+</code></pre>
+<p>透過 Python Client 進行檔案儲存，首先下載程式：</p>
+<pre><code class="sh">$ wget &quot;https://gist.githubusercontent.com/kairen/e0dec164fa6664f40784f303076233a5/raw/33add5a18cb7d6f18531d8d481562d017557747c/s3client&quot;
+$ chmod u+x s3client
+$ sudo pip install boto
+</code></pre>
+<p>接著透過以下指令建立一個使用者：</p>
+<pre><code class="sh">$ docker exec -ti rgw1 radosgw-admin user create --uid=&quot;test&quot; --display-name=&quot;I&#39;m Test account&quot; --email=&quot;test@example.com&quot;
+
+&quot;keys&quot;: [
+        {
+            &quot;user&quot;: &quot;test&quot;,
+            &quot;access_key&quot;: &quot;PFMKGXCFD77L8X4CF0T4&quot;,
+            &quot;secret_key&quot;: &quot;SA8RpGO7SoN4TIdRxYtxloc5kRSLQvhOihJdDGG3&quot;
+        }
+    ],
+</code></pre>
+<p>建立一個放置環境參數的檔案<code>s3key.sh</code>：</p>
+<pre><code class="sh">export S3_ACCESS_KEY=&quot;PFMKGXCFD77L8X4CF0T4&quot;
+export S3_SECRET_KEY=&quot;SA8RpGO7SoN4TIdRxYtxloc5kRSLQvhOihJdDGG3&quot;
+export S3_HOST=&quot;127.0.0.1&quot;
+export S3_PORT=&quot;8080&quot;
+</code></pre>
+<p>然後 source 檔案，並嘗試執行列出 bucket 指令：</p>
+<pre><code class="sh">$ . s3key.sh
+$ ./s3client list
+---------- Bucket List ----------
+</code></pre>
+<p>建立一個 Bucket，並上傳檔案：</p>
+<pre><code class="sh">$ ./s3client create files
+Create [files] success ...
+
+$ ./s3client upload files s3key.sh /
+Upload [s3key.sh] success ...
+</code></pre>
+<p>完成後，即可透過 list 與 download 來查看與下載：</p>
+<pre><code class="sh">$ ./s3client list files
+---------- [files] ----------
+s3key.sh                157                     2016-07-26T06:48:14.327Z
+
+$ ./s3client download files s3key.sh
+Download [s3key.sh] success ...
+</code></pre>
+<h3 id="建立-MDS"><a href="#建立-MDS" class="headerlink" title="建立 MDS"></a>建立 MDS</h3><p>當系統需要使用到 CephFS 時，我們將必須建立 MDS(Metadata Server) 來提供詮釋資料的儲存，一個 MDS 容器部署如下：</p>
+<pre><code class="sh">$ cd ~ &amp;&amp; DIR=$(pwd)
+$ sudo docker run -d --net=ceph-net \
+-v ${DIR}/lib/ceph/:/var/lib/ceph/ \
+-v ${DIR}/ceph:/etc/ceph \
+-e CEPHFS_CREATE=1 \
+--name mds1 \
+ceph/daemon mds
+</code></pre>
+<p>透過以下指令檢查是否建立無誤：</p>
+<pre><code class="sh">$ docker exec -ti mds1 ceph mds stat
+e5: 1/1/1 up {0=mds-aea2f53de13a=up:active}
+
+$ docker exec -ti mds1 ceph fs ls
+name: cephfs, metadata pool: cephfs_metadata, data pools: [cephfs_data ]
+</code></pre>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/02/12/devops/saltstack-basic/" data-toggle="tooltip" data-placement="top" title="SaltStack 介紹">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/02/11/devops/graphite/" data-toggle="tooltip" data-placement="top" title="利用 Graphite 監控系統資料">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#節點配置"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">節點配置</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#事前準備"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">事前準備</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署-Ceph-測試叢集"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署 Ceph 測試叢集</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#建立-Monitor"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">建立 Monitor</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#建立-OSD"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">建立 OSD</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#建立-RGW"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">建立 RGW</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#建立-MDS"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">建立 MDS</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Ceph" title="Ceph">Ceph</a>
+                        
+                          <a class="tag" href="/tags/#Storage" title="Storage">Storage</a>
+                        
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2016/02/11/ceph/deploy/ceph-docker/";
+    var disqus_url = "https://readailib.github.io/2016/02/11/ceph/deploy/ceph-docker/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

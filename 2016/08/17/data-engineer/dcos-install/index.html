@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          簡單部署 DC/OS 於 CentOS 上 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2016/08/17/data-engineer/dcos-install/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                            
+                              <a class="tag" href="/tags/#Mesos" title="Mesos">Mesos</a>
+                            
+                              <a class="tag" href="/tags/#DC/OS" title="DC/OS">DC/OS</a>
+                            
+                        </div>
+                        <h1>簡單部署 DC/OS 於 CentOS 上</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2016-08-17
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>DC/OS(Data Center Operating System，資料中心作業系統)是 Mesosphere 公司開源的系統，該平台提供了諸多巨量資料處理框架與系統的建置，並以分散式系統 Mesos 作為核心，提供系統資源的隔離與調度，使用者可以根據需求與策略來應用系統資源。</p>
+<p>而本篇將說明如何透過 UI 與 CLI 進行安裝 DC/OS。</p>
+<a id="more"></a>
+<h2 id="節點配置"><a href="#節點配置" class="headerlink" title="節點配置"></a>節點配置</h2><p>DC/OS 最低需求要四台主機，以下為本次安裝的硬體設備：</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>RAM</th>
+<th>Disk</th>
+<th>CPUs</th>
+<th>IP Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bootstrap</td>
+<td>16 GB 記憶體</td>
+<td>250 GB 儲存空間</td>
+<td>四核處理器</td>
+<td>10.0.0.101</td>
+</tr>
+<tr>
+<td>master</td>
+<td>8 GB 記憶體</td>
+<td>250 GB 儲存空間</td>
+<td>四核處理器</td>
+<td>10.0.0.102</td>
+</tr>
+<tr>
+<td>agent-1</td>
+<td>8 GB 記憶體</td>
+<td>250 GB 儲存空間</td>
+<td>四核處理器</td>
+<td>10.0.0.103</td>
+</tr>
+<tr>
+<td>agent-2</td>
+<td>8 GB 記憶體</td>
+<td>250 GB 儲存空間</td>
+<td>四核處理器</td>
+<td>10.0.0.104</td>
+</tr>
+</tbody>
+</table>
+<p>請以上節點都分別安裝 RHEL 或者 CentOS 作業系統。並且設定 IP 為靜態固定，編輯<code>/etc/sysconfig/network-scripts/ifcfg-&lt;name&gt;</code>檔案，加入以下內容：</p>
+<pre><code class="sh">ONBOOT=&quot;yes&quot;
+IPADDR=&quot;10.0.0.104&quot;
+PREFIX=&quot;24&quot;
+GATEWAY=&quot;10.0.0.1&quot;
+DNS1=&quot;8.8.8.8&quot;
+DNS2=&quot;8.8.8.4&quot;
+</code></pre>
+<h2 id="安裝前準備"><a href="#安裝前準備" class="headerlink" title="安裝前準備"></a>安裝前準備</h2><p>在開始安裝以前，首先需要在每一台節點將基本環境的軟體更新：</p>
+<pre><code class="sh">$ sudo yum upgrade -y
+</code></pre>
+<blockquote>
+<p>完成後檢查是否是最新版本，可以透過以下方式查看 Kernel：</p>
+<pre><code class="sh">$ uname -r
+3.10.0-327.13.1.el7.x86_64
+</code></pre>
+</blockquote>
+<blockquote>
+<p>如果不是以上版本，請執行以下指令：</p>
+<pre><code class="sh">$ sudo yum upgrade --assumeyes --tolerant
+$ sudo yum update --assumeyes
+</code></pre>
+</blockquote>
+<p>由於在 CentOS 與 RHEL 預設會開啟防火牆，故要關閉防火牆與開機時自動啟動：</p>
+<pre><code class="sh">$ sudo systemctl stop firewalld &amp;&amp; sudo systemctl disable firewalld
+</code></pre>
+<p>接著安裝一些基本工具軟體：</p>
+<pre><code class="sh">$ sudo yum install -y tar xz unzip curl ipset vim
+</code></pre>
+<p>設定啟動 OverlayFS :</p>
+<pre><code class="sh">$ sudo tee /etc/modules-load.d/overlay.conf &lt;&lt;-&#39;EOF&#39;
+overlay
+EOF
+</code></pre>
+<p>設定關閉 SELinux 與設定一些資訊，並重新啟動：</p>
+<pre><code class="sh">$ sudo sed -i s/SELINUX=enforcing/SELINUX=permissive/g /etc/selinux/config &amp;&amp;
+sudo groupadd nogroup &amp;&amp;
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 &amp;&amp;
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1 &amp;&amp;
+sudo reboot
+</code></pre>
+<p>完成重新啟動後，在每一台節點安裝 Docker，首先要取得 Repos，設定以下來讓 yum 可以抓取：</p>
+<pre><code class="sh">$ sudo tee /etc/yum.repos.d/docker.repo &lt;&lt;-&#39;EOF&#39;
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+</code></pre>
+<p>設定 systemd 執行 Docker daemon 於 OverlayFS：</p>
+<pre><code class="sh">$ sudo mkdir -p /etc/systemd/system/docker.service.d &amp;&amp; sudo tee /etc/systemd/system/docker.service.d/override.conf &lt;&lt;- EOF
+[Service]
+ExecStart=
+ExecStart=/usr/bin/docker daemon --storage-driver=overlay -H fd://
+EOF
+</code></pre>
+<p>安裝 Docker engine，並啟動 docker 與設定開機啟動：</p>
+<pre><code class="sh">$ sudo yum install --assumeyes --tolerant docker-engine
+$ sudo systemctl start docker
+$ sudo systemctl enable docker
+</code></pre>
+<blockquote>
+<p>這邊可以設定使用者加入 docker 群組：</p>
+<pre><code class="sh">$ sudo gpasswd -a $(whoami) docker
+</code></pre>
+</blockquote>
+<h2 id="安裝-Bootstrap-Node"><a href="#安裝-Bootstrap-Node" class="headerlink" title="安裝 Bootstrap Node"></a>安裝 Bootstrap Node</h2><p>Bootstrap 節點主要提供佈署的功能，可以採用 UI 或 CLI 來進行部署，以下將說明如何透過建置 Bootstrap 來完成 DC/OS 佈署。</p>
+<h3 id="GUI-安裝"><a href="#GUI-安裝" class="headerlink" title="GUI 安裝"></a>GUI 安裝</h3><p>這邊採用 GUI 方式來佈署 DC/OS，首先下載 <a href="https://downloads.dcos.io/dcos/EarlyAccess/dcos_generate_config.sh?_ga=1.252969481.1283195233.1461920094" target="_blank" rel="noopener">DC/OS installer</a>：</p>
+<pre><code class="sh">$ wget https://downloads.dcos.io/dcos/EarlyAccess/dcos_generate_config.sh
+</code></pre>
+<p>接著執行啟動 DC/OS UI：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --web -v
+</code></pre>
+<p>完成後，即可開啟瀏覽器輸入 <a href="http://&lt;bootstrap-node-public-ip&gt;:9000" target="_blank" rel="noopener">bootstrap web</a></p>
+<p>這邊需要輸入 Bootstrap 節點的 SSH 私有金鑰，透過以下方式產生與印出：</p>
+<pre><code class="sh">$ ssh-keygen -t rsa
+$ cat .ssh/id_rsa
+</code></pre>
+<p>並建立一個腳本檔案<code>ip-detect</code>，並加入以下內容：</p>
+<pre><code class="sh">#!/bin/bash
+set -o nounset -o errexit
+
+IP=&lt;MASTER_IP&gt;
+
+echo $(ip route get ${IP} | awk &#39;{print $NF; exit}&#39;)
+</code></pre>
+<p>上傳以上資訊，並填入 Master 與 Agent 的 IP Address。</p>
+<h3 id="CLI-安裝"><a href="#CLI-安裝" class="headerlink" title="CLI 安裝"></a>CLI 安裝</h3><p>DC/OS 除了可以透過 GUI 進行安裝，也可以透過 CLI 的方式來佈署，首先建立目錄<code>genconf</code>：</p>
+<pre><code class="sh">$ mkdir -p dcos_cluster
+$ cd dcos_cluster
+$ mkdir -p genconf
+</code></pre>
+<p>然後下載 DC/OS installer 來進行安裝，並且查看所有指令：</p>
+<pre><code class="sh">$ wget https://downloads.dcos.io/dcos/EarlyAccess/dcos_generate_config.sh
+$ sudo bash dcos_generate_config.sh --help
+</code></pre>
+<p>建立一個腳本檔案<code>genconf/ip-detect</code>，並加入以下內容：</p>
+<pre><code class="sh">#!/bin/bash
+set -o nounset -o errexit
+
+IP=&lt;MASTER_IP&gt;
+
+echo $(ip route get ${IP} | awk &#39;{print $NF; exit}&#39;)
+</code></pre>
+<blockquote>
+<p><code>MASTER_IP</code>為修改成主節點 IP。</p>
+</blockquote>
+<p>接著建立設定檔<code>genconf/config.yaml</code>，並加入以下內容：</p>
+<pre><code class="sh">---
+agent_list:
+- &lt;agent-private-ip-1&gt;
+- &lt;agent-private-ip-2&gt;
+bootstrap_url: file:///opt/dcos_install_tmp
+cluster_name: &quot;DC/OS Cluster&quot;
+master_discovery: static
+master_list:
+- &lt;master-private-ip-1&gt;
+resolvers:
+- 8.8.4.4
+- 8.8.8.8
+ssh_port: 22
+ssh_user: &lt;username&gt;
+</code></pre>
+<blockquote>
+<ul>
+<li><code>&lt;agent-private-ip-1&gt;</code> 修改成 <code>10.0.0.103</code>。</li>
+<li><code>&lt;agent-private-ip-2&gt;</code> 修改成 <code>10.0.0.104</code>。</li>
+<li><code>&lt;master-private-ip-1&gt;</code> 修改成 <code>10.0.0.102</code>。</li>
+<li><code>&lt;username&gt;</code> 修改成 <code>cloud-user</code>。P.S 這邊是用 cloud image。</li>
+</ul>
+</blockquote>
+<p>完成後複製 Bootstrap 節點的 SSH 私有金鑰到目錄底下：</p>
+<pre><code class="sh">$ cp &lt;path-to-key&gt; genconf/ssh_key &amp;&amp; chmod 0600 genconf/ssh_key
+</code></pre>
+<p>透過 DC/OS installer 產生設定資訊：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --genconf
+Extracting image from this script and loading into docker daemon, this step can take a few minutes
+dcos-genconf.e060aa49ac4ab62d5e-1e14856f55e5d5d07b.tar
+Running mesosphere/dcos-genconf docker with BUILD_DIR set to /home/centos/genconf
+====&gt; EXECUTING CONFIGURATION GENERATION
+...
+</code></pre>
+<p>成功的話目錄結構會類似以下：</p>
+<pre><code>├── dcos-genconf.14509fe1e7899f4395-3a2b7e03c45cd615da.tar
+├── dcos_generate_config.sh
+└── genconf
+    ├── cluster_packages.json
+    ├── config.yaml
+    ├── ip-detect
+    ├── serve
+    │   ├── bootstrap
+    │   │   ├── 3a2b7e03c45cd615da8dfb1b103943894652cd71.active.json
+    │   │   └── 3a2b7e03c45cd615da8dfb1b103943894652cd71.bootstrap.tar.xz
+    │   ├── bootstrap.latest
+    │   ├── cluster-package-info.json
+    │   ├── dcos_install.sh
+    │   ├── fetch_packages.sh
+    │   └── packages
+    │       ├── dcos-config
+    │       │   └── dcos-config--setup_6dac2d99011d6219b32d9f66cafa9845b7cf6d74.tar.xz
+    │       └── dcos-metadata
+    │           └── dcos-metadata--setup_6dac2d99011d6219b32d9f66cafa9845b7cf6d74.tar.xz
+    ├── ssh_key
+    └── state
+</code></pre><p>若沒問題就可以 prerequisites 佈署階段：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --install-prereqs
+Running mesosphere/dcos-genconf docker with BUILD_DIR set to /home/centos/genconf
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; EXECUTING INSTALL PREREQUISITES
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; START install_prereqs
+</code></pre>
+<p>若沒問題就可以執行 preflight 來驗證叢集是否可以安裝：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --preflight
+Running mesosphere/dcos-genconf docker with BUILD_DIR set to /home/centos/genconf
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; EXECUTING PREFLIGHT
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; START run_preflight
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; STAGE preflight
+</code></pre>
+<p>一樣若沒問題就可以執行 deploy 來安裝 DC/OS：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --deploy
+Running mesosphere/dcos-genconf docker with BUILD_DIR set to /home/centos/genconf
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; EXECUTING DC/OS INSTALLATION
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; START deploy_master
+</code></pre>
+<p>最後沒問題就可以執行 postflight 來確認服務是否有啟動：</p>
+<pre><code class="sh">$ sudo bash dcos_generate_config.sh --postflight
+Running mesosphere/dcos-genconf docker with BUILD_DIR set to /home/centos/genconf
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; EXECUTING POSTFLIGHT
+====&gt; dcos_installer.action_lib.prettyprint:: ====&gt; START run_postflight
+</code></pre>
+<p>都完成後就可以查看 <a href="http://&lt;master-public-ip&gt;:8181/exhibitor/v1/ui/index.html" target="_blank" rel="noopener">Zookpeer</a> 與 <a href="http://&lt;public-master-ip&gt;/" target="_blank" rel="noopener">DC/OS</a>。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/08/19/golang/go-install/" data-toggle="tooltip" data-placement="top" title="Go 語言環境安裝">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/07/21/openstack/kolla-ansible/" data-toggle="tooltip" data-placement="top" title="OpenStack Kolla 初體驗">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#節點配置"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">節點配置</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安裝前準備"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安裝前準備</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安裝-Bootstrap-Node"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">安裝 Bootstrap Node</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#GUI-安裝"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">GUI 安裝</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#CLI-安裝"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">CLI 安裝</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                        
+                          <a class="tag" href="/tags/#Mesos" title="Mesos">Mesos</a>
+                        
+                          <a class="tag" href="/tags/#DC/OS" title="DC/OS">DC/OS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2016/08/17/data-engineer/dcos-install/";
+    var disqus_url = "https://readailib.github.io/2016/08/17/data-engineer/dcos-install/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

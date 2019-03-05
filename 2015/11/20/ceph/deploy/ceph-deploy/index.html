@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          使用 ceph-deploy 工具部署 Ceph 叢集 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2015/11/20/ceph/deploy/ceph-deploy/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Ceph" title="Ceph">Ceph</a>
+                            
+                              <a class="tag" href="/tags/#Storage" title="Storage">Storage</a>
+                            
+                        </div>
+                        <h1>使用 ceph-deploy 工具部署 Ceph 叢集</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2015-11-20
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>本節將介紹如何透過 <a href="https://github.com/ceph/ceph-deploy" target="_blank" rel="noopener">ceph-deploy</a> 工具安裝一個測試的 Ceph 環境，一個最簡單的 Ceph 儲存叢集至少要一台<code>Monitor</code>與三台<code>OSD</code>。而 MDS 則是當使用到 CephFS 的時候才需要部署。</p>
+<a id="more"></a>
+<h2 id="環境準備"><a href="#環境準備" class="headerlink" title="環境準備"></a>環境準備</h2><p>在開始部署 Ceph 叢集之前，我們需要在每個節點做一些基本的準備，來確保叢集安裝的過程是流暢的，本次安裝會擁有 6 台節點，叢集拓樸圖如下所示：</p>
+<pre><code class="sh">                           +------------------+
+                           | [ Deploy  Node ] |
+                           |   10.21.20.99    |
+                           | Ceph deploy tool |
+                           +--------+---------+
+                                    |
+                                    |           
+     +------------------+           |           +-----------------+
+     |  [ Admin Node ]  |           |           |[ Monitor  Node ]|
+     |   10.21.20.100   |-----------+-----------|   10.21.20.101  |
+     |  Ceph admin ops  |           |           |  Ceph mon Node  |
+     +------------------+           |           +-----------------+
+                                    |
+        +---------------------------+--------------------------+
+        |                           |                          |
+        |                           |                          |
++-------+----------+       +--------+---------+       +--------+---------+
+|  [ OSD Node 1 ]  |       |  [ OSD Node 2 ]  |       |  [ OSD Node 3 ]  |
+|   10.21.20.121   +-------+   10.21.20.122   +-------+   10.21.20.123   |
+|  Object Storage  |       |  Object Storage  |       |  Object Storage  |
+|   Disk  *  2     |       |   Disk  *  2     |       |   Disk  *  2     |
++------------------+       +------------------+       +------------------+
+</code></pre>
+<blockquote>
+<p>P.S. 上面磁碟分為兩個，因為這邊教學不將 journal 分開來，故一顆當作系統使用，一顆為資料儲存與 journal 使用。<br>P.S. 這邊網路建議設定為<code>static</code>，若有支援 Jumbo frame 也可以開啟。</p>
+</blockquote>
+<p>首先在每一台節點新增以下內容到<code>/etc/hosts</code>：</p>
+<pre><code>127.0.0.1 localhost
+
+10.21.20.99 ceph-deploy
+10.21.20.100 ceph-admin
+10.21.20.101 ceph-mon1
+10.21.20.121 ceph-osd1
+10.21.20.122 ceph-osd2
+10.21.20.123 ceph-osd3
+</code></pre><p>然後在每台節點執行以下指令來使<code>sudo</code>不需要輸入密碼：</p>
+<pre><code class="sh">$ echo &quot;ubuntu ALL = (root) NOPASSWD:ALL&quot; | sudo tee /etc/sudoers.d/ubuntu &amp;&amp; sudo chmod 440 /etc/sudoers.d/ubuntu
+</code></pre>
+<blockquote>
+<p>上面 <code>ubuntu</code> 是節點的使用者名稱，這邊都是一樣。<br>P.S. 當然若要注意安全考量，而不讓該使用者直接使用有權限的資源，可以使用 root user。</p>
+</blockquote>
+<p>接著在設定<code>Deploy</code>節點能夠以無密碼方式進行 SSH 登入其他節點，請依照以下執行：</p>
+<pre><code class="sh">$ ssh-keygen -t rsa
+$ ssh-copy-id ceph-mon1
+$ ssh-copy-id ceph-mds
+...
+</code></pre>
+<blockquote>
+<p>若 Deploy 節點的使用者與其他不同的話，編輯<code>~/.ssh/config</code>加入以下內容：</p>
+<pre><code class="sh">Host ceph-admin
+    Hostname ceph-admin
+    User ubuntu
+Host ceph-mds
+    Hostname ceph-mds
+    User mds
+...
+</code></pre>
+</blockquote>
+<p>之後在<code>Deploy</code>節點安裝部署工具，首先安裝基本相依套件，使用<code>apt-get</code>來進行安裝，再透過<code>python-pip</code>進行安裝部署工具：</p>
+<pre><code class="sh">$ sudo apt-get install -y python-pip
+$ sudo pip install ceph-deploy
+</code></pre>
+<blockquote>
+<p>P.S. ceph-deploy 所安裝的 ceph 版本，會受到 ceph-deply 工具版本不同而有所差異。</p>
+</blockquote>
+<p>完成後即可開始部署 Ceph 環境。</p>
+<h3 id="環境部署"><a href="#環境部署" class="headerlink" title="環境部署"></a>環境部署</h3><p>首先建立一個名稱為<code>mycluster</code>的目錄，並進入該目錄：</p>
+<pre><code>$ sudo mkdir mycluster
+$ cd mycluster
+</code></pre><p>採用 ceph-deploy 工具部署環境時，需要依照以下步驟進行，首先建立要當任 Monitor 的節點，透過以下方式：</p>
+<pre><code class="sh">$ ceph-deploy new ceph-mon1 &lt;other_nodes&gt;
+</code></pre>
+<blockquote>
+<p>當執行該指令時，不是直接讓 ceph-mon1 節點安裝成為 Monitor，而只是新增一個<code>conf</code>，並標示誰是 Monitor，當在初始化階段時，才將該設定檔給對應節點，讓它啟動是設定為 Monitor 角色。</p>
+</blockquote>
+<p>接著我們需要先讓每個節點（ceph-deploy除外）安裝 ceph-common 套件，透過以下方式安裝：</p>
+<pre><code class="sh">$ ceph-deploy install ceph-admin ceph-mds &lt;other_nodes&gt;
+</code></pre>
+<p>當完成安裝後，才能開始真正的部署節點的角色，第一先將 Monitor 都完成部署，才能讓叢集先正常被運作，透過以下指令來將 Monitors 初始化：</p>
+<pre><code class="sh">$ ceph-deploy mon create-initial
+</code></pre>
+<p>上述沒有問題後，就可以開始部署實際作為儲存的 OSD 節點，我們可以透過以下指令進行：</p>
+<pre><code class="sh">$ ceph-deploy osd prepare ceph-osd1:/dev/sdb &lt;other_nodes&gt;:&lt;data_disk&gt;
+</code></pre>
+<blockquote>
+<p>若要將 journal 分離，可以使用以下方式：</p>
+<pre><code class="sh">$ ceph-deploy osd prepare ceph-osd1:/dev/sdb:/dev/sdc &lt;other_nodes&gt;:&lt;data_disk&gt;:&lt;journal_disk&gt;
+</code></pre>
+</blockquote>
+<p>部署沒有問題的話，即可啟用該 OSD：</p>
+<pre><code class="sh">$ ceph-deploy osd activate ceph-osd1:/dev/sdb &lt;other_nodes&gt;:&lt;data_disk&gt;
+</code></pre>
+<blockquote>
+<p>P.S. 較新的版本該指令可以省略，因為在準備期間就會幫你直接啟動。</p>
+</blockquote>
+<p>這樣一個簡單的叢集就部署完成了，這時候我們可以隨需求加入<code>admin</code>與<code>MDS</code>節點，可以透過以下方式進行：</p>
+<pre><code class="sh">$ ceph-deploy admin ceph-admin
+$ ceph-deploy mds create ceph-mds
+</code></pre>
+<p>完成後，可以透過以下指令檢查 ceph 叢集狀態：</p>
+<pre><code class="sh">$ ceph health
+HEALTH_OK
+
+$ ceph status
+cluster e2432059-e219-4555-8d37-c32d5b16e4a4
+ health HEALTH_OK
+ monmap e1: 1 mons at {ceph-mon1=10.21.20.101:6789/0}
+        election epoch 6, quorum 0, ceph-mon1
+ osdmap e119: 3 osds: 3 up, 3 in
+        flags sortbitwise
+  pgmap v813: 128 pgs, 2 pools, 91289 kB data, 22856 objects
+        691 MB used, 2152 GB / 2152 GB avail
+             128 active+clean
+</code></pre>
+<blockquote>
+<ul>
+<li>如果出現<code>ERROR: missing keyring, cannot use cephx for authentication</code>，請注意這個檔案<code>/etc/ceph/ceph.client.admin.keyring</code>是否有權限讀取。</li>
+<li>如果出現<code>too few PGs per</code>，修改<code>pg_num</code>與<code>pgp_num</code>。範例如下：</li>
+</ul>
+</blockquote>
+<pre><code>$ ceph osd pool set rbd pg_num 128
+$ ceph osd pool set rbd pgp_num 128
+</code></pre><p>若要檢查 mds 可以使用以下指令：</p>
+<pre><code class="sh">$ ceph mds stat
+</code></pre>
+<p>若想檢查 OSDs 的目前狀態可以使用以下幾個指令：</p>
+<pre><code class="sh">$ ceph osd stat
+osdmap e119: 3 osds: 3 up, 3 in
+       flags sortbitwise
+
+$ ceph osd dump
+$ ceph osd tree
+</code></pre>
+<p>最後如果進行多台 Monitor 的部署的話，要注意讓這些節點的時間同步。Ceph 使用多 Monitort 來避免單點故障問題，部署的比例可自行定義，比如 1 台、3:1 台、5:3 台等等。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/11/21/ceph/cephfs/" data-toggle="tooltip" data-placement="top" title="Ceph FS 基本操作">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2015/11/19/ceph/ceph-intro/" data-toggle="tooltip" data-placement="top" title="Ceph 分散式儲存系統介紹">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#環境準備"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">環境準備</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#環境部署"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">環境部署</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Ceph" title="Ceph">Ceph</a>
+                        
+                          <a class="tag" href="/tags/#Storage" title="Storage">Storage</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2015/11/20/ceph/deploy/ceph-deploy/";
+    var disqus_url = "https://readailib.github.io/2015/11/20/ceph/deploy/ceph-deploy/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

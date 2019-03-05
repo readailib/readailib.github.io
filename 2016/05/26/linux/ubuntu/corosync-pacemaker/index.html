@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Pacemaker + Corosync 做服務 HA - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2016/05/26/linux/ubuntu/corosync-pacemaker/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                            
+                              <a class="tag" href="/tags/#Load Balancer" title="Load Balancer">Load Balancer</a>
+                            
+                              <a class="tag" href="/tags/#High Availability" title="High Availability">High Availability</a>
+                            
+                        </div>
+                        <h1>Pacemaker + Corosync 做服務 HA</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2016-05-26
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Pacemaker 與 Corosync 是 Linux 中現今較常用的高可靠性叢集系統組合。Pacemaker 自身提供了很多常用的應用管理功能，不過若要使用 Pacemaker 來管理自己實作的服務，或是一些特別的東西時，就必須要自己實作管理資源。</p>
+<a id="more"></a>
+<h2 id="節點配置"><a href="#節點配置" class="headerlink" title="節點配置"></a>節點配置</h2><p>本安裝將使用三台實體主機與一台虛擬機器，主機規格如以下所示：</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>IP Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pacemaker1</td>
+<td>172.16.35.10</td>
+</tr>
+<tr>
+<td>pacemaker2</td>
+<td>172.16.35.11</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>作業系統皆為 <code>Ubuntu 14.04 Server</code>。</p>
+</blockquote>
+<h2 id="進行安裝與設定"><a href="#進行安裝與設定" class="headerlink" title="進行安裝與設定"></a>進行安裝與設定</h2><p>首先要在所有節點之間設定無密碼 ssh 登入，透過以下方式：</p>
+<pre><code class="sh">$ ssh-keygen -t rsa
+$ ssh-copy-id pacemaker1
+</code></pre>
+<p>安裝相關套件軟體：</p>
+<pre><code class="sh">$ sudo apt-get install -y corosync pacemaker heartbeat resource-agents fence-agents apache2
+</code></pre>
+<p>完成後，在<code>pacemaker1</code>進行以下步驟，首先編輯<code>/etc/corosync/corosync.conf</code>設定檔，修改一下內容：</p>
+<pre><code># Please read the openais.conf.5 manual page
+
+totem {
+    version: 2
+
+    # How long before declaring a token lost (ms)
+    token: 3000
+
+    # How many token retransmits before forming a new configuration
+    token_retransmits_before_loss_const: 10
+
+    # How long to wait for join messages in the membership protocol (ms)
+    join: 60
+
+    # How long to wait for consensus to be achieved before starting a new round of membership configuration (ms)
+    consensus: 3600
+
+    # Turn off the virtual synchrony filter
+    vsftype: none
+
+    # Number of messages that may be sent by one processor on receipt of the token
+    max_messages: 20
+
+    # Limit generated nodeids to 31-bits (positive signed integers)
+    clear_node_high_bit: yes
+
+    # Disable encryption
+     secauth: off  #啟動認證功能
+
+    # How many threads to use for encryption/decryption
+     threads: 0
+
+    # Optionally assign a fixed node id (integer)
+    # nodeid: 1234
+
+    # This specifies the mode of redundant ring, which may be none, active, or passive.
+     rrp_mode: none
+
+     interface {
+        # The following values need to be set based on your environment
+        ringnumber: 0
+        bindnetaddr: 10.11.8.0  # 主機所在網路位址
+        mcastaddr: 226.93.2.1  # 廣播地址，不要被佔用即可 P.S. 範圍:224.0.2.0～238.255.255.255
+        mcastport: 5405  # 廣播埠口
+    }
+}
+
+amf {
+    mode: disabled
+}
+
+quorum {
+    # Quorum for the Pacemaker Cluster Resource Manager
+    provider: corosync_votequorum
+    expected_votes: 1
+}
+
+aisexec {
+        user:   root
+        group:  root
+}
+
+logging {
+        fileline: off
+        to_stderr: yes  # 輸出到標準输出
+        to_logfile: yes  # 輸出到日誌檔案
+        logfile: /var/log/corosync.log  # 日誌檔案位置
+        to_syslog: no  # 輸出到系统日誌
+        syslog_facility: daemon
+        debug: off
+        timestamp: on
+        logger_subsys {
+                subsys: AMF
+                debug: off
+                tags: enter|leave|trace1|trace2|trace3|trace4|trace6
+        }
+}
+
+# 新增 pacemaker 服務配置
+service {
+    ver: 1
+    name: pacemaker
+}
+</code></pre><p>接著產生節點之間的溝通時的認證金鑰文件：</p>
+<pre><code class="sh">$ corosync-keygen -l
+</code></pre>
+<p>然後將設定檔與金鑰複製到<code>pacemaker2</code>上：</p>
+<pre><code class="sh">$ cd /etc/corosync/
+$ scp -p corosync.conf authkey pacemaker2:/etc/corosync/
+</code></pre>
+<p>接著分別在<code>兩個</code>節點上編輯<code>/etc/default/corosync</code>檔案，修改以下：</p>
+<pre><code class="sh"># start corosync at boot [yes|no]
+START=yes
+</code></pre>
+<p>接著將 Corosync 與 Pacemaker 服務啟動：</p>
+<pre><code class="sh">$ sudo service corosync start
+$ sudo service pacemaker start
+</code></pre>
+<p>完成後透過 crm 指令來查看狀態：</p>
+<pre><code class="sh">$ crm status
+
+Last updated: Tue Dec 27 03:12:07 2016
+Last change: Tue Dec 27 02:35:18 2016 via cibadmin on pacemaker1
+Stack: corosync
+Current DC: pacemaker1 (739255050) - partition with quorum
+Version: 1.1.10-42f2063
+2 Nodes configured
+0 Resources configured
+
+
+Online: [ pacemaker1 pacemaker2 ]
+</code></pre>
+<p>關閉 corosync 預設啟動的 stonith 與 quorum 在兩台節點之問題：</p>
+<pre><code class="sh">$ crm configure property stonith-enabled=false
+$ crm configure property no-quorum-policy=ignore
+</code></pre>
+<p>完成後，透過指令檢查：</p>
+<pre><code class="sh">$ crm configure show
+
+node $id=&quot;739255050&quot; pacemaker1
+node $id=&quot;739255051&quot; pacemaker2
+property $id=&quot;cib-bootstrap-options&quot; \
+    dc-version=&quot;1.1.10-42f2063&quot; \
+    cluster-infrastructure=&quot;corosync&quot; \
+    stonith-enabled=&quot;false&quot; \
+    no-quorum-policy=&quot;ignore&quot;
+</code></pre>
+<h2 id="設定資源"><a href="#設定資源" class="headerlink" title="設定資源"></a>設定資源</h2><p>Corosync 支援了多種資源代理，如 heartbeat、LSB(Linux Standard Base)與 OCF(Open Cluster Framework) 等。而 Corosync 也可以透過指令來查詢：</p>
+<pre><code class="sh">$ crm ra classes
+
+lsb
+ocf / heartbeat pacemaker redhat
+service
+stonith
+upstart
+</code></pre>
+<blockquote>
+<p>而更細部的資訊可以透過以下查詢：</p>
+<pre><code class="sh">$ crm ra list lsb
+$ crm ra list ocf heartbeat
+$ crm ra info ocf:heartbeat:IPaddr
+</code></pre>
+</blockquote>
+<p>首先新增一個 heartbeat 資源：</p>
+<pre><code class="shell">$ crm configure
+# 設定 VIP
+crm(live)configure# primitive vip ocf:heartbeat:IPaddr params ip=172.16.35.20 nic=eth2 cidr_netmask=24 op monitor interval=10s timeout=20s on-fail=restart
+
+# 設定 httpd
+crm(live)configure# primitive httpd lsb:apache2
+crm(live)configure# exit
+There are changes pending. Do you want to commit them? yes
+</code></pre>
+<p>設定 Group 來將 httpd 與 vip 資源放一起：</p>
+<pre><code class="sh">crm(live)configure# group webservice vip httpd
+</code></pre>
+<p>完成後，透過 crm 指令查詢狀態：</p>
+<pre><code class="sh">$ crm status
+
+Last updated: Tue Dec 27 03:52:21 2016
+Last change: Tue Dec 27 03:52:20 2016 via cibadmin on pacemaker1
+Stack: corosync
+Current DC: pacemaker1 (739255050) - partition with quorum
+Version: 1.1.10-42f2063
+2 Nodes configured
+2 Resources configured
+
+
+Online: [ pacemaker1 pacemaker2 ]
+
+ Resource Group: webservice
+     vip    (ocf::heartbeat:IPaddr):    Started pacemaker1
+     httpd    (lsb:apache2):    Started pacemaker2
+</code></pre>
+<p>最後就可以在<code>pacemaker1</code>或<code>pacemaker2</code>關閉服務來確認是否正常執行。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/05/27/linux/ubuntu/flashcache/" data-toggle="tooltip" data-placement="top" title="用 Flashcache 建立高容量與高效能儲存">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/05/15/ceph/rados-java/" data-toggle="tooltip" data-placement="top" title="利用 rados-java 存取 Ceph">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#節點配置"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">節點配置</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#進行安裝與設定"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">進行安裝與設定</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#設定資源"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">設定資源</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                          <a class="tag" href="/tags/#Load Balancer" title="Load Balancer">Load Balancer</a>
+                        
+                          <a class="tag" href="/tags/#High Availability" title="High Availability">High Availability</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2016/05/26/linux/ubuntu/corosync-pacemaker/";
+    var disqus_url = "https://readailib.github.io/2016/05/26/linux/ubuntu/corosync-pacemaker/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

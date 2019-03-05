@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          用 ELK 做監控系統 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2016/01/03/devops/elk/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Logging" title="Logging">Logging</a>
+                            
+                              <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                            
+                              <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                            
+                              <a class="tag" href="/tags/#Visualization" title="Visualization">Visualization</a>
+                            
+                        </div>
+                        <h1>用 ELK 做監控系統</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2016-01-03
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>ELK 是由三個套件的開頭英文組成的縮寫，其 E 表示<code>Elasticsearch</code>，L 表示<code>Logstash</code>，K 表示<code>Kibana</code>，作為收集資料、資料索引以及資料視覺化的工具集合，以下分別簡單介紹三個套件。</p>
+<h2 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash"></a>Logstash</h2><p>Logstash 可以簡單、有效、快速的處理Log資料，不過Logstash的主要功能是處理時間類型的Log，也就是在Log檔中有時間戳記（TimeStamp）的資料，而分析Log資料主要就是分析事件發生的時間和內容</p>
+<h3 id="Logstash-Forwarder"><a href="#Logstash-Forwarder" class="headerlink" title="Logstash Forwarder"></a>Logstash Forwarder</h3><p>可傳送所收集到的 Log 訊息到 Logstash。</p>
+<h2 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h2><p>Elasticsearch 是一個開源的資料搜尋分析系統，它可以解決現在 Web 去做資料庫的搜尋的種種問題，嚴格來說也不只是 web，(有可能是為了撈資料的效能，或是 schema free,  real-time 等等)。</p>
+<h2 id="Kibana"><a href="#Kibana" class="headerlink" title="Kibana"></a>Kibana</h2><p>Kibana 是一個開源和免費的工具，他可以幫助您匯總、分析和搜索重要數據日志並提供友好的web界面</p>
+<h2 id="系統與安裝版本"><a href="#系統與安裝版本" class="headerlink" title="系統與安裝版本"></a>系統與安裝版本</h2><ul>
+<li>OS: Ubuntu 14.04</li>
+<li>Elasticsearch 1.4.4</li>
+<li>Logstash 1.5.0</li>
+<li>Kibana 4</li>
+</ul>
+<h2 id="進行安裝"><a href="#進行安裝" class="headerlink" title="進行安裝"></a>進行安裝</h2><h3 id="首先安裝-Java-Oracle"><a href="#首先安裝-Java-Oracle" class="headerlink" title="首先安裝 Java Oracle"></a>首先安裝 Java Oracle</h3><pre><code>sudo apt-get purge openjdk*
+sudo apt-get -y autoremove
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+sudo apt-get -y install oracle-java7-installer
+</code></pre><h3 id="安裝-Elasticsearch"><a href="#安裝-Elasticsearch" class="headerlink" title="安裝 Elasticsearch"></a>安裝 Elasticsearch</h3><p>匯入 Elasticsearch public GPG key 到 apt</p>
+<pre><code>wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
+</code></pre><p>建立 Elasticsearch source list：</p>
+<pre><code>echo &#39;deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main&#39; | sudo tee /etc/apt/sources.list.d/elasticsearch.list
+</code></pre><p>更新套件：</p>
+<pre><code>sudo apt-get update
+</code></pre><p>安裝 elasticsearch 1.4.4：</p>
+<pre><code>sudo apt-get -y install elasticsearch=1.4.4
+</code></pre><p>安裝完成，開啟配置檔：</p>
+<pre><code>sudo vi /etc/elasticsearch/elasticsearch.yml
+</code></pre><p>如果想限制給外界存取 Elasticsearch，可找到  <code>network.host</code> ，將內容取代成”localhost”，如下：</p>
+<pre><code>network.host: localhost
+</code></pre><p>開啟 Elasticsearch：</p>
+<pre><code>sudo service elasticsearch restart
+</code></pre><p>重開機立即啟動 Elasticsearch ：</p>
+<pre><code>sudo update-rc.d elasticsearch defaults 95 10
+</code></pre><h3 id="安裝-Kibana"><a href="#安裝-Kibana" class="headerlink" title="安裝 Kibana"></a>安裝 Kibana</h3><p>下載 Kibana 4 到 opt 資料夾</p>
+<pre><code>cd /opt
+</code></pre><p>使用<code>wget</code>下載 Kibana 套件壓縮檔：</p>
+<pre><code>wget https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz
+</code></pre><p>解壓縮檔案：</p>
+<pre><code>tar xvf kibana-*.tar.gz
+</code></pre><p>開啟 Kibana 配置檔：</p>
+<pre><code>vi ~/kibana-4*/config/kibana.yml
+</code></pre><p>配置檔中找到<code>host</code>將 IP address “0.0.0.0” 取代成 “localhost”，此設定讓 Kibana 只能被 localhost 存取，如下：</p>
+<pre><code>host: &quot;localhost&quot;
+</code></pre><p>將下載完的 kibana 資料夾名稱改成 kibana：</p>
+<pre><code>sudo mv kibana-4.0.1-linux-x64 kibana
+</code></pre><p>Kibana 執行 <code>/opt/kibana/bin/kibana</code> 來開啟，但我們想用 service 的方式開啟。</p>
+<p>下載 Kibana 4 init 腳本:</p>
+<pre><code>cd /etc/init.d &amp;&amp; sudo wget https://gist.githubusercontent.com/thisismitch/8b15ac909aed214ad04a/raw/bce61d85643c2dcdfbc2728c55a41dab444dca20/kibana4
+</code></pre><p>開啟 Kibana service：</p>
+<pre><code>sudo chmod +x /etc/init.d/kibana4
+sudo update-rc.d kibana4 defaults 96 9
+sudo service kibana4 start
+</code></pre><h3 id="安裝-Logstash"><a href="#安裝-Logstash" class="headerlink" title="安裝 Logstash"></a>安裝 Logstash</h3><p>建立 Logstash source list：</p>
+<pre><code>echo &#39;deb http://packages.elasticsearch.org/logstash/1.5/debian stable main&#39; | sudo tee /etc/apt/sources.list.d/logstash.list
+</code></pre><p>更新套件：</p>
+<pre><code>sudo apt-get update
+</code></pre><p>安裝 Logstash：</p>
+<pre><code>sudo apt-get install logstash
+</code></pre><h3 id="產生-SSL-認證"><a href="#產生-SSL-認證" class="headerlink" title="產生 SSL 認證"></a>產生 SSL 認證</h3><p>因為我們將使用 Logstash Forwarder 收集 logs並傳送到 Logstash Server ，所以我們必須建立一對SSL 認證的 key：</p>
+<pre><code>sudo mkdir -p /etc/pki/tls/certs
+sudo mkdir /etc/pki/tls/private
+</code></pre><p>設定 openssl 配置：</p>
+<pre><code>sudo vi /etc/ssl/openssl.cnf
+</code></pre><p>配置檔中找到 <code>[ v3_ca ]</code> ，並新增以下內容：</p>
+<pre><code>subjectAltName = IP:logstash_server_private_ip
+</code></pre><p>產生 SSL 認證和 private key 到 <code>/etc/pki/tls/</code> ，如下：</p>
+<pre><code>cd /etc/pki/tls
+</code></pre><p>設定 SSL 驗證：</p>
+<pre><code>sudo openssl req -config /etc/ssl/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout private/logstash-forwarder.key -out certs/logstash-forwarder.crt
+</code></pre><h3 id="配置-Logstash"><a href="#配置-Logstash" class="headerlink" title="配置 Logstash"></a>配置 Logstash</h3><p>新增配置檔 <code>01-lumberjack-input.conf</code>：</p>
+<pre><code>sudo vi /etc/logstash/conf.d/01-lumberjack-input.conf
+</code></pre><p>新增以下配置內容：</p>
+<pre><code>input {
+  lumberjack {
+    port =&gt; 5000
+    type =&gt; &quot;logs&quot;
+    ssl_certificate =&gt; &quot;/etc/pki/tls/certs/logstash-forwarder.crt&quot;
+    ssl_key =&gt; &quot;/etc/pki/tls/private/logstash-forwarder.key&quot;
+  }
+}
+</code></pre><p>新增配置檔 <code>10-syslog.conf</code>：</p>
+<pre><code>sudo vi /etc/logstash/conf.d/10-syslog.conf
+</code></pre><p>新增以下配置內容：</p>
+<pre><code>filter {
+  if [type] == &quot;syslog&quot; {
+    grok {
+      match =&gt; { &quot;message&quot; =&gt; &quot;%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}&quot; }
+      add_field =&gt; [ &quot;received_at&quot;, &quot;%{@timestamp}&quot; ]
+      add_field =&gt; [ &quot;received_from&quot;, &quot;%{host}&quot; ]
+    }
+    syslog_pri { }
+    date {
+      match =&gt; [ &quot;syslog_timestamp&quot;, &quot;MMM  d HH:mm:ss&quot;, &quot;MMM dd HH:mm:ss&quot; ]
+    }
+  }
+}
+</code></pre><p>新增配置檔 <code>30-lumberjack-output.conf</code>：</p>
+<pre><code>sudo vi /etc/logstash/conf.d/30-lumberjack-output.conf
+</code></pre><p>新增以下配置內容：</p>
+<pre><code>output {
+  elasticsearch { host =&gt; localhost }
+  stdout { codec =&gt; rubydebug }
+}
+</code></pre><p>重啟 Logstash：</p>
+<pre><code>sudo service logstash restart
+</code></pre><p>完成後就可以設置<code>Logstash Forwarder</code>（簡單說就是加入 Client）。</p>
+<h4 id="複製-SSL-Certificate-與-Logstash-Forwarder-套件-On-Logstash-Server"><a href="#複製-SSL-Certificate-與-Logstash-Forwarder-套件-On-Logstash-Server" class="headerlink" title="複製 SSL Certificate 與 Logstash Forwarder 套件 (On Logstash Server)"></a>複製 SSL Certificate 與 Logstash Forwarder 套件 (On Logstash Server)</h4><pre><code>scp /etc/pki/tls/certs/logstash-forwarder.crt user@client_server_private_address:/tmp
+</code></pre><h4 id="安裝-Logstash-Forwarder-套件-On-Client"><a href="#安裝-Logstash-Forwarder-套件-On-Client" class="headerlink" title="安裝 Logstash Forwarder 套件 (On Client)"></a>安裝 Logstash Forwarder 套件 (On Client)</h4><p>Logstash Forwarder source list：</p>
+<pre><code>echo &#39;deb http://packages.elasticsearch.org/logstashforwarder/debian stable main&#39; | sudo tee /etc/apt/sources.list.d/logstashforwarder.list
+</code></pre><p>一樣可使用Elasticsearch的 GPG key 來安裝：</p>
+<pre><code>wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
+</code></pre><p>安裝 Logstash Forwarder package：</p>
+<pre><code>sudo apt-get update
+sudo apt-get install logstash-forwarder
+</code></pre><p>複製 Logstash server’s SSL認證到 <code>/etc/pki/tls/certs</code>：</p>
+<pre><code>sudo mkdir -p /etc/pki/tls/certs
+sudo cp /tmp/logstash-forwarder.crt /etc/pki/tls/certs/
+</code></pre><h4 id="配置-Logstash-Forwarder"><a href="#配置-Logstash-Forwarder" class="headerlink" title="配置 Logstash Forwarder"></a>配置 Logstash Forwarder</h4><p>設定Logstash Forwarder 配置檔(<code>On Client Server</code>)：</p>
+<pre><code>sudo vi /etc/logstash-forwarder.conf
+</code></pre><p>配置檔中找到 <code>network</code> ，底下加入以下內容：</p>
+<pre><code>&quot;servers&quot;: [ &quot;logstash_server_private_address:5000&quot; ],
+    &quot;timeout&quot;: 15,
+    ssl ca&quot;: &quot;/etc/pki/tls/certs/logstash-forwarder.crt&quot;
+</code></pre><p>配置檔中找到 <code>files</code> ，底下加入以下內容：</p>
+<pre><code>   {
+      &quot;paths&quot;: [
+        &quot;/var/log/syslog&quot;,
+        &quot;/var/log/auth.log&quot;
+       ],
+      &quot;fields&quot;: { &quot;type&quot;: &quot;syslog&quot; }
+    }
+</code></pre><p>重啟 Logstash Forwarder：</p>
+<pre><code>sudo service logstash-forwarder restart
+</code></pre><p>完成後，即可開啟瀏覽器，網址列輸入<a href="locahost:5601" target="_blank" rel="noopener">locahost:5601</a>。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/01/05/container/docker-network/" data-toggle="tooltip" data-placement="top" title="學習 Docker Network 之間的差別">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/02/container/docker-registry/" data-toggle="tooltip" data-placement="top" title="自己建立 Docker Registry">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Logstash"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Logstash</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Logstash-Forwarder"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">Logstash Forwarder</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Elasticsearch"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Elasticsearch</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Kibana"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Kibana</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#系統與安裝版本"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">系統與安裝版本</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#進行安裝"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">進行安裝</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#首先安裝-Java-Oracle"><span class="toc-nav-number">5.1.</span> <span class="toc-nav-text">首先安裝 Java Oracle</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安裝-Elasticsearch"><span class="toc-nav-number">5.2.</span> <span class="toc-nav-text">安裝 Elasticsearch</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安裝-Kibana"><span class="toc-nav-number">5.3.</span> <span class="toc-nav-text">安裝 Kibana</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安裝-Logstash"><span class="toc-nav-number">5.4.</span> <span class="toc-nav-text">安裝 Logstash</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#產生-SSL-認證"><span class="toc-nav-number">5.5.</span> <span class="toc-nav-text">產生 SSL 認證</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#配置-Logstash"><span class="toc-nav-number">5.6.</span> <span class="toc-nav-text">配置 Logstash</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#複製-SSL-Certificate-與-Logstash-Forwarder-套件-On-Logstash-Server"><span class="toc-nav-number">5.6.1.</span> <span class="toc-nav-text">複製 SSL Certificate 與 Logstash Forwarder 套件 (On Logstash Server)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#安裝-Logstash-Forwarder-套件-On-Client"><span class="toc-nav-number">5.6.2.</span> <span class="toc-nav-text">安裝 Logstash Forwarder 套件 (On Client)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#配置-Logstash-Forwarder"><span class="toc-nav-number">5.6.3.</span> <span class="toc-nav-text">配置 Logstash Forwarder</span></a></li></ol></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Logging" title="Logging">Logging</a>
+                        
+                          <a class="tag" href="/tags/#DevOps" title="DevOps">DevOps</a>
+                        
+                          <a class="tag" href="/tags/#Monitoring" title="Monitoring">Monitoring</a>
+                        
+                          <a class="tag" href="/tags/#Visualization" title="Visualization">Visualization</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2016/01/03/devops/elk/";
+    var disqus_url = "https://readailib.github.io/2016/01/03/devops/elk/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

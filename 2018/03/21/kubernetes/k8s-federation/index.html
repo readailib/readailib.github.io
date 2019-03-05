@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          使用 kubefed 建立 Kubernetes Federation(On-premises) - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.github.io/2018/03/21/kubernetes/k8s-federation/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#Federation" title="Federation">Federation</a>
+                            
+                        </div>
+                        <h1>使用 kubefed 建立 Kubernetes Federation(On-premises)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2018-03-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><a href="https://kubernetes.io/docs/concepts/cluster-administration/federation/" target="_blank" rel="noopener">Kubernetes Federation(聯邦)</a> 是實現跨地區與跨服務商多個 Kubernetes 叢集的管理機制。Kubernetes Federation 的架構非常類似純 Kubenretes 叢集，Federation 會擁有自己的 API Server 與 Controller Manager 來提供一個標準的 Kubernetes API，以及管理聯邦叢集，並利用 Etcd 來儲存所有狀態，不過差異在於 Kubenretes 只管理多個節點，而 Federation 是管理所有被註冊的 Kubernetes 叢集。</p>
+<a id="more"></a>
+<p>Federation 使管理多個叢集更為簡單，這主要是透過兩個模型來實現：</p>
+<ol>
+<li><strong>跨叢集的資源同步(Sync resources across clusters)</strong>：提供在多個叢集中保持資源同步的功能，如確保一個 Deployment 可以存在於多個叢集中。</li>
+<li><strong>跨叢集的服務發現(Cross cluster discovery:)</strong>：提供自動配置 DNS 服務以及在所有叢集後端上進行負載平衡功能，如提供全域 VIP 或 DNS record，並透過此存取多個叢集後端。</li>
+</ol>
+<p><img src="/images/kube/federation-api.png" alt></p>
+<p>Federation 有以下幾個好處：</p>
+<ol>
+<li>跨叢集的資源排程，能讓 Pod 分配至不同叢集的不同節點上執行，如果當前叢集超出負荷，能夠將額外附載分配到空閒叢集上。</li>
+<li>叢集的高可靠，能夠做到 Pod 故障自動遷移。</li>
+<li>可管理多個 Kubernetes 叢集。</li>
+<li>跨叢集的服務發現。</li>
+</ol>
+<blockquote>
+<p>雖然 Federation 能夠降低管理多叢集門檻，但是目前依據不建議放到生產環境。以下幾個原因：</p>
+<ul>
+<li><strong>成熟度問題</strong>，目前還處與 Alpha 階段，故很多功能都還處於實現性質，或者不太穩定。</li>
+<li><strong>提升網路頻寬與成本</strong>，由於 Federation 需要監控所有叢集以確保當前狀態符合預期，因是會增加額外效能開銷。</li>
+<li><strong>跨叢集隔離差</strong>，Federation 的子叢集git有可能因為 Bug 的引發而影響其他叢集運行狀況。</li>
+<li>個人用起來不是很穩定，例如建立的 Deployment 刪除很常會 Timeout。</li>
+<li>支援的物件資源有限，如不支援 StatefulSets。可參考 <a href="https://kubernetes.io/docs/concepts/cluster-administration/federation/#api-resources" target="_blank" rel="noopener">API resources</a>。</li>
+</ul>
+</blockquote>
+<p>Federation 主要包含三個元件：</p>
+<ul>
+<li><strong>federation-apiserver</strong>：主要提供跨叢集的 REST API 伺服器，類似 kube-apiserver。</li>
+<li><strong>federation-controller-manager</strong>：提供多個叢集之間的狀態同步，類似 kube-controller-manager。</li>
+<li><strong>kubefed</strong>：Federation CLI 工具，用來初始化 Federation 元件與加入子叢集。</li>
+</ul>
+<h2 id="節點資訊"><a href="#節點資訊" class="headerlink" title="節點資訊"></a>節點資訊</h2><p>本次安裝作業系統採用<code>Ubuntu 16.04 Server</code>，測試環境為實體機器，共有三組叢集：</p>
+<p>Federation 控制平面叢集(簡稱 F):</p>
+<table>
+<thead>
+<tr>
+<th>IP Address</th>
+<th>Host</th>
+<th>vCPU</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.132.31</td>
+<td>k8s-f-m1</td>
+<td>4</td>
+<td>16G</td>
+</tr>
+<tr>
+<td>172.22.132.32</td>
+<td>k8s-f-n1</td>
+<td>4</td>
+<td>16G</td>
+</tr>
+</tbody>
+</table>
+<p>叢集 A:</p>
+<table>
+<thead>
+<tr>
+<th>IP Address</th>
+<th>Host</th>
+<th>vCPU</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.132.41</td>
+<td>k8s-a-m1</td>
+<td>8</td>
+<td>16G</td>
+</tr>
+<tr>
+<td>172.22.132.42</td>
+<td>k8s-a-n1</td>
+<td>8</td>
+<td>16G</td>
+</tr>
+</tbody>
+</table>
+<p>叢集 B:</p>
+<table>
+<thead>
+<tr>
+<th>IP Address</th>
+<th>Host</th>
+<th>vCPU</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.22.132.51</td>
+<td>k8s-b-m1</td>
+<td>8</td>
+<td>16G</td>
+</tr>
+<tr>
+<td>172.22.132.52</td>
+<td>k8s-b-n1</td>
+<td>8</td>
+<td>16G</td>
+</tr>
+</tbody>
+</table>
+<h2 id="事前準備"><a href="#事前準備" class="headerlink" title="事前準備"></a>事前準備</h2><p>安裝與進行 Federation 之前，需要確保以下條件達成：</p>
+<ul>
+<li>所有叢集的節點各自部署成一個 Kubernetes 叢集，請參考 <a href="https://kairen.github.io/2016/09/29/kubernetes/deploy/kubeadm/" target="_blank" rel="noopener">用 kubeadm 部署 Kubernetes 叢集</a>。</li>
+<li>修改 F、A 與 B 叢集的 Kubernetes config，並將 A 與 B 複製到 F 節點，如修改成以下：</li>
+</ul>
+<pre><code class="yaml">...
+...
+  name: k8s-a-cluster
+contexts:
+- context:
+    cluster: k8s-a-cluster
+    user: a-cluster-admin
+  name: a-cluster-context
+current-context: a-cluster-context
+kind: Config
+preferences: {}
+users:
+- name: a-cluster-admin
+  user:
+...
+</code></pre>
+<blockquote>
+<p>這邊需要修改每個叢集 config。</p>
+</blockquote>
+<ul>
+<li>接著在 F 叢集合併 F、A 與 B 三個 config，透過以下方式進行：</li>
+</ul>
+<pre><code class="sh">$ ls
+a-cluster.conf  b-cluster.conf  f-cluster.conf
+
+$ KUBECONFIG=f-cluster.conf:a-cluster.conf:b-cluster.conf kubectl config view --flatten &gt; ~/.kube/config
+$ kubectl config get-contexts
+CURRENT   NAME                CLUSTER         AUTHINFO          NAMESPACE
+          a-cluster-context   k8s-a-cluster   a-cluster-admin
+          b-cluster-context   k8s-b-cluster   b-cluster-admin
+*         f-cluster-context   k8s-f-cluster   f-cluster-admin
+</code></pre>
+<ul>
+<li>在 F 叢集安裝 kubefed 工具：</li>
+</ul>
+<pre><code class="sh">$ wget https://storage.googleapis.com/kubernetes-federation-release/release/v1.9.0-alpha.3/federation-client-linux-amd64.tar.gz
+$ tar xvf federation-client-linux-amd64.tar.gz
+$ cp federation/client/bin/kubefed /usr/local/bin/
+$ kubefed version
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;9+&quot;, GitVersion:&quot;v1.9.0-alpha.3&quot;, GitCommit:&quot;85c06145286da663755b140efa2b65f793cce9ec&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2018-02-14T12:54:40Z&quot;, GoVersion:&quot;go1.9.1&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
+Server Version: version.Info{Major:&quot;1&quot;, Minor:&quot;9&quot;, GitVersion:&quot;v1.9.6&quot;, GitCommit:&quot;9f8ebd171479bec0ada837d7ee641dec2f8c6dd1&quot;, GitTreeState:&quot;clean&quot;, BuildDate:&quot;2018-03-21T15:13:31Z&quot;, GoVersion:&quot;go1.9.3&quot;, Compiler:&quot;gc&quot;, Platform:&quot;linux/amd64&quot;}
+</code></pre>
+<ul>
+<li>在 F 叢集安裝 Helm 工具，並進行初始化：</li>
+</ul>
+<pre><code class="sh">$ wget -qO- https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-amd64.tar.gz | tar -zxf
+$ sudo mv linux-amd64/helm /usr/local/bin/
+$ kubectl -n kube-system create sa tiller
+$ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+$ helm init --service-account tiller
+
+# wait for a few minutes
+$ helm version
+Client: &amp;version.Version{SemVer:&quot;v2.8.1&quot;, GitCommit:&quot;6af75a8fd72e2aa18a2b278cfe5c7a1c5feca7f2&quot;, GitTreeState:&quot;clean&quot;}
+Server: &amp;version.Version{SemVer:&quot;v2.8.1&quot;, GitCommit:&quot;6af75a8fd72e2aa18a2b278cfe5c7a1c5feca7f2&quot;, GitTreeState:&quot;clean&quot;}
+</code></pre>
+<h2 id="部署-Kubernetes-Federation"><a href="#部署-Kubernetes-Federation" class="headerlink" title="部署 Kubernetes Federation"></a>部署 Kubernetes Federation</h2><p>由於本篇是使用實體機器部署 Kubernetes 叢集，因此無法像是 GCP 可以提供 DNS 服務來給 Federation 使用，故這邊要用 CoreDNS 建立自定義 DNS 服務。</p>
+<h3 id="CoreDNS-安裝"><a href="#CoreDNS-安裝" class="headerlink" title="CoreDNS 安裝"></a>CoreDNS 安裝</h3><p>首先透過 Helm 來安裝 CoreDNS 使用到的 Etcd：</p>
+<pre><code class="sh">$ helm install --namespace federation --name etcd-operator stable/etcd-operator
+$ helm upgrade --namespace federation --set cluster.enabled=true etcd-operator stable/etcd-operator
+$ kubectl -n federation get po
+NAME                                                              READY     STATUS    RESTARTS   AGE
+etcd-operator-etcd-operator-etcd-backup-operator-577d56449zqkj2   1/1       Running   0          1m
+etcd-operator-etcd-operator-etcd-operator-56679fb56-fpgmm         1/1       Running   0          1m
+etcd-operator-etcd-operator-etcd-restore-operator-65b6cbccl7kzr   1/1       Running   0          1m
+</code></pre>
+<p>完成後就可以安裝 CoreDNS 來提供自定義 DNS 服務了：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; Values.yaml
+isClusterService: false
+serviceType: NodePort
+middleware:
+  kubernetes:
+    enabled: false
+  etcd:
+    enabled: true
+    zones:
+    - &quot;kairen.com.&quot;
+    endpoint: &quot;http://etcd-cluster.federation:2379&quot;
+EOF
+
+$ kubectl create clusterrolebinding federation-admin --clusterrole=cluster-admin --user=system:serviceaccount:federation:default
+$ helm install --namespace federation --name coredns -f Values.yaml stable/coredns
+# 測試 CoreDNS 可以查詢 Domain Name
+$ kubectl run -it --rm --restart=Never --image=infoblox/dnstools:latest dnstools
+dnstools# host kubernetes
+kubernetes.default.svc.cluster.local has address 10.96.0.1
+</code></pre>
+<h3 id="安裝與初始化-Federation-控制平面元件"><a href="#安裝與初始化-Federation-控制平面元件" class="headerlink" title="安裝與初始化 Federation 控制平面元件"></a>安裝與初始化 Federation 控制平面元件</h3><p>完成 CoreDNS 後，接著透過 kubefed 安裝控制平面元件，由於使用到 CoreDNS，因此這邊要傳入相關 conf 檔，首先建立<code>coredns-provider.conf</code>檔案，加入以下內容：</p>
+<pre><code class="sh">$ cat &lt;&lt;EOF &gt; coredns-provider.conf
+[Global]
+etcd-endpoints = http://etcd-cluster.federation:2379
+zones = kairen.com.
+EOF
+</code></pre>
+<blockquote>
+<p>請自行修改<code>etcd-endpoints</code>與<code>zones</code>。</p>
+</blockquote>
+<p>檔案建立並確認沒問題後，透過 kubefed 工具來初始化主叢集：</p>
+<pre><code class="sh">$ kubefed init federation \
+  --host-cluster-context=f-cluster-context \
+  --dns-provider=&quot;coredns&quot; \
+  --dns-zone-name=&quot;kairen.com.&quot; \
+  --apiserver-enable-basic-auth=true \
+  --apiserver-enable-token-auth=true \
+  --dns-provider-config=&quot;coredns-provider.conf&quot; \
+  --apiserver-arg-overrides=&quot;--anonymous-auth=false,--v=4&quot; \
+  --api-server-service-type=&quot;NodePort&quot; \
+  --api-server-advertise-address=&quot;172.22.132.31&quot; \
+  --etcd-persistent-storage=true
+
+$ kubectl -n federation-system get po
+NAME                                  READY     STATUS    RESTARTS   AGE
+apiserver-848d584b5d-cwxdh            2/2       Running   0          1m
+controller-manager-5846c555c6-mw2jz   1/1       Running   1          1m
+</code></pre>
+<blockquote>
+<p>這邊可以改變<code>--etcd-persistent-storage</code>來選擇使用或不使用 PV，若使用請先建立一個 PV 來提供給 Federation Pod 的 PVC 索取使用，可以參考 <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/" target="_blank" rel="noopener">Persistent Volumes</a>。</p>
+</blockquote>
+<h3 id="加入-Federation-的-Kubernetes-子叢集"><a href="#加入-Federation-的-Kubernetes-子叢集" class="headerlink" title="加入 Federation 的 Kubernetes 子叢集"></a>加入 Federation 的 Kubernetes 子叢集</h3><pre><code class="sh">$ kubectl config use-context federation
+
+# 加入 k8s-a-cluster
+$ kubefed join f-a-cluster \
+  --cluster-context=a-cluster-context \
+  --host-cluster-context=f-cluster-context
+
+# 加入 k8s-b-cluster
+$ kubefed join f-b-cluster \
+  --cluster-context=b-cluster-context \
+  --host-cluster-context=f-cluster-context
+
+$ kubectl get cluster
+NAME          AGE
+f-a-cluster   57s
+f-b-cluster   53s
+</code></pre>
+<h2 id="測試-Federation-叢集"><a href="#測試-Federation-叢集" class="headerlink" title="測試 Federation 叢集"></a>測試 Federation 叢集</h2><p>這邊利用 Nginx Deployment 來進行測試，先簡單建立一個副本為 4 的 Nginx：</p>
+<pre><code class="sh">$ kubectl config use-context federation
+$ kubectl create ns default
+$ kubectl run nginx --image nginx --port 80 --replicas=4
+</code></pre>
+<p>查看 Cluster A：</p>
+<pre><code class="sh">$ kubectl --context=a-cluster-context get po
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-7587c6fdb6-dpjv5   1/1       Running   0          25s
+nginx-7587c6fdb6-sjv8v   1/1       Running   0          25s
+</code></pre>
+<p>查看 Cluster B：</p>
+<pre><code class="sh">$ kubectl --context=b-cluster-context get po
+NAME                     READY     STATUS    RESTARTS   AGE
+nginx-7587c6fdb6-dv45v   1/1       Running   0          1m
+nginx-7587c6fdb6-wxsmq   1/1       Running   0          1m
+</code></pre>
+<p>其他可測試功能：</p>
+<ul>
+<li>設定 Replica set preferences，參考 <a href="https://kubernetes.io/docs/tasks/administer-federation/replicaset/#spreading-replicas-in-underlying-clusters" target="_blank" rel="noopener">Spreading Replicas in Underlying Clusters</a>。</li>
+<li>Federation 在 v1.7+ 加入了 <a href="https://kubernetes.io/docs/tasks/administer-federation/cluster/#clusterselector-annotation" target="_blank" rel="noopener">ClusterSelector Annotation</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/federation/set-up-placement-policies-federation/#deploying-federation-and-configuring-an-external-policy-engine" target="_blank" rel="noopener">Scheduling Policy</a>。</li>
+</ul>
+<h2 id="Refers"><a href="#Refers" class="headerlink" title="Refers"></a>Refers</h2><ul>
+<li><a href="https://github.com/emaildanwilson/minikube-federation" target="_blank" rel="noopener">Minikube Federation</a></li>
+<li><a href="http://cgrant.io/tutorials/gcp/compute/gke/global-kubernetes-three-steps/" target="_blank" rel="noopener">Global Kubernetes in 3 Steps</a></li>
+</ul>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/04/05/kubernetes/deploy/manual-v1.10/" data-toggle="tooltip" data-placement="top" title="Kubernetes v1.10.x HA 全手動苦工安裝教學(TL;DR)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/03/15/tensorflow/kubeflow/" data-toggle="tooltip" data-placement="top" title="利用 Kubeflow 來管理 TensorFlow 應用程式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#節點資訊"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">節點資訊</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#事前準備"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">事前準備</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署-Kubernetes-Federation"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署 Kubernetes Federation</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#CoreDNS-安裝"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">CoreDNS 安裝</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安裝與初始化-Federation-控制平面元件"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">安裝與初始化 Federation 控制平面元件</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#加入-Federation-的-Kubernetes-子叢集"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">加入 Federation 的 Kubernetes 子叢集</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#測試-Federation-叢集"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">測試 Federation 叢集</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Refers"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Refers</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#Federation" title="Federation">Federation</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.github.io/2018/03/21/kubernetes/k8s-federation/";
+    var disqus_url = "https://readailib.github.io/2018/03/21/kubernetes/k8s-federation/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.github.io/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
