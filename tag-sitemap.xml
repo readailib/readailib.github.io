@@ -2,560 +2,560 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>https://readailib.github.io/tags/Ethereum/</loc>
+        <loc>https://readailib.com/tags/Ethereum/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Blockchain/</loc>
+        <loc>https://readailib.com/tags/Blockchain/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Solidity/</loc>
+        <loc>https://readailib.com/tags/Solidity/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Smart-Contract/</loc>
+        <loc>https://readailib.com/tags/Smart-Contract/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Distribution-System/</loc>
+        <loc>https://readailib.com/tags/Distribution-System/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/SPDK/</loc>
+        <loc>https://readailib.com/tags/SPDK/</loc>
         <lastmod>2019-03-05T14:37:50.208Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/BlueStore/</loc>
+        <loc>https://readailib.com/tags/BlueStore/</loc>
         <lastmod>2019-03-05T14:37:50.209Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Ceph/</loc>
+        <loc>https://readailib.com/tags/Ceph/</loc>
         <lastmod>2019-03-05T14:37:50.210Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Container/</loc>
+        <loc>https://readailib.com/tags/Container/</loc>
         <lastmod>2019-03-05T14:37:50.211Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Docker-Swarm/</loc>
+        <loc>https://readailib.com/tags/Docker-Swarm/</loc>
         <lastmod>2019-03-05T14:37:50.211Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Docker-registry/</loc>
+        <loc>https://readailib.com/tags/Docker-registry/</loc>
         <lastmod>2019-03-05T14:37:50.212Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Concurrent/</loc>
+        <loc>https://readailib.com/tags/Concurrent/</loc>
         <lastmod>2019-03-05T14:37:50.212Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Moby/</loc>
+        <loc>https://readailib.com/tags/Moby/</loc>
         <lastmod>2019-03-05T14:37:50.212Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Microkernel/</loc>
+        <loc>https://readailib.com/tags/Microkernel/</loc>
         <lastmod>2019-03-05T14:37:50.212Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Java/</loc>
+        <loc>https://readailib.com/tags/Java/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Database/</loc>
+        <loc>https://readailib.com/tags/Database/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/NoSQL/</loc>
+        <loc>https://readailib.com/tags/NoSQL/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Maven/</loc>
+        <loc>https://readailib.com/tags/Maven/</loc>
         <lastmod>2019-03-05T14:37:50.213Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Kafka/</loc>
+        <loc>https://readailib.com/tags/Kafka/</loc>
         <lastmod>2019-03-05T14:37:50.214Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Message-Queue/</loc>
+        <loc>https://readailib.com/tags/Message-Queue/</loc>
         <lastmod>2019-03-05T14:37:50.214Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/DC-OS/</loc>
+        <loc>https://readailib.com/tags/DC-OS/</loc>
         <lastmod>2019-03-05T14:37:50.214Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Spark/</loc>
+        <loc>https://readailib.com/tags/Spark/</loc>
         <lastmod>2019-03-05T14:37:50.215Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Benchmark/</loc>
+        <loc>https://readailib.com/tags/Benchmark/</loc>
         <lastmod>2019-03-05T14:37:50.215Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Mesos/</loc>
+        <loc>https://readailib.com/tags/Mesos/</loc>
         <lastmod>2019-03-05T14:37:50.215Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/HDFS/</loc>
+        <loc>https://readailib.com/tags/HDFS/</loc>
         <lastmod>2019-03-05T14:37:50.215Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Logging/</loc>
+        <loc>https://readailib.com/tags/Logging/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Visualization/</loc>
+        <loc>https://readailib.com/tags/Visualization/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Data-Collect/</loc>
+        <loc>https://readailib.com/tags/Data-Collect/</loc>
         <lastmod>2019-03-05T14:37:50.217Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/DevOps/</loc>
+        <loc>https://readailib.com/tags/DevOps/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Monitoring/</loc>
+        <loc>https://readailib.com/tags/Monitoring/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/CNCF/</loc>
+        <loc>https://readailib.com/tags/CNCF/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Prometheus/</loc>
+        <loc>https://readailib.com/tags/Prometheus/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Automation-Engine/</loc>
+        <loc>https://readailib.com/tags/Automation-Engine/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Puppet/</loc>
+        <loc>https://readailib.com/tags/Puppet/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/OS-X/</loc>
+        <loc>https://readailib.com/tags/OS-X/</loc>
         <lastmod>2019-03-05T14:37:50.218Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Kops/</loc>
+        <loc>https://readailib.com/tags/Kops/</loc>
         <lastmod>2019-03-05T14:37:50.219Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/AWS/</loc>
+        <loc>https://readailib.com/tags/AWS/</loc>
         <lastmod>2019-03-05T14:37:50.220Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/CentOS/</loc>
+        <loc>https://readailib.com/tags/CentOS/</loc>
         <lastmod>2019-03-05T14:37:50.220Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/kubeadm/</loc>
+        <loc>https://readailib.com/tags/kubeadm/</loc>
         <lastmod>2019-03-05T14:37:50.220Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/LinuxKit/</loc>
+        <loc>https://readailib.com/tags/LinuxKit/</loc>
         <lastmod>2019-03-05T14:37:50.221Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Calico/</loc>
+        <loc>https://readailib.com/tags/Calico/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/CoreOS/</loc>
+        <loc>https://readailib.com/tags/CoreOS/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Vagrant/</loc>
+        <loc>https://readailib.com/tags/Vagrant/</loc>
         <lastmod>2019-03-05T14:37:50.223Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Linux-Container/</loc>
+        <loc>https://readailib.com/tags/Linux-Container/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Golang/</loc>
+        <loc>https://readailib.com/tags/Golang/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Keystone/</loc>
+        <loc>https://readailib.com/tags/Keystone/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Federation/</loc>
+        <loc>https://readailib.com/tags/Federation/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/CoreDNS/</loc>
+        <loc>https://readailib.com/tags/CoreDNS/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/LDAP/</loc>
+        <loc>https://readailib.com/tags/LDAP/</loc>
         <lastmod>2019-03-05T14:37:50.224Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/NVIDIA-GPU/</loc>
+        <loc>https://readailib.com/tags/NVIDIA-GPU/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Kubernetes-RBAC/</loc>
+        <loc>https://readailib.com/tags/Kubernetes-RBAC/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Serverless/</loc>
+        <loc>https://readailib.com/tags/Serverless/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Istio/</loc>
+        <loc>https://readailib.com/tags/Istio/</loc>
         <lastmod>2019-03-05T14:37:50.225Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/HTTP-Server/</loc>
+        <loc>https://readailib.com/tags/HTTP-Server/</loc>
         <lastmod>2019-03-05T14:37:50.226Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Storage/</loc>
+        <loc>https://readailib.com/tags/Storage/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/File-System/</loc>
+        <loc>https://readailib.com/tags/File-System/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/SSD/</loc>
+        <loc>https://readailib.com/tags/Load-Balancer/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Load-Balancer/</loc>
+        <loc>https://readailib.com/tags/High-Availability/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/High-Availability/</loc>
+        <loc>https://readailib.com/tags/SSD/</loc>
         <lastmod>2019-03-05T14:37:50.227Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Linux/</loc>
+        <loc>https://readailib.com/tags/Linux/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Git/</loc>
+        <loc>https://readailib.com/tags/Programming/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Python/</loc>
+        <loc>https://readailib.com/tags/OOP/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Programming/</loc>
+        <loc>https://readailib.com/tags/Git/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/OOP/</loc>
+        <loc>https://readailib.com/tags/Python/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/iOS/</loc>
+        <loc>https://readailib.com/tags/iOS/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/PXE/</loc>
+        <loc>https://readailib.com/tags/PXE/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Bare-Metal/</loc>
+        <loc>https://readailib.com/tags/Bare-Metal/</loc>
         <lastmod>2019-03-05T14:37:50.228Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/OpenStack/</loc>
+        <loc>https://readailib.com/tags/OpenStack/</loc>
         <lastmod>2019-03-05T14:37:50.229Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Ansible/</loc>
+        <loc>https://readailib.com/tags/Ansible/</loc>
         <lastmod>2019-03-05T14:37:50.229Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/DevStack/</loc>
+        <loc>https://readailib.com/tags/DevStack/</loc>
         <lastmod>2019-03-05T14:37:50.229Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Bare-metal/</loc>
+        <loc>https://readailib.com/tags/Bare-metal/</loc>
         <lastmod>2019-03-05T14:37:50.229Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Openstack/</loc>
+        <loc>https://readailib.com/tags/Openstack/</loc>
         <lastmod>2019-03-05T14:37:50.230Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Ubuntu/</loc>
+        <loc>https://readailib.com/tags/Ubuntu/</loc>
         <lastmod>2019-03-05T14:37:50.230Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Helm/</loc>
+        <loc>https://readailib.com/tags/Helm/</loc>
         <lastmod>2019-03-05T14:37:50.230Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Docker/</loc>
+        <loc>https://readailib.com/tags/Docker/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Kubernetes/</loc>
+        <loc>https://readailib.com/tags/Kubernetes/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/TensorFlow/</loc>
+        <loc>https://readailib.com/tags/TensorFlow/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/Machine-Learning/</loc>
+        <loc>https://readailib.com/tags/Machine-Learning/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/GPU/</loc>
+        <loc>https://readailib.com/tags/GPU/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.github.io/tags/DL-ML/</loc>
+        <loc>https://readailib.com/tags/DL-ML/</loc>
         <lastmod>2019-03-05T14:37:50.231Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>

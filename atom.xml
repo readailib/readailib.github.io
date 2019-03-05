@@ -5,9 +5,9 @@
   <subtitle>Learn Anything, Anytime, Anywhere~</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://readailib.github.io/"/>
+  <link href="https://readailib.com/"/>
   <updated>2019-03-05T14:37:50.224Z</updated>
-  <id>https://readailib.github.io/</id>
+  <id>https://readailib.com/</id>
   
   <author>
     <name>ShenHengheng</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>了解與實作 Kubernetes Leader Election 功能</title>
-    <link href="https://readailib.github.io/2019/02/05/kubernetes/k8s-leader-election/"/>
-    <id>https://readailib.github.io/2019/02/05/kubernetes/k8s-leader-election/</id>
+    <link href="https://readailib.com/2019/02/05/kubernetes/k8s-leader-election/"/>
+    <id>https://readailib.com/2019/02/05/kubernetes/k8s-leader-election/</id>
     <published>2019-02-05T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.224Z</updated>
     
@@ -27,19 +27,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Golang" scheme="https://readailib.github.io/tags/Golang/"/>
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
   </entry>
   
   <entry>
     <title>利用 Minikube 快速建立測試用 Kubernetes 叢集</title>
-    <link href="https://readailib.github.io/2019/01/22/kubernetes/deploy/minikube-multi-node/"/>
-    <id>https://readailib.github.io/2019/01/22/kubernetes/deploy/minikube-multi-node/</id>
+    <link href="https://readailib.com/2019/01/22/kubernetes/deploy/minikube-multi-node/"/>
+    <id>https://readailib.com/2019/01/22/kubernetes/deploy/minikube-multi-node/</id>
     <published>2019-01-22T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.223Z</updated>
     
@@ -52,21 +52,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Docker" scheme="https://readailib.github.io/tags/Docker/"/>
+      <category term="Docker" scheme="https://readailib.com/tags/Docker/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Calico" scheme="https://readailib.github.io/tags/Calico/"/>
+      <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
     
   </entry>
   
   <entry>
     <title>開發 Ansible Playbooks 部署 Kubernetes v1.11.x HA 叢集</title>
-    <link href="https://readailib.github.io/2018/08/12/kubernetes/deploy/k8s-ansible-ha/"/>
-    <id>https://readailib.github.io/2018/08/12/kubernetes/deploy/k8s-ansible-ha/</id>
+    <link href="https://readailib.com/2018/08/12/kubernetes/deploy/k8s-ansible-ha/"/>
+    <id>https://readailib.com/2018/08/12/kubernetes/deploy/k8s-ansible-ha/</id>
     <published>2018-08-12T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.219Z</updated>
     
@@ -85,21 +85,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Docker" scheme="https://readailib.github.io/tags/Docker/"/>
+      <category term="Docker" scheme="https://readailib.com/tags/Docker/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Ansible" scheme="https://readailib.github.io/tags/Ansible/"/>
+      <category term="Ansible" scheme="https://readailib.com/tags/Ansible/"/>
     
   </entry>
   
   <entry>
     <title>初探 Knative 基本功能與概念</title>
-    <link href="https://readailib.github.io/2018/07/27/kubernetes/knative-intro/"/>
-    <id>https://readailib.github.io/2018/07/27/kubernetes/knative-intro/</id>
+    <link href="https://readailib.com/2018/07/27/kubernetes/knative-intro/"/>
+    <id>https://readailib.com/2018/07/27/kubernetes/knative-intro/</id>
     <published>2018-07-27T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.225Z</updated>
     
@@ -115,21 +115,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Serverless" scheme="https://readailib.github.io/tags/Serverless/"/>
+      <category term="Serverless" scheme="https://readailib.com/tags/Serverless/"/>
     
-      <category term="Istio" scheme="https://readailib.github.io/tags/Istio/"/>
+      <category term="Istio" scheme="https://readailib.com/tags/Istio/"/>
     
   </entry>
   
   <entry>
     <title>以 ExternalDNS 自動同步 Kubernetes Ingress 與 Service DNS 資源紀錄</title>
-    <link href="https://readailib.github.io/2018/07/19/kubernetes/k8s-external-dns/"/>
-    <id>https://readailib.github.io/2018/07/19/kubernetes/k8s-external-dns/</id>
+    <link href="https://readailib.com/2018/07/19/kubernetes/k8s-external-dns/"/>
+    <id>https://readailib.com/2018/07/19/kubernetes/k8s-external-dns/</id>
     <published>2018-07-19T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.224Z</updated>
     
@@ -141,19 +141,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="CoreDNS" scheme="https://readailib.github.io/tags/CoreDNS/"/>
+      <category term="CoreDNS" scheme="https://readailib.com/tags/CoreDNS/"/>
     
   </entry>
   
   <entry>
     <title>利用 kubeadm 部署 Kubernetes v1.11.x HA 叢集</title>
-    <link href="https://readailib.github.io/2018/07/17/kubernetes/deploy/kubeadm-v1.11-ha/"/>
-    <id>https://readailib.github.io/2018/07/17/kubernetes/deploy/kubeadm-v1.11-ha/</id>
+    <link href="https://readailib.com/2018/07/17/kubernetes/deploy/kubeadm-v1.11-ha/"/>
+    <id>https://readailib.com/2018/07/17/kubernetes/deploy/kubeadm-v1.11-ha/</id>
     <published>2018-07-17T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.220Z</updated>
     
@@ -165,21 +165,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Calico" scheme="https://readailib.github.io/tags/Calico/"/>
+      <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
     
-      <category term="kubeadm" scheme="https://readailib.github.io/tags/kubeadm/"/>
+      <category term="kubeadm" scheme="https://readailib.com/tags/kubeadm/"/>
     
   </entry>
   
   <entry>
     <title>Kubernetes v1.11.x HA 全手動苦工安裝教學(TL;DR)</title>
-    <link href="https://readailib.github.io/2018/07/09/kubernetes/deploy/manual-v1.11/"/>
-    <id>https://readailib.github.io/2018/07/09/kubernetes/deploy/manual-v1.11/</id>
+    <link href="https://readailib.com/2018/07/09/kubernetes/deploy/manual-v1.11/"/>
+    <id>https://readailib.com/2018/07/09/kubernetes/deploy/manual-v1.11/</id>
     <published>2018-07-09T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.222Z</updated>
     
@@ -192,21 +192,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Docker" scheme="https://readailib.github.io/tags/Docker/"/>
+      <category term="Docker" scheme="https://readailib.com/tags/Docker/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Calico" scheme="https://readailib.github.io/tags/Calico/"/>
+      <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
     
   </entry>
   
   <entry>
     <title>Prometheus 高可靠實現方式</title>
-    <link href="https://readailib.github.io/2018/07/01/devops/prometheus-ha/"/>
-    <id>https://readailib.github.io/2018/07/01/devops/prometheus-ha/</id>
+    <link href="https://readailib.com/2018/07/01/devops/prometheus-ha/"/>
+    <id>https://readailib.com/2018/07/01/devops/prometheus-ha/</id>
     <published>2018-07-01T04:23:01.000Z</published>
     <updated>2019-03-05T14:37:50.217Z</updated>
     
@@ -221,23 +221,23 @@
     
     </summary>
     
-      <category term="DevOps" scheme="https://readailib.github.io/categories/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/categories/DevOps/"/>
     
     
-      <category term="DevOps" scheme="https://readailib.github.io/tags/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/tags/DevOps/"/>
     
-      <category term="Monitoring" scheme="https://readailib.github.io/tags/Monitoring/"/>
+      <category term="Monitoring" scheme="https://readailib.com/tags/Monitoring/"/>
     
-      <category term="CNCF" scheme="https://readailib.github.io/tags/CNCF/"/>
+      <category term="CNCF" scheme="https://readailib.com/tags/CNCF/"/>
     
-      <category term="Prometheus" scheme="https://readailib.github.io/tags/Prometheus/"/>
+      <category term="Prometheus" scheme="https://readailib.com/tags/Prometheus/"/>
     
   </entry>
   
   <entry>
     <title>了解 Prometheus Federation 功能</title>
-    <link href="https://readailib.github.io/2018/06/29/devops/prometheus-federation/"/>
-    <id>https://readailib.github.io/2018/06/29/devops/prometheus-federation/</id>
+    <link href="https://readailib.com/2018/06/29/devops/prometheus-federation/"/>
+    <id>https://readailib.com/2018/06/29/devops/prometheus-federation/</id>
     <published>2018-06-29T04:23:01.000Z</published>
     <updated>2019-03-05T14:37:50.217Z</updated>
     
@@ -250,23 +250,23 @@
     
     </summary>
     
-      <category term="DevOps" scheme="https://readailib.github.io/categories/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/categories/DevOps/"/>
     
     
-      <category term="DevOps" scheme="https://readailib.github.io/tags/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/tags/DevOps/"/>
     
-      <category term="Monitoring" scheme="https://readailib.github.io/tags/Monitoring/"/>
+      <category term="Monitoring" scheme="https://readailib.com/tags/Monitoring/"/>
     
-      <category term="CNCF" scheme="https://readailib.github.io/tags/CNCF/"/>
+      <category term="CNCF" scheme="https://readailib.com/tags/CNCF/"/>
     
-      <category term="Prometheus" scheme="https://readailib.github.io/tags/Prometheus/"/>
+      <category term="Prometheus" scheme="https://readailib.com/tags/Prometheus/"/>
     
   </entry>
   
   <entry>
     <title>Kubernetes exec API 串接分析</title>
-    <link href="https://readailib.github.io/2018/06/25/kubernetes/k8x-exec-api/"/>
-    <id>https://readailib.github.io/2018/06/25/kubernetes/k8x-exec-api/</id>
+    <link href="https://readailib.com/2018/06/25/kubernetes/k8x-exec-api/"/>
+    <id>https://readailib.com/2018/06/25/kubernetes/k8x-exec-api/</id>
     <published>2018-06-25T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.225Z</updated>
     
@@ -278,17 +278,17 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
   </entry>
   
   <entry>
     <title>Prometheus Operator 介紹與安裝</title>
-    <link href="https://readailib.github.io/2018/06/23/devops/prometheus-operator/"/>
-    <id>https://readailib.github.io/2018/06/23/devops/prometheus-operator/</id>
+    <link href="https://readailib.com/2018/06/23/devops/prometheus-operator/"/>
+    <id>https://readailib.com/2018/06/23/devops/prometheus-operator/</id>
     <published>2018-06-23T04:23:01.000Z</published>
     <updated>2019-03-05T14:37:50.218Z</updated>
     
@@ -301,25 +301,25 @@
     
     </summary>
     
-      <category term="DevOps" scheme="https://readailib.github.io/categories/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/categories/DevOps/"/>
     
     
-      <category term="DevOps" scheme="https://readailib.github.io/tags/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/tags/DevOps/"/>
     
-      <category term="Monitoring" scheme="https://readailib.github.io/tags/Monitoring/"/>
+      <category term="Monitoring" scheme="https://readailib.com/tags/Monitoring/"/>
     
-      <category term="CNCF" scheme="https://readailib.github.io/tags/CNCF/"/>
+      <category term="CNCF" scheme="https://readailib.com/tags/CNCF/"/>
     
-      <category term="Prometheus" scheme="https://readailib.github.io/tags/Prometheus/"/>
+      <category term="Prometheus" scheme="https://readailib.com/tags/Prometheus/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
   </entry>
   
   <entry>
     <title>Prometheus 介紹與基礎入門</title>
-    <link href="https://readailib.github.io/2018/06/10/devops/prometheus-intro/"/>
-    <id>https://readailib.github.io/2018/06/10/devops/prometheus-intro/</id>
+    <link href="https://readailib.com/2018/06/10/devops/prometheus-intro/"/>
+    <id>https://readailib.com/2018/06/10/devops/prometheus-intro/</id>
     <published>2018-06-10T04:23:01.000Z</published>
     <updated>2019-03-05T14:37:50.217Z</updated>
     
@@ -331,23 +331,23 @@
     
     </summary>
     
-      <category term="DevOps" scheme="https://readailib.github.io/categories/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/categories/DevOps/"/>
     
     
-      <category term="DevOps" scheme="https://readailib.github.io/tags/DevOps/"/>
+      <category term="DevOps" scheme="https://readailib.com/tags/DevOps/"/>
     
-      <category term="Monitoring" scheme="https://readailib.github.io/tags/Monitoring/"/>
+      <category term="Monitoring" scheme="https://readailib.com/tags/Monitoring/"/>
     
-      <category term="CNCF" scheme="https://readailib.github.io/tags/CNCF/"/>
+      <category term="CNCF" scheme="https://readailib.com/tags/CNCF/"/>
     
-      <category term="Prometheus" scheme="https://readailib.github.io/tags/Prometheus/"/>
+      <category term="Prometheus" scheme="https://readailib.com/tags/Prometheus/"/>
     
   </entry>
   
   <entry>
     <title>以 Keystone 作為 Kubernetes 使用者認證</title>
-    <link href="https://readailib.github.io/2018/05/30/kubernetes/k8s-integration-keystone/"/>
-    <id>https://readailib.github.io/2018/05/30/kubernetes/k8s-integration-keystone/</id>
+    <link href="https://readailib.com/2018/05/30/kubernetes/k8s-integration-keystone/"/>
+    <id>https://readailib.com/2018/05/30/kubernetes/k8s-integration-keystone/</id>
     <published>2018-05-30T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.224Z</updated>
     
@@ -359,19 +359,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Keystone" scheme="https://readailib.github.io/tags/Keystone/"/>
+      <category term="Keystone" scheme="https://readailib.com/tags/Keystone/"/>
     
   </entry>
   
   <entry>
     <title>在 AWS 上建立跨地區的 Kubernetes Federation 叢集</title>
-    <link href="https://readailib.github.io/2018/04/21/kubernetes/aws-k8s-federation/"/>
-    <id>https://readailib.github.io/2018/04/21/kubernetes/aws-k8s-federation/</id>
+    <link href="https://readailib.com/2018/04/21/kubernetes/aws-k8s-federation/"/>
+    <id>https://readailib.com/2018/04/21/kubernetes/aws-k8s-federation/</id>
     <published>2018-04-21T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.219Z</updated>
     
@@ -384,23 +384,23 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="AWS" scheme="https://readailib.github.io/tags/AWS/"/>
+      <category term="AWS" scheme="https://readailib.com/tags/AWS/"/>
     
-      <category term="Kops" scheme="https://readailib.github.io/tags/Kops/"/>
+      <category term="Kops" scheme="https://readailib.com/tags/Kops/"/>
     
-      <category term="Federation" scheme="https://readailib.github.io/tags/Federation/"/>
+      <category term="Federation" scheme="https://readailib.com/tags/Federation/"/>
     
   </entry>
   
   <entry>
     <title>使用 Kops 部署 Kubernetes 至公有雲(AWS)</title>
-    <link href="https://readailib.github.io/2018/04/18/kubernetes/deploy/kops-aws/"/>
-    <id>https://readailib.github.io/2018/04/18/kubernetes/deploy/kops-aws/</id>
+    <link href="https://readailib.com/2018/04/18/kubernetes/deploy/kops-aws/"/>
+    <id>https://readailib.com/2018/04/18/kubernetes/deploy/kops-aws/</id>
     <published>2018-04-18T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.220Z</updated>
     
@@ -417,19 +417,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="AWS" scheme="https://readailib.github.io/tags/AWS/"/>
+      <category term="AWS" scheme="https://readailib.com/tags/AWS/"/>
     
   </entry>
   
   <entry>
     <title>整合 Open LDAP 進行 Kubernetes 身份認證</title>
-    <link href="https://readailib.github.io/2018/04/15/kubernetes/k8s-integration-ldap/"/>
-    <id>https://readailib.github.io/2018/04/15/kubernetes/k8s-integration-ldap/</id>
+    <link href="https://readailib.com/2018/04/15/kubernetes/k8s-integration-ldap/"/>
+    <id>https://readailib.com/2018/04/15/kubernetes/k8s-integration-ldap/</id>
     <published>2018-04-15T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.224Z</updated>
     
@@ -441,19 +441,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="LDAP" scheme="https://readailib.github.io/tags/LDAP/"/>
+      <category term="LDAP" scheme="https://readailib.com/tags/LDAP/"/>
     
   </entry>
   
   <entry>
     <title>Kubernetes v1.10.x HA 全手動苦工安裝教學(TL;DR)</title>
-    <link href="https://readailib.github.io/2018/04/05/kubernetes/deploy/manual-v1.10/"/>
-    <id>https://readailib.github.io/2018/04/05/kubernetes/deploy/manual-v1.10/</id>
+    <link href="https://readailib.com/2018/04/05/kubernetes/deploy/manual-v1.10/"/>
+    <id>https://readailib.com/2018/04/05/kubernetes/deploy/manual-v1.10/</id>
     <published>2018-04-05T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.222Z</updated>
     
@@ -473,21 +473,21 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Docker" scheme="https://readailib.github.io/tags/Docker/"/>
+      <category term="Docker" scheme="https://readailib.com/tags/Docker/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Calico" scheme="https://readailib.github.io/tags/Calico/"/>
+      <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
     
   </entry>
   
   <entry>
     <title>使用 kubefed 建立 Kubernetes Federation(On-premises)</title>
-    <link href="https://readailib.github.io/2018/03/21/kubernetes/k8s-federation/"/>
-    <id>https://readailib.github.io/2018/03/21/kubernetes/k8s-federation/</id>
+    <link href="https://readailib.com/2018/03/21/kubernetes/k8s-federation/"/>
+    <id>https://readailib.com/2018/03/21/kubernetes/k8s-federation/</id>
     <published>2018-03-21T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.224Z</updated>
     
@@ -499,19 +499,19 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="Federation" scheme="https://readailib.github.io/tags/Federation/"/>
+      <category term="Federation" scheme="https://readailib.com/tags/Federation/"/>
     
   </entry>
   
   <entry>
     <title>利用 Kubeflow 來管理 TensorFlow 應用程式</title>
-    <link href="https://readailib.github.io/2018/03/15/tensorflow/kubeflow/"/>
-    <id>https://readailib.github.io/2018/03/15/tensorflow/kubeflow/</id>
+    <link href="https://readailib.com/2018/03/15/tensorflow/kubeflow/"/>
+    <id>https://readailib.com/2018/03/15/tensorflow/kubeflow/</id>
     <published>2018-03-15T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.231Z</updated>
     
@@ -524,23 +524,23 @@
     
     </summary>
     
-      <category term="TensorFlow" scheme="https://readailib.github.io/categories/TensorFlow/"/>
+      <category term="TensorFlow" scheme="https://readailib.com/categories/TensorFlow/"/>
     
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
-      <category term="TensorFlow" scheme="https://readailib.github.io/tags/TensorFlow/"/>
+      <category term="TensorFlow" scheme="https://readailib.com/tags/TensorFlow/"/>
     
-      <category term="GPU" scheme="https://readailib.github.io/tags/GPU/"/>
+      <category term="GPU" scheme="https://readailib.com/tags/GPU/"/>
     
-      <category term="DL/ML" scheme="https://readailib.github.io/tags/DL-ML/"/>
+      <category term="DL/ML" scheme="https://readailib.com/tags/DL-ML/"/>
     
   </entry>
   
   <entry>
     <title>Kubernetes NVIDIA Device Plugins</title>
-    <link href="https://readailib.github.io/2018/03/01/kubernetes/nvidia-device-plugin/"/>
-    <id>https://readailib.github.io/2018/03/01/kubernetes/nvidia-device-plugin/</id>
+    <link href="https://readailib.com/2018/03/01/kubernetes/nvidia-device-plugin/"/>
+    <id>https://readailib.com/2018/03/01/kubernetes/nvidia-device-plugin/</id>
     <published>2018-03-01T09:08:54.000Z</published>
     <updated>2019-03-05T14:37:50.225Z</updated>
     
@@ -553,12 +553,12 @@
     
     </summary>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/categories/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/categories/Kubernetes/"/>
     
     
-      <category term="NVIDIA GPU" scheme="https://readailib.github.io/tags/NVIDIA-GPU/"/>
+      <category term="NVIDIA GPU" scheme="https://readailib.com/tags/NVIDIA-GPU/"/>
     
-      <category term="Kubernetes" scheme="https://readailib.github.io/tags/Kubernetes/"/>
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
   </entry>
   
