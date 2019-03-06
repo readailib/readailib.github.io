@@ -407,16 +407,16 @@ CMD [ &quot;app-server&quot; ]
 </code></pre>
 <blockquote class="colorquote info"><p>这里也参考了知乎的这片文章：<a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></p>
 <p>主要修改如下：</p>
-<p>\1.  增加了</p>
+<p>(1).  增加了</p>
 <pre><code class="dockerfile"><span class="keyword">ENV</span> http_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
 <span class="keyword">ENV</span> https_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
 </code></pre>
 <p>这是因为国内的网络环境，我们需要添加代理，才能拉取相关的依赖包</p>
-<p>\2.  修改了</p>
+<p>(2).  修改了</p>
 <pre><code class="dockerfile"><span class="keyword">RUN</span><span class="bash"> GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server</span>
 </code></pre>
 <p> 这是因为我们需要在树莓派 arm架构下去编译和运行golang程序，因此需要交叉编译。</p>
-<p>\3. 修改了</p>
+<p>(3). 修改了</p>
 <pre><code class="dockerfile"><span class="keyword">FROM</span> armhf/alpine:latest
 </code></pre>
 <p>这个也是因为硬件架构的不同进行相应的修改</p>

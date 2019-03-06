@@ -7,16 +7,16 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/</loc>
-        <lastmod>2019-03-05T17:10:31.640Z</lastmod>
+        <loc>https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/</loc>
+        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/</loc>
-        <lastmod>2019-03-05T17:05:10.363Z</lastmod>
+        <loc>https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/</loc>
+        <lastmod>2019-03-05T23:56:58.297Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
