@@ -2,71 +2,71 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>https://readailib.com/tags/Kubernetes/</loc>
-        <lastmod>2019-03-05T23:56:58.297Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Edge-Computing/</loc>
-        <lastmod>2019-03-05T23:56:58.297Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Gin/</loc>
-        <lastmod>2019-03-05T23:56:58.297Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Simple-Example/</loc>
-        <lastmod>2019-03-05T23:56:58.297Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/kubernetes/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/RaspberryPi/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
+        <lastmod>2019-03-06T00:22:59.405Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/Edge-computing/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
+        <lastmod>2019-03-06T00:22:59.405Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/gRPC/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Golang/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
+        <lastmod>2019-03-06T00:22:59.405Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/REST/</loc>
-        <lastmod>2019-03-05T23:57:18.066Z</lastmod>
+        <lastmod>2019-03-06T00:22:59.405Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Kubernetes/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/RaspberryPi/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Edge-Computing/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Gin/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Simple-Example/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Golang/</loc>
+        <lastmod>2019-03-06T00:23:06.963Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
