@@ -8,7 +8,14 @@
     
     <url>
         <loc>https://readailib.com/about/</loc>
-        <lastmod>2019-03-06T00:36:38.637Z</lastmod>
+        <lastmod>2019-03-06T00:51:04.342Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://readailib.com/archive/</loc>
+        <lastmod>2019-03-06T00:50:57.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -16,13 +23,6 @@
     <url>
         <loc>https://readailib.com/tags/</loc>
         <lastmod>2019-03-05T14:37:50.667Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
-        <loc>https://readailib.com/archive/</loc>
-        <lastmod>2019-03-05T14:37:50.232Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
