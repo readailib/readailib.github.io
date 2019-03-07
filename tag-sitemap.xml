@@ -30,20 +30,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/RaspberryPi/</loc>
-        <lastmod>2019-03-06T00:50:21.821Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Golang/</loc>
-        <lastmod>2019-03-06T00:50:21.821Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/Kubernetes/</loc>
         <lastmod>2019-03-06T00:50:21.821Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -67,6 +53,34 @@
     <url>
         <loc>https://readailib.com/tags/Simple-Example/</loc>
         <lastmod>2019-03-06T00:50:21.821Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Golang/</loc>
+        <lastmod>2019-03-07T07:13:29.046Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Tensorflow/</loc>
+        <lastmod>2019-03-07T07:13:29.046Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/ARM/</loc>
+        <lastmod>2019-03-07T07:13:29.046Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/RaspberryPi/</loc>
+        <lastmod>2019-03-07T07:13:29.046Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

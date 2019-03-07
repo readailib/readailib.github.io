@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://readailib.com/"/>
-  <updated>2019-03-06T00:50:11.802Z</updated>
+  <updated>2019-03-07T07:13:29.046Z</updated>
   <id>https://readailib.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在树莓派上编译安装Go版本的Tensorflow</title>
+    <link href="https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/"/>
+    <id>https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/</id>
+    <published>2019-03-06T16:14:16.000Z</published>
+    <updated>2019-03-07T07:13:29.046Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="0-Used-Hardwares-and-Softwares"><a href="#0-Used-Hardwares-and-Softwares" class="headerlink" title="0. Used Hardwares and Softwares"></a>0. Used Hardwares and Softwares</h1><p>All steps were taken on my <strong>Raspberry Pi 3 B</strong> model with:</p><ul><li>Minimum GPU memory allocated (16MB)</li><li><strong>1GB</strong> of swap memory</li><li>External USB HDD (as root partition)</li></ul><a id="more"></a><p>and software versions were:</p><ul><li>Raspbian (Stretch) / gcc 6.3.0</li><li>Tensorflow 1.3.0</li><li>Protobuf 3.1.0</li><li>Bazel 0.5.1</li></ul><p>Before the beginning, I had to install dependencies:</p><h3 id="for-protobuf"><a href="#for-protobuf" class="headerlink" title="for protobuf"></a>for protobuf</h3><pre><code class="bash">$ sudo apt-get install autoconf automake libtool</code></pre><h3 id="for-bazel"><a href="#for-bazel" class="headerlink" title="for bazel"></a>for bazel</h3><pre><code class="bash">$ sudo apt-get install pkg-config zip g++ zlib1g-dev unzip oracle-java8-jdk</code></pre><hr><h1 id="1-Install-Protobuf"><a href="#1-Install-Protobuf" class="headerlink" title="1. Install Protobuf"></a>1. Install Protobuf</h1><p>I cloned the protobuf’s repository:</p><pre><code class="bash">$ git clone https://github.com/google/protobuf.git</code></pre><p>and started building:</p><pre><code class="bash">$ cd protobuf$ git checkout v3.1.0$ ./autogen.sh$ ./configure$ make -j 4$ sudo make install$ sudo ldconfig</code></pre><p>It took less than an hour to finish.</p><p>I could see the version of installed protobuf with:</p><pre><code class="bash">$ protoc --versionlibprotoc 3.1.0</code></pre><h1 id="2-Install-Bazel"><a href="#2-Install-Bazel" class="headerlink" title="2. Install Bazel"></a>2. Install Bazel</h1><h2 id="a-download"><a href="#a-download" class="headerlink" title="a. download"></a>a. download</h2><p>I got a zip file of bazel from <a href="https://github.com/bazelbuild/bazel/releases" target="_blank" rel="noopener">here</a> and unzipped it:</p><pre><code class="bash">$ wget https://github.com/bazelbuild/bazel/releases/download/0.5.1/bazel-0.5.1-dist.zip$ unzip -d bazel bazel-0.5.1-dist.zip</code></pre><h2 id="b-edit-bootstrap-files"><a href="#b-edit-bootstrap-files" class="headerlink" title="b. edit bootstrap files"></a>b. edit bootstrap files</h2><p>In the unzipped directory, I opened the <code>scripts/bootstrap/compile.sh</code> file:</p><pre><code class="bash">$ cd bazel$ vi scripts/bootstrap/compile.sh</code></pre><p>searched for lines that looked like following:</p><pre><code class="bash">run &quot;${JAVAC}&quot; -classpath &quot;${classpath}&quot; -sourcepath &quot;${sourcepath}&quot; \      -d &quot;${output}/classes&quot; -source &quot;$JAVA_VERSION&quot; -target &quot;$JAVA_VERSION&quot; \      -encoding UTF-8 &quot;@${paramfile}&quot;</code></pre><p>and appended <code>-J-Xmx500M</code> to the last line so that the whole lines would look like:</p><pre><code class="bash">run &quot;${JAVAC}&quot; -classpath &quot;${classpath}&quot; -sourcepath &quot;${sourcepath}&quot; \      -d &quot;${output}/classes&quot; -source &quot;$JAVA_VERSION&quot; -target &quot;$JAVA_VERSION&quot; \      -encoding UTF-8 &quot;@${paramfile}&quot; -J-Xmx500M</code></pre><p>It was for enlarging the max heap size of Java.</p><h2 id="c-compile"><a href="#c-compile" class="headerlink" title="c. compile"></a>c. compile</h2><p>After that, started building with:</p><pre><code class="bash">$ chmod u+w ./* -R$ ./compile.sh</code></pre><p>It also took about an hour.</p><h2 id="d-install"><a href="#d-install" class="headerlink" title="d. install"></a>d. install</h2><p>After the compilation had finished, I could find the compiled binary in <code>output</code> directory.</p><p>Copied it into <code>/usr/local/bin</code> directory:</p><pre><code class="bash">$ sudo cp output/bazel /usr/local/bin/</code></pre><h1 id="3-Build-libtensorflow-so"><a href="#3-Build-libtensorflow-so" class="headerlink" title="3. Build libtensorflow.so"></a>3. Build libtensorflow.so</h1><p>(I referenced <a href="https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md" target="_blank" rel="noopener">this document</a> for following processes)</p><h2 id="a-download-1"><a href="#a-download-1" class="headerlink" title="a. download"></a>a. download</h2><p>Got the tensorflow go code with:</p><pre><code class="bash">$ go get -d github.com/tensorflow/tensorflow/tensorflow/go</code></pre><h2 id="b-edit-files"><a href="#b-edit-files" class="headerlink" title="b. edit files"></a>b. edit files</h2><p>In the downloaded directory, I checked out the latest tag and replaced <code>lib64</code> to <code>lib</code> in the files with:</p><pre><code class="bash">$ cd ${GOPATH}/src/github.com/tensorflow/tensorflow$ git fetch --all --tags --prune$ git checkout tags/v1.3.0$ grep -Rl &#39;lib64&#39; | xargs sed -i &#39;s/lib64/lib/g&#39;</code></pre><p>Raspberry Pi still runs on 32bit OS, so they had to be changed like this.</p><p>After that, I commented <code>#define IS_MOBILE_PLATFORM</code> out in <code>tensorflow/core/platform/platform.h</code>:</p><pre><code class="c">// Since there&#39;s no macro for the Raspberry Pi, assume we&#39;re on a mobile// platform if we&#39;re compiling for the ARM CPU.//#define IS_MOBILE_PLATFORM    // &lt;= commented this line</code></pre><p>If it is not commented out, bazel will build for mobile platforms like <code>iOS</code> or <code>Android</code>, not Raspberry Pi.</p><p>To do this easily, just run:</p><pre><code class="bash">$ sed -i &quot;s|#define IS_MOBILE_PLATFORM|//#define IS_MOBILE_PLATFORM|g&quot; tensorflow/core/platform/platform.h</code></pre><p>Finally, it was time to configure and build tensorflow.</p><h2 id="c-configure-and-build"><a href="#c-configure-and-build" class="headerlink" title="c. configure and build"></a>c. configure and build</h2><pre><code class="bash">$ ./configure</code></pre><p>I had to answer to some questions here.</p><p>Then I started building <code>libtensorflow.so</code> with:</p><pre><code class="bash">$ bazel build -c opt --copt=&quot;-mfpu=neon-vfpv4&quot; --copt=&quot;-funsafe-math-optimizations&quot; --copt=&quot;-ftree-vectorize&quot; --copt=&quot;-fomit-frame-pointer&quot; --jobs 1 --local_resources 1024,1.0,1.0 --verbose_failures --genrule_strategy=standalone --spawn_strategy=standalone //tensorflow:libtensorflow.so</code></pre><p>My Pi became unresponsive many times during this process, but I kept it going on.</p><h2 id="d-install-1"><a href="#d-install-1" class="headerlink" title="d. install"></a>d. install</h2><p>After a long time of struggle, (it took nearly 7 hours for me!)</p><p>I finally got <code>libtensorflow.so</code> compiled in <code>bazel-bin/tensorflow/</code>.</p><p>So I copied it into <code>/usr/local/lib/</code>:</p><pre><code class="bash">$ sudo cp ./bazel-bin/tensorflow/libtensorflow.so /usr/local/lib/$ sudo chmod 644 /usr/local/lib/libtensorflow.so$ sudo ldconfig</code></pre><p>All done. Time to test!</p><h1 id="4-Go-Test"><a href="#4-Go-Test" class="headerlink" title="4. Go Test"></a>4. Go Test</h1><p>I ran a test for validating the installation:</p><pre><code class="bash">$ go test github.com/tensorflow/tensorflow/tensorflow/go</code></pre><p>then I could see:</p><pre><code class="bash">ok      github.com/tensorflow/tensorflow/tensorflow/go  0.350s</code></pre><p>Ok, it works!</p><p><strong>Edit</strong>: As <a href="https://github.com/tensorflow/tensorflow/tree/master/tensorflow/go#generate-wrapper-functions-for-ops" target="_blank" rel="noopener">this instruction</a> says, I had to regenerate operations before the test:</p><pre><code class="bash">$ go generate github.com/tensorflow/tensorflow/tensorflow/go/op</code></pre><h1 id="5-Further-Test"><a href="#5-Further-Test" class="headerlink" title="5. Further Test"></a>5. Further Test</h1><p>I wanted to see a simple go program running, so I wrote this code:</p><pre><code class="go">// sample.gopackage mainimport (    &quot;fmt&quot;    tf &quot;github.com/tensorflow/tensorflow/tensorflow/go&quot;)// Sorry - I don&#39;t have a good example yet :-Pfunc main() {    tensor, _ := tf.NewTensor(int64(42))    if v, ok := tensor.Value().(int64); ok {        fmt.Printf(&quot;The answer to the life, universe, and everything: %v\n&quot;, v)    }}</code></pre><p>and ran it with <code>go run sample.go</code>:</p><pre><code>The answer to the life, universe, and everything: 42</code></pre><p>See the result?</p><p>From now on, I can write tensorflow applications in go, on Raspberry Pi! :-)</p><hr><h1 id="98-Trouble-shooting"><a href="#98-Trouble-shooting" class="headerlink" title="98. Trouble shooting"></a>98. Trouble shooting</h1><h2 id="Build-failure-due-to-a-problem-with-Eigen"><a href="#Build-failure-due-to-a-problem-with-Eigen" class="headerlink" title="Build failure due to a problem with Eigen"></a>Build failure due to a problem with Eigen</h2><p>Back in the day with <a href="https://github.com/tensorflow/tensorflow/releases/tag/v1.2.0" target="_blank" rel="noopener">Tensorflow 1.2.0</a>, I encountered <a href="https://github.com/tensorflow/tensorflow/issues/9697" target="_blank" rel="noopener">this issue</a> while building, but it’s still not fixed yet in <a href="https://github.com/tensorflow/tensorflow/releases/tag/v1.3.0" target="_blank" rel="noopener">1.3.0</a>.</p><p>So I had to work around this problem again by editing <code>tensorflow/workspace.bzl</code>from:</p><pre><code class="bzl">native.new_http_archive(    name = &quot;eigen_archive&quot;,    urls = [        &quot;http://mirror.bazel.build/bitbucket.org/eigen/eigen/get/f3a22f35b044.tar.gz&quot;,        &quot;https://bitbucket.org/eigen/eigen/get/f3a22f35b044.tar.gz&quot;,    ],    sha256 = &quot;ca7beac153d4059c02c8fc59816c82d54ea47fe58365e8aded4082ded0b820c4&quot;,    strip_prefix = &quot;eigen-eigen-f3a22f35b044&quot;,    build_file = str(Label(&quot;//third_party:eigen.BUILD&quot;)),)</code></pre><p>to:</p><pre><code class="bash">native.new_http_archive(    name = &quot;eigen_archive&quot;,    urls = [        &quot;http://mirror.bazel.build/bitbucket.org/eigen/eigen/get/d781c1de9834.tar.gz&quot;,        &quot;https://bitbucket.org/eigen/eigen/get/d781c1de9834.tar.gz&quot;,    ],    sha256 = &quot;a34b208da6ec18fa8da963369e166e4a368612c14d956dd2f9d7072904675d9b&quot;,    strip_prefix = &quot;eigen-eigen-d781c1de9834&quot;,    build_file = str(Label(&quot;//third_party:eigen.BUILD&quot;)),)</code></pre><p>and starting again from the beginning:</p><pre><code class="bash">$ bazel clean$ ./configure$ bazel build -c opt --copt=&quot;-mfpu=neon-vfpv4&quot; --copt=&quot;-funsafe-math-optimizations&quot; --copt=&quot;-ftree-vectorize&quot; --copt=&quot;-fomit-frame-pointer&quot; --jobs 1 --local_resources 1024,1.0,1.0 --verbose_failures --genrule_strategy=standalone --spawn_strategy=standalone //tensorflow:libtensorflow.so...</code></pre><p>Then I could build it without further problems.</p><p>I hope it would be fixed on future releases.</p><hr><h1 id="99-Wrap-up"><a href="#99-Wrap-up" class="headerlink" title="99. Wrap-up"></a>99. Wrap-up</h1><p>Installing TensorFlow on Raspberry Pi is not easy yet. (There’s <a href="https://github.com/samjabrahams/tensorflow-on-raspberry-pi" target="_blank" rel="noopener">a kind project</a> which makes it super easy though!)</p><p>Installing <code>libtensorflow.so</code> is a lot more difficult, because it takes too much time to build it.</p><p>But it is worth trying; managing TensorFlow graphs in golang will be handy for people who don’t love python - just like me.</p><hr><h1 id="999-If-you-need-one"><a href="#999-If-you-need-one" class="headerlink" title="999. If you need one,"></a>999. If you need one,</h1><p>You don’t have time to build it yourself, but still need the compiled file?</p><p>Good, take it <a href="https://github.com/meinside/libtensorflow.so-raspberrypi/releases" target="_blank" rel="noopener">here</a>.</p><p>I cannot promise, but will try keeping it up-to-date whenever a newer version of tensorflow comes out.</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;0-Used-Hardwares-and-Softwares&quot;&gt;&lt;a href=&quot;#0-Used-Hardwares-and-Softwares&quot; class=&quot;headerlink&quot; title=&quot;0. Used Hardwares and Softwares&quot;&gt;&lt;/a&gt;0. Used Hardwares and Softwares&lt;/h1&gt;&lt;p&gt;All steps were taken on my &lt;strong&gt;Raspberry Pi 3 B&lt;/strong&gt; model with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Minimum GPU memory allocated (16MB)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1GB&lt;/strong&gt; of swap memory&lt;/li&gt;
+&lt;li&gt;External USB HDD (as root partition)&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="Tensorflow" scheme="https://readailib.com/tags/Tensorflow/"/>
+    
+      <category term="ARM" scheme="https://readailib.com/tags/ARM/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
+    
+  </entry>
   
   <entry>
     <title>在树莓派kubernetes集群部署gRPC框架编写的微服务</title>
@@ -32,15 +63,15 @@
     </summary>
     
     
-      <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
+    
+      <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
       <category term="Edge computing" scheme="https://readailib.com/tags/Edge-computing/"/>
     
       <category term="gRPC" scheme="https://readailib.com/tags/gRPC/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="REST" scheme="https://readailib.com/tags/REST/"/>
     
@@ -67,9 +98,9 @@
       <category term="Microservice" scheme="https://readailib.com/categories/Kubernetes/Microservice/"/>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     

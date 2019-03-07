@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          在树莓派kubernetes集群部署gRPC框架编写的微服务 - ShenHengheng&#39;s Blog
+          在树莓派上编译安装Go版本的Tensorflow - ShenHengheng&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">
+    <link rel="canonical" href="https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,22 +88,18 @@
                             
                               <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                             
+                              <a class="tag" href="/tags/#Tensorflow" title="Tensorflow">Tensorflow</a>
+                            
+                              <a class="tag" href="/tags/#ARM" title="ARM">ARM</a>
+                            
                               <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
                             
-                              <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-                            
-                              <a class="tag" href="/tags/#Edge computing" title="Edge computing">Edge computing</a>
-                            
-                              <a class="tag" href="/tags/#gRPC" title="gRPC">gRPC</a>
-                            
-                              <a class="tag" href="/tags/#REST" title="REST">REST</a>
-                            
                         </div>
-                        <h1>在树莓派kubernetes集群部署gRPC框架编写的微服务</h1>
+                        <h1>在树莓派上编译安装Go版本的Tensorflow</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by ShenHengheng on
-                            2019-03-05
+                            2019-03-07
                         </span>
                     </div>
                 
@@ -295,314 +291,183 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>今天带着大家如何在树莓派kubernetes集群中部署微服务,这次文章和上次文章的区别就是这个涉及两个微服务,如何使两个微服务在kubernetes中实现服务之间的调用可能是与上次的不同之处,这次也使用Google的开源框架gRPC框架来加快微服务的开发.</p>
+                <h1 id="0-Used-Hardwares-and-Softwares"><a href="#0-Used-Hardwares-and-Softwares" class="headerlink" title="0. Used Hardwares and Softwares"></a>0. Used Hardwares and Softwares</h1><p>All steps were taken on my <strong>Raspberry Pi 3 B</strong> model with:</p>
+<ul>
+<li>Minimum GPU memory allocated (16MB)</li>
+<li><strong>1GB</strong> of swap memory</li>
+<li>External USB HDD (as root partition)</li>
+</ul>
 <a id="more"></a>
-<p>本次教程需要准备:</p>
+<p>and software versions were:</p>
 <ul>
-<li>一个启动好的树莓派kubernetes集群(参考: <a href="https://41sh.cn/?id=16" target="_blank" rel="noopener">边缘智能-在树莓派上部署kubernetes集群</a>)</li>
-<li>protobuf工具(参考 <a href="https://github.com/google/protobuf,从release页下载对应的操作系统的版本即可" target="_blank" rel="noopener">https://github.com/google/protobuf,从release页下载对应的操作系统的版本即可</a>)</li>
-<li>Docker (参考: <a href="https://docs.docker.com/engine/installation/" target="_blank" rel="noopener">https://docs.docker.com/engine/installation/</a>)</li>
-<li>kubectl工具 (参考: <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">https://kubernetes.io/docs/tasks/tools/install-kubectl/</a>)</li>
+<li>Raspbian (Stretch) / gcc 6.3.0</li>
+<li>Tensorflow 1.3.0</li>
+<li>Protobuf 3.1.0</li>
+<li>Bazel 0.5.1</li>
 </ul>
-<p>本文章参考: </p>
-<ul>
-<li><a href="https://outcrawl.com/getting-started-microservices-go-grpc-kubernetes" target="_blank" rel="noopener">Getting Started with Microservices using Go, gRPC and Kubernetes</a></li>
-</ul>
-<p>本文章的实例代码:</p>
-<ul>
-<li><a href="https://github.com/rh01/grpc-microservice-k8s" target="_blank" rel="noopener">https://github.com/rh01/grpc-microservice-k8s</a></li>
-</ul>
-<h2 id="定义我们的protobuf文件"><a href="#定义我们的protobuf文件" class="headerlink" title="定义我们的protobuf文件"></a>定义我们的protobuf文件</h2><p>protobuf是google的一个序列化结构化数据工具,它可以让人们定义好相关的结构,使用protoc工具自动生成对应的代码.类似的结构化工具还有thrift.</p>
-<blockquote>
-<p>微服务:这里我主要实现一个最大公约数的功能,输入两个数值,返回这两个数的最大公约数.</p>
-</blockquote>
-<p>这里既然使用gRPC来做,那么主要使用rpc来实现服务调用,因为rpc实现的是服务之间的同步调用，即客户端调用服务并等待响应。gRPC是提供RPC功能的框架之一。此时我们需要使用Protocol Buffer的接口定义语言中编写消息类型和服务的代码并进行编译。</p>
-<p>下面就是我们使用protobuf语言定义的消息类型和服务.(具体参考: <a href="https://grpc.io/docs/quickstart/go.html)" target="_blank" rel="noopener">https://grpc.io/docs/quickstart/go.html)</a></p>
-<pre><code class="bash">$ mkdir -pv ~/go/src/github.com/rh01/mini-deploy-app/pb
-$ cd ~/go/src/github.com/rh01/mini-deploy-app/pb
-$ vim pb.proto
+<p>Before the beginning, I had to install dependencies:</p>
+<h3 id="for-protobuf"><a href="#for-protobuf" class="headerlink" title="for protobuf"></a>for protobuf</h3><pre><code class="bash">$ sudo apt-get install autoconf automake libtool
 </code></pre>
-<pre><code class="yaml">syntax = &quot;proto3&quot;; // protobuf 版本
-
-package pb;        // 代码生成的package名字
-
-// 定义的请求消息体
-message GCDRequest {
-    uint64 a = 1;
-    uint64 b = 2;
-}
-
-// 定义的响应消息体
-message GCDResponse {
-    uint64 result = 1;
-}
-
-// 调用的远程服务,这是client请求server端的远程计算服务
-service GCDService {
-    rpc Compute (GCDRequest) returns (GCDResponse) {}
-}
+<h3 id="for-bazel"><a href="#for-bazel" class="headerlink" title="for bazel"></a>for bazel</h3><pre><code class="bash">$ sudo apt-get install pkg-config zip g++ zlib1g-dev unzip oracle-java8-jdk
 </code></pre>
-<p>接下来我们需要使用 protoc 生成对应的服务代码</p>
-<pre><code>$ protoc -I . --go_out=plugins=grpc:. ./*.proto
-</code></pre><blockquote class="colorquote warning"><p><strong>提前须知</strong>:</p>
-<p>1). 执行上面的指令需要使用安装 grpc 和 proto-gen-go 工具,使用下面的命令:</p>
-<pre><code class="bash">$ go get -u google.golang.org/grpc
-$ go get -u github.com/golang/protobuf/protoc-gen-go
+<hr>
+<h1 id="1-Install-Protobuf"><a href="#1-Install-Protobuf" class="headerlink" title="1. Install Protobuf"></a>1. Install Protobuf</h1><p>I cloned the protobuf’s repository:</p>
+<pre><code class="bash">$ git clone https://github.com/google/protobuf.git
 </code></pre>
-<p>2). 将 $GOPATH/bin 目录添加到PATH环境变量中</p>
-<pre><code class="bash">$ <span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$GOPATH</span>/bin
+<p>and started building:</p>
+<pre><code class="bash">$ cd protobuf
+$ git checkout v3.1.0
+$ ./autogen.sh
+$ ./configure
+$ make -j 4
+$ sudo make install
+$ sudo ldconfig
 </code></pre>
-</blockquote>
-<p>这时应该生成了 gcd.pb.go 程序.</p>
-<h2 id="最大公约数服务"><a href="#最大公约数服务" class="headerlink" title="最大公约数服务"></a>最大公约数服务</h2><h3 id="定义服务端"><a href="#定义服务端" class="headerlink" title="定义服务端"></a>定义服务端</h3><p>gcd 服务将会使用上一步生成的代码进行实现gcd计算服务.</p>
-<pre><code class="bash">$ cd ~/go/src/github.com/rh01/mini-deploy-app/
-$ mkdir -p gcd
-$ vim main.go
+<p>It took less than an hour to finish.</p>
+<p>I could see the version of installed protobuf with:</p>
+<pre><code class="bash">$ protoc --version
+libprotoc 3.1.0
 </code></pre>
-<pre><code class="go">package main
+<h1 id="2-Install-Bazel"><a href="#2-Install-Bazel" class="headerlink" title="2. Install Bazel"></a>2. Install Bazel</h1><h2 id="a-download"><a href="#a-download" class="headerlink" title="a. download"></a>a. download</h2><p>I got a zip file of bazel from <a href="https://github.com/bazelbuild/bazel/releases" target="_blank" rel="noopener">here</a> and unzipped it:</p>
+<pre><code class="bash">$ wget https://github.com/bazelbuild/bazel/releases/download/0.5.1/bazel-0.5.1-dist.zip
+$ unzip -d bazel bazel-0.5.1-dist.zip
+</code></pre>
+<h2 id="b-edit-bootstrap-files"><a href="#b-edit-bootstrap-files" class="headerlink" title="b. edit bootstrap files"></a>b. edit bootstrap files</h2><p>In the unzipped directory, I opened the <code>scripts/bootstrap/compile.sh</code> file:</p>
+<pre><code class="bash">$ cd bazel
+$ vi scripts/bootstrap/compile.sh
+</code></pre>
+<p>searched for lines that looked like following:</p>
+<pre><code class="bash">run &quot;${JAVAC}&quot; -classpath &quot;${classpath}&quot; -sourcepath &quot;${sourcepath}&quot; \
+      -d &quot;${output}/classes&quot; -source &quot;$JAVA_VERSION&quot; -target &quot;$JAVA_VERSION&quot; \
+      -encoding UTF-8 &quot;@${paramfile}&quot;
+</code></pre>
+<p>and appended <code>-J-Xmx500M</code> to the last line so that the whole lines would look like:</p>
+<pre><code class="bash">run &quot;${JAVAC}&quot; -classpath &quot;${classpath}&quot; -sourcepath &quot;${sourcepath}&quot; \
+      -d &quot;${output}/classes&quot; -source &quot;$JAVA_VERSION&quot; -target &quot;$JAVA_VERSION&quot; \
+      -encoding UTF-8 &quot;@${paramfile}&quot; -J-Xmx500M
+</code></pre>
+<p>It was for enlarging the max heap size of Java.</p>
+<h2 id="c-compile"><a href="#c-compile" class="headerlink" title="c. compile"></a>c. compile</h2><p>After that, started building with:</p>
+<pre><code class="bash">$ chmod u+w ./* -R
+$ ./compile.sh
+</code></pre>
+<p>It also took about an hour.</p>
+<h2 id="d-install"><a href="#d-install" class="headerlink" title="d. install"></a>d. install</h2><p>After the compilation had finished, I could find the compiled binary in <code>output</code> directory.</p>
+<p>Copied it into <code>/usr/local/bin</code> directory:</p>
+<pre><code class="bash">$ sudo cp output/bazel /usr/local/bin/
+</code></pre>
+<h1 id="3-Build-libtensorflow-so"><a href="#3-Build-libtensorflow-so" class="headerlink" title="3. Build libtensorflow.so"></a>3. Build libtensorflow.so</h1><p>(I referenced <a href="https://github.com/samjabrahams/tensorflow-on-raspberry-pi/blob/master/GUIDE.md" target="_blank" rel="noopener">this document</a> for following processes)</p>
+<h2 id="a-download-1"><a href="#a-download-1" class="headerlink" title="a. download"></a>a. download</h2><p>Got the tensorflow go code with:</p>
+<pre><code class="bash">$ go get -d github.com/tensorflow/tensorflow/tensorflow/go
+</code></pre>
+<h2 id="b-edit-files"><a href="#b-edit-files" class="headerlink" title="b. edit files"></a>b. edit files</h2><p>In the downloaded directory, I checked out the latest tag and replaced <code>lib64</code> to <code>lib</code> in the files with:</p>
+<pre><code class="bash">$ cd ${GOPATH}/src/github.com/tensorflow/tensorflow
+$ git fetch --all --tags --prune
+$ git checkout tags/v1.3.0
+$ grep -Rl &#39;lib64&#39; | xargs sed -i &#39;s/lib64/lib/g&#39;
+</code></pre>
+<p>Raspberry Pi still runs on 32bit OS, so they had to be changed like this.</p>
+<p>After that, I commented <code>#define IS_MOBILE_PLATFORM</code> out in <code>tensorflow/core/platform/platform.h</code>:</p>
+<pre><code class="c">// Since there&#39;s no macro for the Raspberry Pi, assume we&#39;re on a mobile
+// platform if we&#39;re compiling for the ARM CPU.
+//#define IS_MOBILE_PLATFORM    // &lt;= commented this line
+</code></pre>
+<p>If it is not commented out, bazel will build for mobile platforms like <code>iOS</code> or <code>Android</code>, not Raspberry Pi.</p>
+<p>To do this easily, just run:</p>
+<pre><code class="bash">$ sed -i &quot;s|#define IS_MOBILE_PLATFORM|//#define IS_MOBILE_PLATFORM|g&quot; tensorflow/core/platform/platform.h
+</code></pre>
+<p>Finally, it was time to configure and build tensorflow.</p>
+<h2 id="c-configure-and-build"><a href="#c-configure-and-build" class="headerlink" title="c. configure and build"></a>c. configure and build</h2><pre><code class="bash">$ ./configure
+</code></pre>
+<p>I had to answer to some questions here.</p>
+<p>Then I started building <code>libtensorflow.so</code> with:</p>
+<pre><code class="bash">$ bazel build -c opt --copt=&quot;-mfpu=neon-vfpv4&quot; --copt=&quot;-funsafe-math-optimizations&quot; --copt=&quot;-ftree-vectorize&quot; --copt=&quot;-fomit-frame-pointer&quot; --jobs 1 --local_resources 1024,1.0,1.0 --verbose_failures --genrule_strategy=standalone --spawn_strategy=standalone //tensorflow:libtensorflow.so
+</code></pre>
+<p>My Pi became unresponsive many times during this process, but I kept it going on.</p>
+<h2 id="d-install-1"><a href="#d-install-1" class="headerlink" title="d. install"></a>d. install</h2><p>After a long time of struggle, (it took nearly 7 hours for me!)</p>
+<p>I finally got <code>libtensorflow.so</code> compiled in <code>bazel-bin/tensorflow/</code>.</p>
+<p>So I copied it into <code>/usr/local/lib/</code>:</p>
+<pre><code class="bash">$ sudo cp ./bazel-bin/tensorflow/libtensorflow.so /usr/local/lib/
+$ sudo chmod 644 /usr/local/lib/libtensorflow.so
+$ sudo ldconfig
+</code></pre>
+<p>All done. Time to test!</p>
+<h1 id="4-Go-Test"><a href="#4-Go-Test" class="headerlink" title="4. Go Test"></a>4. Go Test</h1><p>I ran a test for validating the installation:</p>
+<pre><code class="bash">$ go test github.com/tensorflow/tensorflow/tensorflow/go
+</code></pre>
+<p>then I could see:</p>
+<pre><code class="bash">ok      github.com/tensorflow/tensorflow/tensorflow/go  0.350s
+</code></pre>
+<p>Ok, it works!</p>
+<p><strong>Edit</strong>: As <a href="https://github.com/tensorflow/tensorflow/tree/master/tensorflow/go#generate-wrapper-functions-for-ops" target="_blank" rel="noopener">this instruction</a> says, I had to regenerate operations before the test:</p>
+<pre><code class="bash">$ go generate github.com/tensorflow/tensorflow/tensorflow/go/op
+</code></pre>
+<h1 id="5-Further-Test"><a href="#5-Further-Test" class="headerlink" title="5. Further Test"></a>5. Further Test</h1><p>I wanted to see a simple go program running, so I wrote this code:</p>
+<pre><code class="go">// sample.go
+package main
 
 import (
-    &quot;log&quot;
-    &quot;net&quot;
+    &quot;fmt&quot;
 
-    context &quot;golang.org/x/net/context&quot;
-
-    pb &quot;github.com/rh01/mini-deploy-app/pb&quot;
-    &quot;google.golang.org/grpc&quot;
-    &quot;google.golang.org/grpc/reflection&quot;
-)
-</code></pre>
-<p>在main函数中主要定义server结构,并将其注册为server端,用于处理 gcd 计算的请求.然后启动grpc服务.</p>
-<pre><code class="go">type server struct {
-}
-
-func main() {
-    lis, err := net.Listen(&quot;tcp&quot;, &quot;:3000&quot;)
-    if err != nil {
-        log.Fatalf(&quot;Failed to listen: %v&quot;, err)
-    }
-    s := grpc.NewServer()
-
-    pb.RegisterGCDServiceServer(s, &amp;server{})
-    reflection.Register(s)
-    if err := s.Serve(lis); err != nil {
-        log.Fatalf(&quot;Failed to serve: %v&quot;, err)
-    }
-}
-</code></pre>
-<p>实现GCDServiceServer接口的 <code>Compute</code> 方法, server 结构对象的指针作为方法接受者.</p>
-<pre><code class="Go">// gcd.pb.go
-// GCDServiceServer is the server API for GCDService service.
-type GCDServiceServer interface {
-    Compute(context.Context, *GCDRequest) (*GCDResponse, error)
-}
-func (s *server) Compute(ctx context.Context, r *pb.GCDRequest) (*pb.GCDResponse, error) {
-    a, b := r.A, r.B
-    for b != 0 {
-        a, b = b, a%b
-    }
-    return &amp;pb.GCDResponse{Result: a}, nil
-}
-</code></pre>
-<h2 id="定义RESTFul客户端"><a href="#定义RESTFul客户端" class="headerlink" title="定义RESTFul客户端"></a>定义RESTFul客户端</h2><p>前端使用 <a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">gin</a> 框架,主要是提供一个REST风格的访问方式和调用我们定义的gcd服务端执行实际的计算任务.</p>
-<pre><code class="go">$ cd ~/go/src/github.com/rh01/mini-deploy-app/
-$ mkdir -p api
-$ vim main.go
-</code></pre>
-<pre><code>package main
-
-import (
-    fmt &quot;fmt&quot;
-    &quot;log&quot;
-    &quot;net/http&quot;
-    &quot;strconv&quot;
-
-    &quot;github.com/gin-gonic/gin&quot;
-    pb &quot;github.com/rh01/mini-deploy-app/pb&quot;
-    &quot;google.golang.org/grpc&quot;
+    tf &quot;github.com/tensorflow/tensorflow/tensorflow/go&quot;
 )
 
+// Sorry - I don&#39;t have a good example yet :-P
 func main() {
-    conn, err := grpc.Dial(&quot;gcd-service:3000&quot;, grpc.WithInsecure())
-    if err != nil {
-        log.Fatalf(&quot;Dial failed: %v&quot;, err)
+    tensor, _ := tf.NewTensor(int64(42))
+
+    if v, ok := tensor.Value().(int64); ok {
+        fmt.Printf(&quot;The answer to the life, universe, and everything: %v\n&quot;, v)
     }
-    gcdClient := pb.NewGCDServiceClient(conn)
 }
-</code></pre><p>上面的代码主要使用rpc的方式访问我们定义的服务端,此时的 gcd-service:3000 就是我们gcd服务端的 endpoint,这个就是服务地址,需要在kubernetes中定义.</p>
-<pre><code class="go">    r := gin.Default()
-    r.GET(&quot;/gcd/:a/:b&quot;, func(c *gin.Context) {
-        // Parse parameters
-        a, err := strconv.ParseUint(c.Param(&quot;a&quot;), 10, 64)
-        if err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{&quot;error&quot;: &quot;Invalid parameter A&quot;})
-            return
-        }
-        b, err := strconv.ParseUint(c.Param(&quot;b&quot;), 10, 64)
-        if err != nil {
-            c.JSON(http.StatusBadRequest, gin.H{&quot;error&quot;: &quot;Invalid parameter B&quot;})
-            return
-        }
-        // Call GCD service
-        req := &amp;pb.GCDRequest{A: a, B: b}
-        if res, err := gcdClient.Compute(c, req); err == nil {
-            c.JSON(http.StatusOK, gin.H{
-                &quot;result&quot;: fmt.Sprint(res.Result),
-            })
-        } else {
-            c.JSON(http.StatusInternalServerError, gin.H{&quot;error&quot;: err.Error()})
-        }
-    })
 </code></pre>
-<p>接下来处理 /gcd/:a/:b 请求,读取参数 A 和 B,然后调用GCD服务.</p>
-<p>最后运行我们的REST API端.启动一个API server.</p>
-<pre><code class="go">    // Run HTTP server
-    if err := r.Run(&quot;:3000&quot;); err != nil {
-        log.Fatalf(&quot;Failed to run server: %v&quot;, err)
-    }
+<p>and ran it with <code>go run sample.go</code>:</p>
+<pre><code>The answer to the life, universe, and everything: 42
+</code></pre><p>See the result?</p>
+<p>From now on, I can write tensorflow applications in go, on Raspberry Pi! :-)</p>
+<hr>
+<h1 id="98-Trouble-shooting"><a href="#98-Trouble-shooting" class="headerlink" title="98. Trouble shooting"></a>98. Trouble shooting</h1><h2 id="Build-failure-due-to-a-problem-with-Eigen"><a href="#Build-failure-due-to-a-problem-with-Eigen" class="headerlink" title="Build failure due to a problem with Eigen"></a>Build failure due to a problem with Eigen</h2><p>Back in the day with <a href="https://github.com/tensorflow/tensorflow/releases/tag/v1.2.0" target="_blank" rel="noopener">Tensorflow 1.2.0</a>, I encountered <a href="https://github.com/tensorflow/tensorflow/issues/9697" target="_blank" rel="noopener">this issue</a> while building, but it’s still not fixed yet in <a href="https://github.com/tensorflow/tensorflow/releases/tag/v1.3.0" target="_blank" rel="noopener">1.3.0</a>.</p>
+<p>So I had to work around this problem again by editing <code>tensorflow/workspace.bzl</code>from:</p>
+<pre><code class="bzl">native.new_http_archive(
+    name = &quot;eigen_archive&quot;,
+    urls = [
+        &quot;http://mirror.bazel.build/bitbucket.org/eigen/eigen/get/f3a22f35b044.tar.gz&quot;,
+        &quot;https://bitbucket.org/eigen/eigen/get/f3a22f35b044.tar.gz&quot;,
+    ],
+    sha256 = &quot;ca7beac153d4059c02c8fc59816c82d54ea47fe58365e8aded4082ded0b820c4&quot;,
+    strip_prefix = &quot;eigen-eigen-f3a22f35b044&quot;,
+    build_file = str(Label(&quot;//third_party:eigen.BUILD&quot;)),
+)
 </code></pre>
-<h2 id="构建Docker镜像"><a href="#构建Docker镜像" class="headerlink" title="构建Docker镜像"></a>构建Docker镜像</h2><p>下面是我定义的Dockerfile文件,因为有两个服务,所以这里分成两个Docker镜像,一个是gcd服务,另外一个是提供RESTAPI访问的客户端api.</p>
-<blockquote>
-<p>有关Docker的多阶段构建参考: <a href="https://www.41sh.cn/?id=61" target="_blank" rel="noopener">[实战] 将golang编写的微服务部署在树莓派搭建的kubernetes集群</a></p>
-</blockquote>
-<pre><code class="dockerfile"># Dockerfile.gcd
-FROM golang AS build-env
-
-WORKDIR /go/src/github.com/rh01/mini-deploy-app/gcd
-COPY gcd .
-COPY pb ../pb
-COPY vendor ../vendor
-
-
-
-ENV http_proxy http://192.168.1.9:12333
-ENV https_proxy http://192.168.1.9:12333
-
-RUN go get -u -v github.com/kardianos/govendor
-RUN govendor sync
-RUN GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/github.com/rh01/mini-deploy-app/gcd-server
-
-
-FROM armhf/alpine:latest
-COPY --from=build-env /go/src/github.com/rh01/mini-deploy-app/gcd-server /usr/local/bin/gcd
-EXPOSE 3000
-CMD [ &quot;gcd&quot; ]
+<p>to:</p>
+<pre><code class="bash">native.new_http_archive(
+    name = &quot;eigen_archive&quot;,
+    urls = [
+        &quot;http://mirror.bazel.build/bitbucket.org/eigen/eigen/get/d781c1de9834.tar.gz&quot;,
+        &quot;https://bitbucket.org/eigen/eigen/get/d781c1de9834.tar.gz&quot;,
+    ],
+    sha256 = &quot;a34b208da6ec18fa8da963369e166e4a368612c14d956dd2f9d7072904675d9b&quot;,
+    strip_prefix = &quot;eigen-eigen-d781c1de9834&quot;,
+    build_file = str(Label(&quot;//third_party:eigen.BUILD&quot;)),
+)
 </code></pre>
-<pre><code class="dockerfile"># Dockerfile.api
-FROM golang AS build-env
+<p>and starting again from the beginning:</p>
+<pre><code class="bash">$ bazel clean
+$ ./configure
+$ bazel build -c opt --copt=&quot;-mfpu=neon-vfpv4&quot; --copt=&quot;-funsafe-math-optimizations&quot; --copt=&quot;-ftree-vectorize&quot; --copt=&quot;-fomit-frame-pointer&quot; --jobs 1 --local_resources 1024,1.0,1.0 --verbose_failures --genrule_strategy=standalone --spawn_strategy=standalone //tensorflow:libtensorflow.so
 
-WORKDIR /go/src/github.com/rh01/mini-deploy-app/api
-COPY api .
-COPY pb ../pb
-COPY vendor ../vendor
-
-
-
-ENV http_proxy http://192.168.1.9:12333
-ENV https_proxy http://192.168.1.9:12333
-
-RUN go get -u -v github.com/kardianos/govendor
-RUN govendor sync
-RUN GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/github.com/rh01/mini-deploy-app/api-server
-
-
-FROM armhf/alpine:latest
-COPY --from=build-env /go/src/github.com/rh01/mini-deploy-app/api-server /usr/local/bin/api
-EXPOSE 3000
-CMD [ &quot;api&quot; ]
+...
 </code></pre>
-<p>然后构建</p>
-<pre><code class="bash">$ docker build -t rh02/apiserver:v1.0.0 -f Dockerfile.api . 
-$ docker build -t rh02/gcdserver:v1.0.0 -f Dockerfile.gcd .
-</code></pre>
-<h2 id="部署到kubernetes"><a href="#部署到kubernetes" class="headerlink" title="部署到kubernetes"></a>部署到kubernetes</h2><p>定义两个Deployment和对应的两个Service,并且将gcd服务的名字写成我们api服务调用的名字:gcd-service.</p>
-<p>下面是gcd的deployment和service的定义: gcd.yaml</p>
-<pre><code class="yaml">apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: gcd-deployment
-  labels:
-    app: gcd
-spec:
-  selector:
-    matchLabels:
-      app: gcd
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: gcd
-    spec:
-      containers:
-      - name: gcd
-        image: rh02/gcdserver:v1.0.0
-        imagePullPolicy: Always
-      ports:
-      - name: gcd-service
-        containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gcd-service
-spec:
-  selector:
-    app: gcd
-  ports:
-  - port: 3000
-    targetPort: gcd-service
-</code></pre>
-<p>创建api.yaml, service类型设置为NodePort,从而可以在集群外部也可以访问,对于GCD服务,类型设置为ClusterIP即可,只需要在集群内部访问就可以.</p>
-<pre><code class="yaml">apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: api-deployment
-  labels:
-    app: api
-spec:
-  selector:
-    matchLabels:
-      app: api
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: api
-    spec:
-      containers:
-      - name: api
-        image: rh02/apiserver:v1.0.0
-        imagePullPolicy: Always
-      ports:
-      - name: api-service
-        containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: api-service
-spec:
-  type: NodePort
-  selector:
-    app: api
-  ports:
-  - port: 3000
-    targetPort: api-service
-</code></pre>
-<p>使用kubectl创建两个资源:</p>
-<pre><code class="bash">$ kubectl create -f api.yaml
-$ kubectl create -f gcd.yaml
-</code></pre>
-<p>检查所有的Pod是否正在运行, 可以指定 <code>-w</code> 标记,查看启动的过程.</p>
-<pre><code class="bash">$ kubectl get pods -w
-NAME                             READY     STATUS    RESTARTS   AGE
-api-deployment-778049682-3vd0z   1/1       Running   0          3s
-gcd-deployment-544390878-0zgc8   1/1       Running   0          2s
-gcd-deployment-544390878-p78g0   1/1       Running   0          2s
-gcd-deployment-544390878-r26nx   1/1       Running   0          2s
-</code></pre>
-<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903051551771763579640.png" alt="截图_2019-03-05_15-42-18.png"></p>
-<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903051551771802295607.png" alt="截图_2019-03-05_15-43-02.png"></p>
+<p>Then I could build it without further problems.</p>
+<p>I hope it would be fixed on future releases.</p>
+<hr>
+<h1 id="99-Wrap-up"><a href="#99-Wrap-up" class="headerlink" title="99. Wrap-up"></a>99. Wrap-up</h1><p>Installing TensorFlow on Raspberry Pi is not easy yet. (There’s <a href="https://github.com/samjabrahams/tensorflow-on-raspberry-pi" target="_blank" rel="noopener">a kind project</a> which makes it super easy though!)</p>
+<p>Installing <code>libtensorflow.so</code> is a lot more difficult, because it takes too much time to build it.</p>
+<p>But it is worth trying; managing TensorFlow graphs in golang will be handy for people who don’t love python - just like me.</p>
+<hr>
+<h1 id="999-If-you-need-one"><a href="#999-If-you-need-one" class="headerlink" title="999. If you need one,"></a>999. If you need one,</h1><p>You don’t have time to build it yourself, but still need the compiled file?</p>
+<p>Good, take it <a href="https://github.com/meinside/libtensorflow.so-raspberrypi/releases" target="_blank" rel="noopener">here</a>.</p>
+<p>I cannot promise, but will try keeping it up-to-date whenever a newer version of tensorflow comes out.</p>
 
                 
 
@@ -610,13 +475,9 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/" data-toggle="tooltip" data-placement="top" title="在树莓派上编译安装Go版本的Tensorflow">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/" data-toggle="tooltip" data-placement="top" title="部署微服务到树莓派的kubernetes集群">Next Post &rarr;</a>
+                            <a href="/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/" data-toggle="tooltip" data-placement="top" title="在树莓派kubernetes集群部署gRPC框架编写的微服务">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -646,7 +507,7 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#定义我们的protobuf文件"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">定义我们的protobuf文件</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#最大公约数服务"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">最大公约数服务</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#定义服务端"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">定义服务端</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#定义RESTFul客户端"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">定义RESTFul客户端</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#构建Docker镜像"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">构建Docker镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署到kubernetes"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">部署到kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#尾声"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">尾声</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#0-Used-Hardwares-and-Softwares"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">0. Used Hardwares and Softwares</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#for-protobuf"><span class="toc-nav-number">1.0.1.</span> <span class="toc-nav-text">for protobuf</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#for-bazel"><span class="toc-nav-number">1.0.2.</span> <span class="toc-nav-text">for bazel</span></a></li></ol></li></ol><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-Install-Protobuf"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">1. Install Protobuf</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-Install-Bazel"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">2. Install Bazel</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#a-download"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">a. download</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#b-edit-bootstrap-files"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">b. edit bootstrap files</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#c-compile"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">c. compile</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#d-install"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">d. install</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-Build-libtensorflow-so"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">3. Build libtensorflow.so</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#a-download-1"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">a. download</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#b-edit-files"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">b. edit files</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#c-configure-and-build"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">c. configure and build</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#d-install-1"><span class="toc-nav-number">4.4.</span> <span class="toc-nav-text">d. install</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#4-Go-Test"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">4. Go Test</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#5-Further-Test"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">5. Further Test</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#98-Trouble-shooting"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">98. Trouble shooting</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Build-failure-due-to-a-problem-with-Eigen"><span class="toc-nav-number">7.1.</span> <span class="toc-nav-text">Build failure due to a problem with Eigen</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#99-Wrap-up"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">99. Wrap-up</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#999-If-you-need-one"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">999. If you need one,</span></a></li>
         
         </div>
       </aside>
@@ -668,15 +529,11 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
                        
                           <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                         
+                          <a class="tag" href="/tags/#Tensorflow" title="Tensorflow">Tensorflow</a>
+                        
+                          <a class="tag" href="/tags/#ARM" title="ARM">ARM</a>
+                        
                           <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
-                        
-                          <a class="tag" href="/tags/#kubernetes" title="kubernetes">kubernetes</a>
-                        
-                          <a class="tag" href="/tags/#Edge computing" title="Edge computing">Edge computing</a>
-                        
-                          <a class="tag" href="/tags/#gRPC" title="gRPC">gRPC</a>
-                        
-                          <a class="tag" href="/tags/#REST" title="REST">REST</a>
                         
                     </div>
                 </section>
@@ -715,8 +572,8 @@ gcd-deployment-544390878-r26nx   1/1       Running   0          2s
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "shenhengheng";
-    var disqus_identifier = "https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
-    var disqus_url = "https://readailib.com/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/";
+    var disqus_identifier = "https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/";
+    var disqus_url = "https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

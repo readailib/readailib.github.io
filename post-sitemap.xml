@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/</loc>
+        <lastmod>2019-03-07T07:13:29.046Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/</loc>
         <lastmod>2019-03-06T00:50:21.821Z</lastmod>
         <changefreq>weekly</changefreq>
