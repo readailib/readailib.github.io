@@ -65,13 +65,13 @@
     
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
       <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
       <category term="Edge computing" scheme="https://readailib.com/tags/Edge-computing/"/>
     
       <category term="gRPC" scheme="https://readailib.com/tags/gRPC/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="REST" scheme="https://readailib.com/tags/REST/"/>
     
