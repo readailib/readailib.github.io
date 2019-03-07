@@ -8,15 +8,7 @@
 
     <url>
         <loc>https://readailib.com/2019/02/18/kubernetes/multi-nodes-kubernetes-using-minikube/</loc>
-        <lastmod>2019-03-07T08:10:59.944Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>https://readailib.com/2019/03/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/</loc>
-        <lastmod>2019-03-07T07:37:40.960Z</lastmod>
+        <lastmod>2019-03-07T08:19:23.559Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -24,7 +16,7 @@
 
     <url>
         <loc>https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/</loc>
-        <lastmod>2019-03-07T07:33:47.154Z</lastmod>
+        <lastmod>2019-03-07T08:18:18.768Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
