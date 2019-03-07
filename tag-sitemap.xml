@@ -79,6 +79,13 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/tags/Dooker/</loc>
+        <lastmod>2019-03-07T08:19:23.559Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://readailib.com/tags/Calico/</loc>
         <lastmod>2019-03-07T08:19:23.559Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -87,28 +94,35 @@
 
     <url>
         <loc>https://readailib.com/tags/RaspberryPi/</loc>
-        <lastmod>2019-03-07T08:23:51.780Z</lastmod>
+        <lastmod>2019-03-07T08:42:31.713Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Dooker/</loc>
-        <lastmod>2019-03-07T08:33:11.401Z</lastmod>
+        <loc>https://readailib.com/tags/Docker/</loc>
+        <lastmod>2019-03-07T08:42:58.004Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/Kubernetes/</loc>
-        <lastmod>2019-03-07T08:33:11.401Z</lastmod>
+        <lastmod>2019-03-07T08:42:58.004Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/Dashboard/</loc>
-        <lastmod>2019-03-07T08:33:11.401Z</lastmod>
+        <lastmod>2019-03-07T08:42:58.004Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Heapster/</loc>
+        <lastmod>2019-03-07T08:42:58.004Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
