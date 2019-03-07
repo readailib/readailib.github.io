@@ -65,13 +65,13 @@
     
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
-    
       <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
       <category term="Edge computing" scheme="https://readailib.com/tags/Edge-computing/"/>
     
       <category term="gRPC" scheme="https://readailib.com/tags/gRPC/"/>
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="REST" scheme="https://readailib.com/tags/REST/"/>
     
@@ -169,6 +169,32 @@
       <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
       <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>树莓派kuernetes集群中部署dashboard</title>
+    <link href="https://readailib.com/2019/01/15/kubernetes/kubernetes-dashboard/"/>
+    <id>https://readailib.com/2019/01/15/kubernetes/kubernetes-dashboard/</id>
+    <published>2019-01-15T08:32:03.000Z</published>
+    <updated>2019-03-07T08:33:11.401Z</updated>
+    
+    <content type="html"><![CDATA[<p>在最近关于在树莓派集群上使用kubeadm配置安装Kubernetes 1.13.0的教程中，默认情况下启用了RBAC，本文章将介绍如何在启用RBAC的情况下运行Kubernetes仪表板。</p><a id="more"></a><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul><li>部署和启动Kubernetes集群 (see <a href="https://www.41sh.cn/?id=16" target="_blank" rel="noopener">这篇文章</a>)</li><li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">kubectl</a> v. 1.13.0</li></ul><h2 id="配置-kubeconfig"><a href="#配置-kubeconfig" class="headerlink" title="配置 kubeconfig"></a>配置 kubeconfig</h2><p>配置本地树莓派（并非master），以便使用kubectl与上一个教程中配置的集群进行通信。使用scp从master节点上下载配置文件</p><pre><code class="bash">$ scp pi@edge-master:/home/pi/.kube/config ./config</code></pre><p>将配置文件拷贝到本地机器上的 ~/.kube 目录下.</p><p>注意：如果你已经有一个集群的配置，它将会覆盖之前的配置，为了避免这种情况，可以在复制时添加  — kubeconfig.</p><pre><code class="b">$ cp config ~/.kube/config</code></pre><p>测试:</p><pre><code class="bash">$ kubectl get nodesNAME          STATUS   ROLES    AGE     VERSIONedge-master   Ready    master   7d23h   v1.13.1edge-node1    Ready    &lt;none&gt;   7d23h   v1.13.1edge-node2    Ready    &lt;none&gt;   7d23h   v1.13.1edge-node3    Ready    &lt;none&gt;   6d      v1.13.1</code></pre><h2 id="创建仪表盘"><a href="#创建仪表盘" class="headerlink" title="创建仪表盘"></a>创建仪表盘</h2><p><a href="https://github.com/kubernetes/dashboard/blob/master/src/deploy/recommended/kubernetes-dashboard-arm.yaml" target="_blank" rel="noopener">Kubernetes source</a> 在 kube-system 命名空间下将会创建以下几种资源: secret, service account, role, rolebinding, deployment, and service.</p><pre><code class="bash">$ kubectl create -f  https://raw.githubusercontent.com/kubernetes/dashboard/72832429656c74c4c568ad5b7163fa9716c3e0ec/src/deploy/recommended/kubernetes-dashboard-arm.yamlsecret &quot;kubernetes-dashboard-certs&quot; createdserviceaccount &quot;kubernetes-dashboard&quot; createdrole &quot;kubernetes-dashboard-minimal&quot; createdrolebinding &quot;kubernetes-dashboard-minimal&quot; createddeployment &quot;kubernetes-dashboard&quot; createdservice &quot;kubernetes-dashboard&quot; created</code></pre><blockquote class="colorquote warning"><p><strong>坑</strong>：这里会出现一个问题就是Pod总是重启，后来查资料发现dashboard的版本低，这时需要手动修改一下yaml或者在线修改pods的镜像即可。</p><p>这里介绍几个技巧：</p><p><em>查看日志</em>：</p><pre><code class="bash">$ kubectl logs -p POD_NAME</code></pre><p><em>编辑 Pod</em>:</p><pre><code class="bash">$ kubectl edit pods POD_NAME -n NAMESPACE</code></pre><p><em>导出pod或者deployment配置</em>：</p><pre><code class="bash">$ kubectl get pods POD_NAME -n NAMESPACE_NAME -o yaml</code></pre></blockquote><p>之后，您将能够从本地机器启动代理以访问刚刚创建的服务。</p><pre><code class="bash">$ nohup kubectl proxy --address 0.0.0.0 --accept-hosts &#39;.*&#39; &amp;</code></pre><p>Dashboard  可以通过  <a href="https://172.16.3.17:32351" target="_blank" rel="noopener">https://172.16.3.17:32351</a>  访问仪表盘。</p><blockquote class="colorquote warning"><p><strong>注意</strong>：</p><ul><li><p>这里要使用https协议</p></li><li><p>由于kubernetes-dashboard服务使用了NodePort的方式，因此这里的端口号为NodePort，这里的IP为NodeIP，即该POd所在的Node地址。   </p></li></ul></blockquote><p><img src="https://www.41sh.cn/zb_users/upload/2019/01/201901151547536342389405.png" alt="2019-01-15 15-12-04屏幕截图.png"></p><p>这里我们选择跳过，可以出现下面所示的资源管理界面。</p><p><img src="https://www.41sh.cn/zb_users/upload/2019/01/201901151547536405708187.png" alt="2019-01-15 15-13-14屏幕截图.png"></p><p>但是，这种打开方式是安全的，但是集群管理是不允许操作的，这就是说这种打开方式是匿名或者游客模式。</p><p>接下来需要创建一个 service account 在 default namespace 并且创建一个 clusterrolebinding 对象允许我们的service account 来使用 dashboard.</p><pre><code class="bash">$ kubectl create serviceaccount dashboard -n defaultserviceaccount “dashboard” created$ kubectl create clusterrolebinding dashboard-admin -n default \  --clusterrole=cluster-admin \  --serviceaccount=default:dashboardclusterrolebinding &quot;dashboard-admin&quot; created</code></pre><blockquote><p><em>如果想了解更多有关集群角色和更细的配置可以参考</em>:<br><a href="https://kubernetes.io/docs/admin/authorization/rbac/#user-facing-roles" target="_blank" rel="noopener">官方文档</a>. </p></blockquote><p>以下命令可以得到我们创建的 服务帐号的 token（令牌），我们将打印出的token值复制到登录对话框中。</p><pre><code class="bash">$ kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath=&quot;{.secrets[0].name}&quot;) -o jsonpath=&quot;{.data.token}&quot; | base64 --decodeeyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRhc2hib2FyZC10b2tlbi01bmo5ayIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJkYXNoYm9hcmQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI1OGEzNzlmMC0xODk1LTExZTktYjBlMi1iODI3ZWJiMWY4NTgiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpkYXNoYm9hcmQifQ.X6evSc9wDPPa6T9CLy40gDj8aUTjVMg1PhA5bQIhSTnvVeB8mG763y9j8c0G3wOv4gCk1egziTIenpFx0w04P2zUTcqrHdse51vnbE5TNETQo8EiY2ELsqUJuaGd-O3Z6nmL8psBk4CmloPCMgYaBXPWiHPeS9dyOgTH-KxFoEEAuCX1i3BWPkYN_faN-sQe7zlrhu27lPJVUey8HGVjPu_6zGxMSWcZu2Wz3Euc1A-Rg6tekDhnxhxH_dcMRF38jSVY_z9r7mfvw6dJmxXTlH-KNzagruulH2l-Pg9obpz7HO7t14JB6c1F6p5Qa4zk2y9vOz4qCPk6IM7_ZfTwCw</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在最近关于在树莓派集群上使用kubeadm配置安装Kubernetes 1.13.0的教程中，默认情况下启用了RBAC，本文章将介绍如何在启用RBAC的情况下运行Kubernetes仪表板。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Kubernetes DashBoard" scheme="https://readailib.com/categories/Kubernetes-DashBoard/"/>
+    
+    
+      <category term="Dooker" scheme="https://readailib.com/tags/Dooker/"/>
+    
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
+      <category term="Dashboard" scheme="https://readailib.com/tags/Dashboard/"/>
     
   </entry>
   
