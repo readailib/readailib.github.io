@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/02/22/kubernetes/istio-minikube/</loc>
+        <lastmod>2019-03-07T07:30:11.021Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/</loc>
         <lastmod>2019-03-07T07:14:15.319Z</lastmod>
         <changefreq>weekly</changefreq>
