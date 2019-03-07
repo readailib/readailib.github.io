@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/03/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/</loc>
+        <lastmod>2019-03-07T08:20:32.806Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2019/02/18/kubernetes/multi-nodes-kubernetes-using-minikube/</loc>
         <lastmod>2019-03-07T08:19:23.559Z</lastmod>
         <changefreq>weekly</changefreq>
