@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://readailib.com/"/>
-  <updated>2019-03-07T07:13:29.046Z</updated>
+  <updated>2019-03-07T08:09:32.637Z</updated>
   <id>https://readailib.com/</id>
   
   <author>
@@ -15,6 +15,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>post</title>
+    <link href="https://readailib.com/2019/03/07/kubernetes/multi-nodes-kubernetes-using-minikube/"/>
+    <id>https://readailib.com/2019/03/07/kubernetes/multi-nodes-kubernetes-using-minikube/</id>
+    <published>2019-03-07T07:57:21.000Z</published>
+    <updated>2019-03-07T08:09:32.637Z</updated>
+    
+    <content type="html"><![CDATA[<p>一般来讲，使用minikube的目的主要用于作为本地单机测试集群，也只能构建单节点的kubernetes集群，本文章参看<a href="https://k2r2bai.com/" target="_blank" rel="noopener">凯仁兄</a>的方法使得minikube能够借助vitual box软件来实现多节点的部署，其中包括Master/Worker节点的部署与安装，下面主要针对kubernetes的最新版本kubernetes 1.13.2, 网络插件为Calico，主要为了测试Network Policy的功能。</p><p><img src="https://www.41sh.cn/zb_users/upload/2019/02/20190218164923_24529.jpg" alt="img"></p><h2 id="系统准备"><a href="#系统准备" class="headerlink" title="系统准备"></a>系统准备</h2><p>下面一定要确保以下的步骤都已经执行，所有要安装的软件包已经安转。</p><p>第一步肯定是准备minikube的执行文件，下面我列出了不同平台的二进制文件的下载地址：</p><ul><li><a href="https://github.com/kairen/minikube/releases/download/v0.33.1-multi-node/minikube-linux-amd64" target="_blank" rel="noopener">Linux</a></li><li><a href="https://github.com/kairen/minikube/releases/download/v0.33.1-multi-node/minikube-darwin-amd64" target="_blank" rel="noopener">Mac OS X</a></li><li><a href="https://github.com/kairen/minikube/releases/download/v0.33.1-multi-node/minikube-windows-amd64.exe" target="_blank" rel="noopener">Windows</a></li></ul><blockquote class="colorquote danger"><p><strong>误操作：</strong>  为了能够使 minikube 能够启动多节点的集群，一定使用上面给出的二进制执行文件链接。</p><p><em>提示：</em></p><p>如果你要使用 官方给的 minikube 的二进制文件来启动集群，此时如果你要使用网络插件Calico，请手动输入下面的命令即可生效。</p><pre><code class="bash">$ kubectl apply -f https://docs.projectcalico.org/v2.4/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml</code></pre></blockquote><p>第二步，需要将<a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener">Virtual Box</a>下载下来，然后提供给minikube来创建虚拟机。</p><blockquote><p>IMPORTANT: 测试机器一定要开启 VT-x or AMD-v virtualization.</p><p>虽然建议使用 VBox，但是也可以其他的虚拟化解决方案，比如使用 KVM, xhyve等虚拟机管理软件。</p></blockquote><p>第三步，下载测试机器操作系统适配的 <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/" target="_blank" rel="noopener">kubeclt</a>。</p><h2 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h2><p>本节主要介绍如何使用minikube来建立集群，并且相应的创建master节点和worker节点。</p><p>开始之前，确认本测试机器是否已经安装过Minikube，如果有的话，就把上面下载二进制文件放置在任意方便的位置，或者直接替代之前的然后在启动集群之前，删除Home文件夹下的.minikube文件夹。</p><pre><code class="bash">$ rm -rf $HOME/.minikube</code></pre><h3 id="Master-节点"><a href="#Master-节点" class="headerlink" title="Master 节点"></a>Master 节点</h3><p>首先通过 Minikube 执行以下指令来启动 Master节点，并通过 kubectl 检查：</p><pre><code class="bash">$ minikube --profile k8s-m1 start --network-plugin=cni --docker-env HTTP_PROXY=http://192.168.99.1:12333 --docker-env HTTPS_PROXY=http://192.168.99.1:12333 --docker-env NO_PROXY=127.0.0.1/24?  minikube v0.34.1 on darwin (amd64)?  Creating virtualbox VM (CPUs=2, Memory=2048MB, Disk=20000MB) ...?  &quot;k8s-m1&quot; IP address is 192.168.99.102?  Configuring Docker as the container runtime ...    ▪ env HTTP_PROXY=http://192.168.99.1:12333    ▪ env HTTPS_PROXY=http://192.168.99.1:12333    ▪ env NO_PROXY=127.0.0.1/24✨  Preparing Kubernetes environment ...?  Pulling images required by Kubernetes v1.13.3 ...?  Launching Kubernetes v1.13.3 using kubeadm ... ?  Configuring cluster permissions ...?  Verifying component health .....?  kubectl is now configured to use &quot;k8s-m1&quot;?  Done! Thank you for using minikube!</code></pre><blockquote><p><code>--vm-driver</code> 可以选择使用其他 VM driver 启动虚拟机，如 xhyve、hyperv、hyperkit 与 kvm2 等等。</p></blockquote><p>完成后，确认 k8s-m1 节点處处于Ready 状态：</p><pre><code class="bash">$ kubectl get noNAME     STATUS   ROLES    AGE    VERSIONk8s-m1   Ready    master   2m8s   v1.13.2</code></pre><p>下面来部署Node节点，通过minikube执行下面指令来启动Node节点。</p><pre><code>$ minikube --profile k8s-n1 start --network-plugin=cni --node...Stopping extra container runtimes...# 接着取得 Master IP 与 Token$ minikube --profile k8s-m1 ssh &quot;ifconfig eth1&quot;$ minikube --profile k8s-m1 ssh &quot;sudo kubeadm token list&quot;# 執行以下指令進入 k8s-n1$ minikube --profile k8s-n1 ssh#  下面是 在k8s-n1 VM 里执行的指令$ sudo su -$ TOKEN=7rzqkm.1goumlnntalpxvw0$ MASTER_IP=192.168.99.100$ kubeadm join --token ${TOKEN} ${MASTER_IP}:8443 \    --discovery-token-unsafe-skip-ca-verification \    --ignore-preflight-errors=Swap \    --ignore-preflight-errors=DirAvailable--etc-kubernetes-manifests# 看到以下结果后，即可以在 k8s-m1 context 操作。...Run &#39;kubectl get nodes&#39; on the master to see this node join the cluster.</code></pre><blockquote class="colorquote warning"><p>1). 上面的 IP 有可能不同，请手动确认 Master 节点 IP。</p><p>2).  如果上面的TOKEN失效，请使用下面的指令生成一个，或者生成TOKEN时指定tt值为-1</p><pre><code class="bash">$ minikube --profile k8s-m1 ssh <span class="string">"sudo kubeadm token new"</span></code></pre></blockquote><p>接下来，我们可以通过 kuubectl 客户端检查Node是否加入到集群：</p><pre><code>$ kubectl config use-context k8s-m1Switched to context &quot;k8s-m1&quot;.$ kubectl get noNAME     STATUS   ROLES    AGE     VERSIONk8s-m1   Ready    master   3m44s   v1.13.2k8s-n1   Ready    &lt;none&gt;   80s     v1.13.2$ kubectl get csrNAME                                                   AGE    REQUESTOR                 CONDITIONnode-csr-Ut1k5mLXpXVsyZwjn2z2-fpie9HHyTkMU7wnrjDnD3E   118s   system:bootstrap:3qeeeu   Approved,Issued$ kubectl -n kube-system get po -o wideNAME                             READY   STATUS    RESTARTS   AGE     IP               NODE     NOMINATED NODE   READINESS GATEScalico-node-qxkw5                2/2     Running   0          86s     192.168.99.101   k8s-n1   &lt;none&gt;           &lt;none&gt;calico-node-srhlk                2/2     Running   0          3m24s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;coredns-86c58d9df4-826nz         1/1     Running   0          3m27s   10.244.0.3       k8s-m1   &lt;none&gt;           &lt;none&gt;coredns-86c58d9df4-9z7mr         1/1     Running   0          3m27s   10.244.0.2       k8s-m1   &lt;none&gt;           &lt;none&gt;etcd-k8s-m1                      1/1     Running   0          2m40s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;kube-addon-manager-k8s-m1        1/1     Running   0          3m48s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;kube-addon-manager-k8s-n1        1/1     Running   0          86s     192.168.99.101   k8s-n1   &lt;none&gt;           &lt;none&gt;kube-apiserver-k8s-m1            1/1     Running   0          2m36s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;kube-controller-manager-k8s-m1   1/1     Running   0          2m50s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;kube-proxy-768w8                 1/1     Running   0          86s     192.168.99.101   k8s-n1   &lt;none&gt;           &lt;none&gt;kube-proxy-b7ndj                 1/1     Running   0          3m27s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;kube-scheduler-k8s-m1            1/1     Running   0          2m46s   192.168.99.100   k8s-m1   &lt;none&gt;           &lt;none&gt;storage-provisioner              1/1     Running   0          2m46s   192.168.99.100   k8s-m1   &lt;none&gt;</code></pre><p>这样一个 Kubernetes 集群就完成了，速度快一点不到 10 分钟就可以建立好了。</p><h2 id="删除虚拟机"><a href="#删除虚拟机" class="headerlink" title="删除虚拟机"></a>删除虚拟机</h2><p><em>清除环境一条指令即可：</em></p><pre><code>$ minikube --profile &lt;node_name&gt; delete</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;一般来讲，使用minikube的目的主要用于作为本地单机测试集群，也只能构建单节点的kubernetes集群，本文章参看&lt;a href=&quot;https://k2r2bai.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;凯仁兄&lt;/a&gt;的方法使得min
+      
+    
+    </summary>
+    
+      <category term="Minikube Multi-Node Cluster" scheme="https://readailib.com/categories/Minikube-Multi-Node-Cluster/"/>
+    
+    
+      <category term="Dooker" scheme="https://readailib.com/tags/Dooker/"/>
+    
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
+      <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>post</title>
+    <link href="https://readailib.com/2019/03/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/"/>
+    <id>https://readailib.com/2019/03/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/</id>
+    <published>2019-03-07T07:37:08.000Z</published>
+    <updated>2019-03-07T07:37:40.960Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>在树莓派上编译安装Go版本的Tensorflow</title>
@@ -37,13 +80,13 @@
     </summary>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="Tensorflow" scheme="https://readailib.com/tags/Tensorflow/"/>
     
       <category term="ARM" scheme="https://readailib.com/tags/ARM/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
   </entry>
   
@@ -63,9 +106,9 @@
     </summary>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
@@ -102,13 +145,13 @@
     
       <category term="Simple Example" scheme="https://readailib.com/tags/Simple-Example/"/>
     
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="Edge Computing" scheme="https://readailib.com/tags/Edge-Computing/"/>
     
       <category term="Gin" scheme="https://readailib.com/tags/Gin/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
   </entry>
   

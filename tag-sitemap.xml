@@ -51,14 +51,14 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Kubernetes/</loc>
+        <loc>https://readailib.com/tags/Simple-Example/</loc>
         <lastmod>2019-03-07T07:33:47.154Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Simple-Example/</loc>
+        <loc>https://readailib.com/tags/Golang/</loc>
         <lastmod>2019-03-07T07:33:47.154Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -86,8 +86,22 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Golang/</loc>
-        <lastmod>2019-03-07T07:33:47.154Z</lastmod>
+        <loc>https://readailib.com/tags/Dooker/</loc>
+        <lastmod>2019-03-07T08:09:32.637Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Kubernetes/</loc>
+        <lastmod>2019-03-07T08:09:32.637Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Calico/</loc>
+        <lastmod>2019-03-07T08:09:32.637Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
