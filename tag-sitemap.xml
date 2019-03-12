@@ -100,20 +100,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Docker/</loc>
-        <lastmod>2019-03-07T08:43:22.350Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Kubernetes/</loc>
-        <lastmod>2019-03-07T08:43:22.350Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/Dashboard/</loc>
         <lastmod>2019-03-07T08:43:22.350Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -123,6 +109,20 @@
     <url>
         <loc>https://readailib.com/tags/Heapster/</loc>
         <lastmod>2019-03-07T08:43:22.350Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Docker/</loc>
+        <lastmod>2019-03-12T07:41:48.980Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Kubernetes/</loc>
+        <lastmod>2019-03-12T07:41:48.980Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
