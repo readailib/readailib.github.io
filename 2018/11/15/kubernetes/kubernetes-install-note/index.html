@@ -322,7 +322,9 @@ $ sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/selinux/config
 <p>使流过网桥的流量也进入iptables/netfilter框架中，在/etc/sysctl.conf中添加以下配置：</p>
 <pre><code class="bash">net.bridge.bridge-nf-call-iptables = 1
 net.bridge.bridge-nf-call-ip6tables = 1
-sysctl -p
+</code></pre>
+<p>然后执行下面的命令：</p>
+<pre><code class="bash"> $ sysctl -p
 </code></pre>
 </li>
 </ol>
