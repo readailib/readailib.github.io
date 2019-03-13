@@ -328,7 +328,9 @@ sysctl -p
 </ol>
 <h1 id="使用kubeadm安装"><a href="#使用kubeadm安装" class="headerlink" title="使用kubeadm安装"></a>使用kubeadm安装</h1><ol>
 <li><p>首先配置阿里K8S YUM源</p>
-<pre><code class="bash">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo[kubernetes]name=Kubernetes
+<pre><code class="bash">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
 baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
 enabled=1
 gpgcheck=0
