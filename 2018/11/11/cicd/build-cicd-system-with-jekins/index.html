@@ -140,14 +140,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -402,29 +402,21 @@ docker images
 <p><img src="https://shenheng.xyz/img/build-procedure.png" alt="查看构建过程"></p>
 <p>查看构建过程</p>
 <h2 id="查看构建完成的镜像"><a href="#查看构建完成的镜像" class="headerlink" title="查看构建完成的镜像"></a>查看构建完成的镜像</h2><p>这时候可以查看宿主机的docker镜像，打印结果如下</p>
-<p>zsh~</p>
-<ul>
-<li></li>
-<li>$ docker images</li>
-<li>REPOSITORY                       TAG                 IMAGE ID            CREATED              SIZE</li>
-<li>katacoda/jenkins-demo            latest              63b4e5d2500e        About a minute ago   5.81MB</li>
-<li>postgres                         latest              67ebc8a2f066        3 months ago         237MB</li>
-<li>redis                            latest              4e8db158f18d        3 months ago         83.4MB</li>
-<li>golang                           latest              d0e7a411e3da        4 months ago         794MB</li>
-<li>benhall/dind-jenkins-agent       v2                  8f582645af33        8 months ago         1.14GB</li>
-<li>jenkins/jenkins                  2.112-alpine        481b49e06417        8 months ago         223MB</li>
-<li>$ _</li>
-<li></li>
-</ul>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>zsh~</p>
-<ul>
-<li></li>
-<li>$ docker run -d -p 80:80 katacoda/jenkins-demo:latest</li>
-<li>c716310a068f3ad95ab19c5e5a977981e8f061dec7209b8a55c6f2840700ecce</li>
-<li>$ curl localhost</li>
-<li><h1>This request was processed by host: c716310a068f</h1></li>
-<li></li>
-</ul>
+<pre><code class="bash">$ docker images
+REPOSITORY                       TAG                 IMAGE ID            CREATED              SIZE
+katacoda/jenkins-demo            latest              63b4e5d2500e        About a minute ago   5.81MB
+postgres                         latest              67ebc8a2f066        3 months ago         237MB
+redis                            latest              4e8db158f18d        3 months ago         83.4MB
+golang                           latest              d0e7a411e3da        4 months ago         794MB
+benhall/dind-jenkins-agent       v2                  8f582645af33        8 months ago         1.14GB
+jenkins/jenkins                  2.112-alpine        481b49e06417        8 months ago         223MB
+$ _
+</code></pre>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><pre><code class="bash">$ docker run -d -p 80:80 katacoda/jenkins-demo:latest
+c716310a068f3ad95ab19c5e5a977981e8f061dec7209b8a55c6f2840700ecce
+$ curl localhost
+&lt;h1&gt;This request was processed by host: c716310a068f&lt;/h1&gt;
+</code></pre>
 <h1 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h1><ul>
 <li>Jenkins 还没有达到完全自动化构建的目的</li>
 <li>Jenkins 配置较为复杂，坑比较多</li>
@@ -509,7 +501,7 @@ vim default.json
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#Linux下部署安装"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Linux下部署安装</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">环境准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动-Jenkins"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">启动 Jenkins</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动Jenkins-仪表盘"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">启动Jenkins 仪表盘</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装与配置插件"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">安装与配置插件</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#添加-docker-agent"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">添加 docker agent</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#配置-Docker-Agent-Template"><span class="toc-nav-number">1.4.3.</span> <span class="toc-nav-text">配置 Docker Agent Template</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Create-New-Job"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">Create New Job</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#开始构建项目"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">开始构建项目</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#查看构建完成的镜像"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">查看构建完成的镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#测试"><span class="toc-nav-number">1.8.</span> <span class="toc-nav-text">测试</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">This request was processed by host: c716310a068f</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#缺点"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">缺点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#优点"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">优点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#常遇到的坑总结"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">常遇到的坑总结</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">总结</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#Linux下部署安装"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Linux下部署安装</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">环境准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动-Jenkins"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">启动 Jenkins</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动Jenkins-仪表盘"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">启动Jenkins 仪表盘</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装与配置插件"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">安装与配置插件</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#添加-docker-agent"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">添加 docker agent</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#配置-Docker-Agent-Template"><span class="toc-nav-number">1.4.3.</span> <span class="toc-nav-text">配置 Docker Agent Template</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Create-New-Job"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">Create New Job</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#开始构建项目"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">开始构建项目</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#查看构建完成的镜像"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">查看构建完成的镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#测试"><span class="toc-nav-number">1.8.</span> <span class="toc-nav-text">测试</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#缺点"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">缺点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#优点"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">优点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#常遇到的坑总结"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">常遇到的坑总结</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">总结</span></a></li></ol>
         
         </div>
       </aside>
