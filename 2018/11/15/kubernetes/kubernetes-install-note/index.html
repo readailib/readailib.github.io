@@ -142,14 +142,14 @@
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
@@ -533,6 +533,21 @@ $ export KUBECONFIG=$HOME/admin.conf
 </code></pre><p>关闭它：</p>
 <pre><code>$ swapoff -a
 </code></pre></li>
+<li><p>在初始化集群的时候，可能会出现下面的错误：</p>
+<pre><code class="bash">[kubelet-check] It seems like the kubelet isn&#39;t running or healthy.
+[kubelet-check] The HTTP call equal to &#39;curl -sSL http://localhost:10255/healthz&#39; failed with error: Get http://localhost:10255/healthz: dial tcp [::1]:10255: getsockopt: connection refused.
+</code></pre>
+<p>很容易看出 <code>kubelet</code> 异常，<strong>centos</strong> 的解决方案如下：</p>
+<blockquote class="colorquote info"><p>On CentOS I can add these options in <code>/etc/systemd/system/kubelet.service.d/10-kubeadm.conf</code>:</p>
+<pre><code class="bash"><span class="comment"># egrep KUBELET_CGROUP_ARGS= /etc/systemd/system/kubelet.service.d/10-kubeadm.conf</span>
+Environment=<span class="string">"KUBELET_CGROUP_ARGS=--cgroup-driver=cgroupfs --runtime-cgroups=/systemd/system.slice --kubelet-cgroups=/systemd/system.slice"</span>
+</code></pre>
+</blockquote>
+<p>然后重启 <code>kubelet</code> 服务即可。</p>
+<pre><code class="bash">$ systemctl daemon-reload
+$ systemctl restart kubelet
+</code></pre>
+</li>
 </ol>
 
                 
