@@ -114,22 +114,22 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Docker/</loc>
+        <loc>https://readailib.com/tags/Deep-Learning/</loc>
         <lastmod>2019-03-12T07:51:47.442Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Docker/</loc>
+        <lastmod>2019-03-13T04:36:36.265Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>https://readailib.com/tags/Kubernetes/</loc>
-        <lastmod>2019-03-12T07:51:47.442Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>https://readailib.com/tags/Deep-Learning/</loc>
-        <lastmod>2019-03-12T07:51:47.442Z</lastmod>
+        <lastmod>2019-03-13T04:36:36.265Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

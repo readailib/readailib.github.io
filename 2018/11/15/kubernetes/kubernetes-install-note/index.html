@@ -142,14 +142,14 @@
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
@@ -309,7 +309,8 @@ EOF
 </code></pre>
 </li>
 <li><p>关闭SElinux</p>
-<pre><code class="bash">$ setenforce 0sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/selinux/config
+<pre><code class="bash">$ setenforce 0
+$ sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39; /etc/selinux/config
 </code></pre>
 <p>重启生效！</p>
 </li>
