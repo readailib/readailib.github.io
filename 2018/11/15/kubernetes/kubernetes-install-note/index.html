@@ -287,11 +287,11 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h1 id="重点参考"><a href="#重点参考" class="headerlink" title="重点参考"></a>重点参考</h1><ul>
+                <h2 id="重点参考"><a href="#重点参考" class="headerlink" title="重点参考"></a>重点参考</h2><ul>
 <li><a href="http://blog.51cto.com/douya/1945382" target="_blank" rel="noopener">http://blog.51cto.com/douya/1945382</a></li>
 <li><a href="http://www.cnblogs.com/burningTheStar/p/7865998.html" target="_blank" rel="noopener">http://www.cnblogs.com/burningTheStar/p/7865998.html</a></li>
 </ul>
-<h1 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h1><p>采用 CentOS7.4 minimual，docker 1.13，kubeadm 1.10.0，etcd 3.0， k8s 1.10.0 我们这里选用两个个节点搭建一个实验环境。</p>
+<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><p>采用 CentOS7.4 minimual，docker 1.13，kubeadm 1.10.0，etcd 3.0， k8s 1.10.0 我们这里选用两个个节点搭建一个实验环境。</p>
 <pre><code class="bash">192.168.59.133 k8smaster
 192.168.59.150 k8snode1
 </code></pre>
@@ -326,7 +326,7 @@ sysctl -p
 </code></pre>
 </li>
 </ol>
-<h1 id="使用kubeadm安装"><a href="#使用kubeadm安装" class="headerlink" title="使用kubeadm安装"></a>使用kubeadm安装</h1><ol>
+<h2 id="使用kubeadm安装"><a href="#使用kubeadm安装" class="headerlink" title="使用kubeadm安装"></a>使用kubeadm安装</h2><ol>
 <li><p>首先配置阿里K8S YUM源</p>
 <pre><code class="bash">$ cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -465,20 +465,18 @@ kubectl get cs
 </li>
 </ol>
 <p><img src="https://shenheng.xyz/img/k8-1.png" alt="img"></p>
-<h1 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h1><ol>
+<h2 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h2><ol>
 <li><p>如果出现NotReady，说明网络问题，需要创建一个网络服务，在这里需要先下载一个文件：</p>
 </li>
-<li><ul>
 <li><p>到 <a href="https://github.com/weaveworks/weave/releases" target="_blank" rel="noopener">https://github.com/weaveworks/weave/releases</a> 下载</p>
-<pre><code class="bash">$ wget https://github.com/weaveworks/weave/releases/download/v2.3.0/weave-daemonset-k8s-1.7.yaml
+<pre><code class="bash">  $ wget https://github.com/weaveworks/weave/releases/download/v2.3.0/weave-daemonset-k8s-1.7.yaml
 </code></pre>
-<p>然后执行</p>
-<pre><code class="bash">$ kubectl create -f weave-daemonset-k8s-1.7.yaml
+<p>  然后执行</p>
+<pre><code class="bash">  $ kubectl create -f weave-daemonset-k8s-1.7.yaml
 </code></pre>
-<p>现在可以了！?</p>
-</li>
-<li><p>或者使用flannel网络！</p>
-</li>
+<p>  现在可以了！?</p>
+<ul>
+<li>或者使用flannel网络！</li>
 </ul>
 </li>
 <li><p>安装时候最常见的就是time out，因为K8S镜像在国外，所以我们在前面就说到了提前把他下载下来，可以用一个国外机器采用habor搭建一个私有仓库把镜像都download下来。</p>
@@ -565,7 +563,7 @@ This error is likely caused by:
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#重点参考"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">重点参考</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#实验环境"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">实验环境</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#使用kubeadm安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">使用kubeadm安装</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#常见错误"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">常见错误</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#重点参考"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">重点参考</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#实验环境"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">实验环境</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用kubeadm安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">使用kubeadm安装</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#常见错误"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">常见错误</span></a></li></ol>
         
         </div>
       </aside>
