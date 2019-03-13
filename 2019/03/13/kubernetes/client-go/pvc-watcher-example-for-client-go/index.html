@@ -335,8 +335,7 @@
 <blockquote>
 <p>There are several other packages in client-go including discovery, d<em>ynamic, and scale</em>. While we are not going to cover these packages, it is important to be aware of their capabilities.</p>
 </blockquote>
-<h2 id="A-simple-client-tool-for-Kubernetes"><a href="#A-simple-client-tool-for-Kubernetes" class="headerlink" title="A simple client tool for Kubernetes"></a>A simple client tool for Kubernetes</h2><p>Again, let us do a quick review of the tool we are going to build to illustrate the usage of the Go client framework. <strong>pvcwatch</strong>, is a simple CLI tool which watches the total claimed persistent storage capacity in a cluster. When the total reaches a specified threshold, it takes an action (in this example, it’s a simple notification on the screen).</p>
-<p><img src="https://cdn-images-1.medium.com/max/1600/0*0QuAKMfq9V8PkhOf." alt="img"></p>
+<h2 id="A-simple-client-tool-for-Kubernetes"><a href="#A-simple-client-tool-for-Kubernetes" class="headerlink" title="A simple client tool for Kubernetes"></a>A simple client tool for Kubernetes</h2><p><img src="https://cdn-images-1.medium.com/max/1600/0*0QuAKMfq9V8PkhOf." alt="img"></p>
 <blockquote>
 <p>You can find the complete example on <a href="https://github.com/vladimirvivien/k8s-client-examples" target="_blank" rel="noopener">GitHub</a>.</p>
 </blockquote>
@@ -346,8 +345,7 @@
 <li>在集群中遍历资源列表</li>
 <li>监视资源对象</li>
 </ul>
-<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><p>The client-go project supports both <em>Godep</em> and <em>dep</em> for vendoring management. I use <em>dep</em> for ease of use and continued adoption (yes, yes, I know <em>vgo</em>… I know). For instance, the following is the minimum <em>Gopkg.toml</em>config required to setup your code with dependency on client-go <em>version 6.0</em>and <em>version 1.9</em> of the Kubernetes API:</p>
-<p>client-go项目支持<em>Godep</em>和<em>dep</em>管理依赖。为了方便起见，这里使用<em>dep</em>（例如，以下是代码中所需的最小<em>Gopkg.toml</em>配置，它依赖于<em>client-go</em>版本<em>6.0</em>和版本<em>1.9</em>的Kubernetes API：</p>
+<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><p>client-go项目支持<em>Godep</em>和<em>dep</em>管理依赖。为了方便起见，这里使用<em>dep</em>（例如，以下是代码中所需的最小<em>Gopkg.toml</em>配置，它依赖于<em>client-go</em>版本<em>6.0</em>和版本<em>1.9</em>的Kubernetes API：</p>
 <pre><code class="toml">[[constraint]]
   name = &quot;k8s.io/api&quot;
   version = &quot;kubernetes-1.9.0&quot;
@@ -444,7 +442,6 @@ func main() {
 }
 
 </code></pre>
-<p>In the snippet above, we use <code>ListOptions</code> to specify label and field selectors (as well as namespace) to narrow down the PVC resources returned as type <code>v1.PeristentVolumeClaimList</code>. The next snippet shows how we can walk and print the list of PVCs that was retrieved from the server.</p>
 <p>在上面的代码片段中，我们使用<code>ListOptions</code>来指定标签和字段选择器（以及命名空间），以缩小返回的类型为<code>v1.PeristentVolumeClaimList</code>的PVC资源。下一个代码段显示了我们如何遍历和打印从集群中检索到的PVC列表。</p>
 <pre><code class="go">func printPVCs(pvcs *v1.PersistentVolumeClaimList) {
     template := &quot;%-32s%-8s%-8s\n&quot;
@@ -503,10 +500,8 @@ func main() {
 }
 
 </code></pre>
-<p>The <code>watcher</code>’s channel, in the <em>for-range</em> loop above, is used to process incoming event notifications from the server. Each event is assigned to variable <code>event</code> where <code>event.Object</code> value is asserted to be of type <code>PersistentVolumeClaim</code> so we can extract needed info.</p>
 <p>上面的<em>for-range</em>循环中的<code>watcher</code>的通道用于处理来自服务器的事件传入通知。每个事件都分配给变量<code>event</code>，其中<code>event.Object</code>值被声明为<code>PersistentVolumeClaim</code>类型，因此我们可以提取所需的信息。</p>
-<h3 id="Processing-ADDED-events"><a href="#Processing-ADDED-events" class="headerlink" title="Processing ADDED events"></a>Processing ADDED events</h3><p>When a new PVC is added, <code>event.Type</code> is set to value <code>watch.Added</code>. We then use the following code to extract the capacity of the added claim (<code>quant</code>), add it to the running total capacity (<code>totalClaimedQuant</code>). Lastly, we check to see if the total capacity is greater than the established max capacity (<code>maxClaimedQuant</code>). If so, the program can trigger an action.</p>
-<p>添加新PVC时，<code>event.Type</code>设置为值<code>watch.Added</code>。然后，我们使用以下代码提取添加的声明（<code>quant</code>）的容量，将其添加到运行总容量（<code>totalClaimedQuant</code>）。最后，我们检查总容量是否大于定义的最大容量（<code>maxClaimedQuant</code>）。如果是大于，程序可以触发一个动作。</p>
+<h3 id="Processing-ADDED-events"><a href="#Processing-ADDED-events" class="headerlink" title="Processing ADDED events"></a>Processing ADDED events</h3><p>添加新PVC时，<code>event.Type</code>设置为值<code>watch.Added</code>。然后，我们使用以下代码提取添加的声明（<code>quant</code>）的容量，将其添加到运行总容量（<code>totalClaimedQuant</code>）。最后，我们检查总容量是否大于定义的最大容量（<code>maxClaimedQuant</code>）。如果是大于，程序可以触发一个动作。</p>
 <pre><code class="go">import(
     &quot;k8s.io/apimachinery/pkg/watch&quot;
     ...
