@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          在树莓派上建立kubernetes集群 - ShenHengheng&#39;s Blog
+          Go语言中的并发机制系列-2|Go的并发哲学 &amp; CSP - ShenHengheng&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="https://readailib.com/2019/01/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/">
+    <link rel="canonical" href="https://readailib.com/2018/11/25/golang/concurracy-philosophy-and-csp/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/images/kube/bg.png')
+            background-image: url('undefined')
             /*post*/
         
     }
@@ -86,18 +86,16 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                              <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                             
-                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                            
-                              <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
+                              <a class="tag" href="/tags/#Concurrency" title="Concurrency">Concurrency</a>
                             
                         </div>
-                        <h1>在树莓派上建立kubernetes集群</h1>
+                        <h1>Go语言中的并发机制系列-2|Go的并发哲学 &amp; CSP</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by ShenHengheng on
-                            2019-01-07
+                            2018-11-25
                         </span>
                     </div>
                 
@@ -289,142 +287,95 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><img src="https://www.41sh.cn/zb_users/upload/2019/01/201901161547625729333503.jpg" alt="IMG_0468.jpg"></p>
-<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>最近学了Kubernetes一段时间后，突然想在自己的树莓派上玩玩，搭建一个集群出来，玩过树莓派的同学都知道，树莓派作为一个“卡片电脑式”的嵌入式电脑，它的性能是非常有限的，内存和CPU对于我们传统的机器智能是远远不可及的，因此我在这里PO出我为什么要做树莓派的kubernetes研究：</p>
-<a id="more"></a>
-<p><em>打造一个具有边缘智能的系统，可以在上面部署边缘级别的微服务组件，包括传感器的采集服务、控制和计算单元为核心的服务！</em></p>
-<p>这里的实验环境为 1 个kubernetes master和 3 个 worker节点，共计 4 个树莓派节点。为了方便，这里的主机名以及IP地址如下：</p>
+                <p>本系列阅读笔记是基于 Golang 经典图书 <em>Concurrency in GO</em> ，主要有6个章节：</p>
 <ul>
-<li>edge-master, IP:172.16.3.1</li>
-<li>edge-node1, IP:172.16.3.17</li>
-<li>edge-node2, IP:172.16.3.32</li>
-<li>edge-node3, IP:172.16.3.3</li>
+<li>An Introduction to Concurrency</li>
+<li><strong>Modeling Your Code: Communicating Sequential Processes</strong></li>
+<li>Go’s Concurrency Building Blocks</li>
+<li>Concurrency Patterns in Go</li>
+<li>Concurrency at Scale</li>
+<li>Goroutines and the Go Runtime</li>
 </ul>
-<blockquote>
-<p>这里我没有使用静态IP，因此IP地址是有可能变的，因此为了稳定，建议设置成静态IP。但为了教程的完整性，我也会说明如何设置静态IP。</p>
+<p>本部分主要介绍第二章：<em>Modeling Your Code: Communicating Sequential Processes</em> ，Go并发设计哲学。</p>
+<h1 id="并发与并行的区别"><a href="#并发与并行的区别" class="headerlink" title="并发与并行的区别"></a>并发与并行的区别</h1><blockquote>
+<p>Concurrency is a property of the code; parallelism is a property of the running program.</p>
 </blockquote>
-<p>这里主要参考了下面的教程：</p>
+<p>这揭示了一些有趣而重要的事情。</p>
 <ul>
-<li><a href="https://gist.github.com/aaronkjones/d996f1a441bc80875fd4929866ca65ad" target="_blank" rel="noopener">https://gist.github.com/aaronkjones/d996f1a441bc80875fd4929866ca65ad</a></li>
-<li><a href="https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md" target="_blank" rel="noopener">https://github.com/alexellis/k8s-on-raspbian/blob/master/GUIDE.md</a></li>
+<li>第一个有趣的事情是，我们不写并行代码，只写我们希望并行运行的并发代码。并行性是我们程序运行时的属性，而不是代码。</li>
+<li>第二个有趣的事情是，我们发现有可能 - 甚至可能 - 不知道我们的并发代码是否实际并行运行。这只能通过我们程序模型下面的抽象层 <strong>“并发原语”</strong> 来实现，程序运行时，操作系统、操作系统运行的平台（包括在虚拟机管理程序，容器和虚拟机的情况下），最终是CPU。这些抽象使我们能够区分并发性和并行性。</li>
+<li>第三个也是最后一个有趣的事情是，并行性是时间或上下文的函数。还记得在 <a href="http://shenheng.xyz/posts/2018-11-24-go-routine-1/#%E5%8E%9F%E5%AD%90%E6%80%A7" target="_blank" rel="noopener">“原子性”</a> 中我们讨论过语境的概念吗？在那里，上下文被定义为操作被视为原子的边界。这里，它被定义为可以将两个或多个操作视为并行的边界。</li>
 </ul>
-<h2 id="系统准备-TL-DR"><a href="#系统准备-TL-DR" class="headerlink" title="系统准备(TL;DR)"></a>系统准备(TL;DR)</h2><p>这里的准备系统是要准备树莓派操作系统，一般来讲运行kubernetes这么大的系统，最好的系统选择方式为轻量级的操作系统，这里推荐两个操作系统：</p>
-<ul>
-<li>Raspbian Stretch Lite - <a href="https://www.raspberrypi.org/downloads/raspbian/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/raspbian/</a></li>
-<li>Hypriot OS - <a href="https://blog.hypriot.com/" target="_blank" rel="noopener">https://blog.hypriot.com/</a></li>
-</ul>
-<p>这里为了方便，我使用了 Raspbian Stretch Lite 系统作为我的边缘设备操作系统，下载地址： <a href="https://www.raspberrypi.org/downloads/raspbian/" target="_blank" rel="noopener">https://www.raspberrypi.org/downloads/raspbian/</a></p>
-<p>树莓派系统安装都是一个样，安装教程可以参考：<a href="https://www.shenhengheng.xyz/files/respberry_doc.pdf" target="_blank" rel="noopener">https://www.shenhengheng.xyz/files/respberry_doc.pdf</a></p>
-<p>安装完成之后，需要初始化下面的操作，包括更改主机名，密码，连接wifi，设置docker网络代理，还有设置静态IP等。</p>
-<h3 id="初始化系统"><a href="#初始化系统" class="headerlink" title="初始化系统"></a>初始化系统</h3><ul>
-<li>更改主机名，修改密码以及连接Wi-Fi等工作都可以通过 raspi-config 命令来完成。</li>
-</ul>
-<h2 id="Master节点设置"><a href="#Master节点设置" class="headerlink" title="Master节点设置"></a>Master节点设置</h2><h3 id="设置静态IP"><a href="#设置静态IP" class="headerlink" title="设置静态IP"></a>设置静态IP</h3><pre><code class="bash">$ cat &lt;&lt; EOF &gt;&gt; /etc/dhcpcd.conf
-profile static_eth0
-static ip_address=192.168.0.100/24
-static routers=192.168.0.1
-static domain_name_servers=8.8.8.8
-EOF
-</code></pre>
+<p>例如，如果我们的上下文被分成5个单位时间片，并且我们运行了两个操作，每个操作花费一秒钟来运行，我们会认为操作是并行运行的。如果我们的上下文是一秒钟，我们会认为操作是按顺序运行的。</p>
+<h1 id="CSP"><a href="#CSP" class="headerlink" title="CSP"></a>CSP</h1><p>当人们讨论 Go 的时候，往往会谈到 Go 语言的成功离不开 CSP。那么CSP是什么？</p>
+<p>CSP代表“通信顺序进程”，它既是一种技术，也是引入它的论文的名称。1978年，Charles Antony Richard Hoare 在 ACM 上发表了这篇<a href="http://bit.ly/HoareCSP" target="_blank" rel="noopener">论文</a>。</p>
+<p>在这篇论文中，Hoare认为输入和输出是两个被忽略的编程原语，特别是在并发代码中。在Hoare撰写该论文时，关于如何构建程序的研究仍在进行中，但大部分工作都是针对顺序代码的技术： <strong>goto</strong> 语句的使用正在争论中，面向对象的范式正在开始扎根。同时 <strong>进程</strong> 的操作没有经过深思熟虑。Hoare 开始纠正这个问题，因此他的论文和CSP诞生了。</p>
+<p>在1978年的论文中，CSP只是一种简单的编程语言，仅用于展示 CSP 的能力;事实上，他在论文中提到：</p>
 <blockquote>
-<p>安装100，101，102，103 的格式设置其他的树莓派节点IP地址</p>
+<p>Thus the concepts and notations introduced in this paper should … not be regarded as suitable for use as a programming language, either for abstract or for concrete programming.</p>
 </blockquote>
-<h3 id="设置网络代理"><a href="#设置网络代理" class="headerlink" title="设置网络代理"></a>设置网络代理</h3><p>因为后期会需要下载kubeadm,kubelete，docker等软件，因此需要设置网络代理，通过代理下载软件。</p>
-<pre><code class="bash">$ export http_proxy=&quot;http://172.14.1.54:1080&quot;
-$ export https_proxy=&quot;http://172.14.1.54:1080&quot;
-</code></pre>
-<h3 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h3><p>这个步骤依赖于上面的网络代理设置的，如果设置成功了，那么这步才可能成功执行。</p>
-<pre><code class="bash">$ curl -sSL get.docker.com | sh &amp;&amp; sudo usermod pi -aG docker
-$ newgrp docker
-</code></pre>
-<h3 id="关闭swap"><a href="#关闭swap" class="headerlink" title="关闭swap"></a>关闭swap</h3><pre><code class="bash">$ sudo dphys-swapfile swapoff &amp;&amp; \
-  sudo dphys-swapfile uninstall &amp;&amp; \
-  sudo update-rc.d dphys-swapfile remove
-</code></pre>
-<p>这个步骤是为了后面的 kubeadm init 成功执行！具体的缘由可以参考我之前的文章：<a href="https://www.41sh.cn/?id=8" target="_blank" rel="noopener">https://www.41sh.cn/?id=8</a></p>
-<p>为了检测是否成功关闭，可以执行下面的命令，如果成功执行了，那么下面的命令将不会有任何的输出。</p>
-<pre><code class="bash">$ sudo swapon --summary
-</code></pre>
-<h3 id="编辑-boot-cmdline-txt"><a href="#编辑-boot-cmdline-txt" class="headerlink" title="编辑 /boot/cmdline.txt"></a>编辑 /boot/cmdline.txt</h3><p>打开 /boot/cmdline.txt，并在末尾添加如下指令。</p>
-<pre><code class="bash">cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory
-</code></pre>
+<p>Hoare 非常担心他所提出的技术对于进一步研究程序的正确性没有任何帮助，并且这些技术可能无法在基于他自己的真实语言中表现出来。在接下来的六年中，CSP的概念被细化为一种称为 <strong>process calculus</strong> 的正式表示，以便采用 CSP 的思想并实际开始推理程序的正确性。</p>
+<p>过程演算是一种对并发系统进行数学建模的方法，并且还提供代数法则来对这些系统执行变换以分析它们的各种属性，例如效率和正确性。</p>
+<p>为了支持输入和输出需要被视为原语的断言，Hoare 的 CSP 编程语言包含了正确地模拟进程之间的输入和输出或通信的原语。Hoare将术语进程应用于逻辑的任何封装部分，这些逻辑需要输入运行并产生其他进程将消耗的输出。Hoare可能会使用“函数”这个词，如果不是在撰写论文时如何构建社区中发生的程序的辩论。</p>
+<p>对于进程之间的通信，Hoare创建了输入和输出命令：<code>!</code> 用于将输入发送到进程中，<code>？</code>用于读取进程的输出。每个命令都必须指定输出变量（在从进程读取变量的情况下）或目标（在向进程发送输入的情况下）。有时这两个会引用相同的东西，在这种情况下，两个过程将被认为是对应的。换句话说，来自一个进程的输出将直接流入另一个进程的输入。表1显示了该论文的一些例子。</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cardreader?</td>
+<td>cardimage From cardreader, read a card and assign its value (an array of characters) to the variable cardimage.</td>
+</tr>
+<tr>
+<td>lineprinter!</td>
+<td>lineimage To lineprinter, send the value of lineimage for printing.</td>
+</tr>
+<tr>
+<td>X?(x, y)</td>
+<td>From process named X, input a pair of values and assign them to x and</td>
+</tr>
+<tr>
+<td>y.</td>
+<td></td>
+</tr>
+<tr>
+<td>DIV!(3*a+b, 13)</td>
+<td>To process DIV, output the two specified values.</td>
+</tr>
+<tr>
+<td>→ east!c] east.</td>
+<td>The repetition terminates when the process west terminates.</td>
+</tr>
+</tbody>
+</table>
+<p>很明显，与 Go 的 channel 具有相似之处。请注意，在最后一个示例中，来自 <code>east</code> 的输出是如何发送到变量<code>c</code>，而来自 <code>east</code> 的输入是从同一变量接收的。这两个进程相对应。在Hoare关于CSP的第一篇论文中，流程只能通过命名的源和目的地进行通信。他承认，这会导致将代码嵌入库中的问题，因为代码的使用者必须知道输入和输出的名称。他随便提到了注册他所谓的“端口名称”的可能性，其中名称可以在并行命令的头部声明，我们可能会将其识别为命名参数和命名返回值。</p>
+<p>该语言还使用了所谓的守卫命令（ <em>guarded</em> ），Edgar Dijkstra 在 1974 年写的一篇文章 “<a href="https://dl.acm.org/citation.cfm?doid=360933.360975" target="_blank" rel="noopener">Guarded commands, nondeterminacy and formal derivation of programs</a>”中提到了:一个守卫的命令只是一个左右手边的声明，用 <code>→</code> 分开。箭头左边作为右边的条件或守卫，如果左边是假的，或者在命令的情况下，返回假或退出，右边将永远不会被执行。将这些与 Hoare 的 I/O 命令相结合，为 Hoare 的通信过程奠定了基础，从而为 Go 的Channel 奠定了基础。</p>
+<p>内存同步访问本质上并不坏。我们将在“Go的并发哲学”中看到，有时共享内存在某些情况下是合适的，即使在Go中也是如此。但是，共享内存模型可能难以正确使用 - 尤其是在大型复杂程序中。正是由于这个原因，并发被认为是Go的优势之一：它从一开始就是基于CSP的原则而构建的，因此它易于阅读，编写和推理。</p>
+<h1 id="Go的并发设计哲学"><a href="#Go的并发设计哲学" class="headerlink" title="Go的并发设计哲学"></a>Go的并发设计哲学</h1><p>CSP曾经并且是Go设计的重要组成部分;但 Go 还支持更传统的通过内存同步访问编写并发代码的方法以及遵循该技术的原语。<a href="https://golang.org/pkg/sync/" target="_blank" rel="noopener">sync</a> 和其他包中的结构和方法允许您执行加锁，创建资源池以及抢占 goroutine 等。</p>
+<p>这种在CSP原语和内存同步访问之间进行选择的能力对程序员来说非常有用，因为它可以让程序员更好地控制选择写入什么样的并发代码来解决问题，但它也可能有点令人困惑。Go 语言的新手常常会得到这样的印象： CSP 的并发风格被认为是在 Go 中编写并发代码的唯一方法。例如，在同步包的文档中：</p>
 <blockquote>
-<p>该步骤执行完成后，一定要重启！否则后面会有错误。</p>
+<p>Package <em>sync</em> provides basic synchronization primitives such as mutual exclusion locks. Other than the Once and WaitGroup types, most are intended for use by low-level library routines. Higher-level synchronization is better done via channels and communication.</p>
 </blockquote>
-<h3 id="安装kubernetes"><a href="#安装kubernetes" class="headerlink" title="安装kubernetes"></a>安装kubernetes</h3><p>该步骤也同样依赖于设置网络代理那一步骤！</p>
-<pre><code class="bash">$ sudo su # 切换到root用户
-$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &amp;&amp; \
-echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; | tee /etc/apt/sources.list.d/kubernetes.list &amp;&amp; \
-apt-get update -q &amp;&amp; \
-apt-get install -qy kubeadm=1.10.2-00 kubectl=1.10.2-00 kubelet=1.10.2-00
-</code></pre>
-<blockquote class="colorquote warning"><p>1). 这里有个<strong>小坑</strong>，切到root用户后，需要重新配置网络代理，然后就可以使用了。</p>
-<pre><code class="bash">$ <span class="built_in">export</span> http_proxy=<span class="string">"http://172.14.1.54:1080"</span>
-$ <span class="built_in">export</span> https_proxy=<span class="string">"http://172.14.1.54:1080"</span>
-</code></pre>
-<p>2). 使用root时，不用加sudo前缀，这个已经踩了很多次了</p>
-</blockquote>
-<p>如果安装最新版本，不用指定版本。可以直接使用下面的命令：</p>
-<pre><code class="bash">$ apt-get install -qy kubeadm kubectl kubelet
-</code></pre>
-<h3 id="修改docker的网络代理"><a href="#修改docker的网络代理" class="headerlink" title="修改docker的网络代理"></a>修改docker的网络代理</h3><p>这一步非常重要！因为我们可能需要pull很多国内不能访问的镜像，因此需要设置docker网络代理，因为默认情况下，docker服务不是通过systemctl管理的，因此需要创建一个系统服务，具体的命令如下：</p>
-<pre><code class="bash">$ mkdir -pv /etc/systemd/system/docker.service.d
-$ cat &lt;&lt; EOF &gt;&gt; /etc/systemd/system/docker.service.d/http-proxy.conf
-[Service]
-Environment=&quot;HTTP_PROXY=http://172.16.3.12:1080/&quot; &quot;HTTPS_PROXY=http://172.16.3.12:1080/&quot;
-EOF 
-$ systemctl daemon-reload
-$ systemctl restart docker
-</code></pre>
+<p>在 <a href="https://golang.org/doc/faq" target="_blank" rel="noopener">language FAQ</a></p>
 <blockquote>
-<p><strong>参考：</strong><a href="https://docs.docker.com/config/daemon/systemd/" target="_blank" rel="noopener">https://docs.docker.com/config/daemon/systemd/</a></p>
+<p>Regarding mutexes, the sync package implements them, but we hope Go programming style will encourage people to try higher-level techniques. In particular, consider structuring your program so that only one goroutine at a time is ever responsible for a particular piece of data. Do not communicate by sharing memory. Instead, share memory by communicating.</p>
 </blockquote>
-<h3 id="预先pull镜像"><a href="#预先pull镜像" class="headerlink" title="预先pull镜像"></a>预先pull镜像</h3><pre><code class="bash">$ kubeadm config images pull -v3
-</code></pre>
-<h3 id="初始化master节点"><a href="#初始化master节点" class="headerlink" title="初始化master节点"></a>初始化master节点</h3><pre><code class="bash">$ kubeadm init --token-ttl=0 --pod-network-cidr=10.244.0.0/16
-</code></pre>
-<p>这步如果成功的话，会打印下面的消息： </p>
-<pre><code class="bash">Your Kubernetes master has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-You should now deploy a pod network to the cluster.
-Run &quot;kubectl apply -f [podnetwork].yaml&quot; with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of machines by running the following on each node
-as root:
-
-  kubeadm join 172.16.3.1:6443 --token xo78oj.02cia85vdh285aqj --discovery-token-ca-cert-hash sha256:9517c72036f8261ac912adaf8339b65583fdaa7dbb8dd60054c6e84e8880a3fd
-</code></pre>
-<p> 然后根据输出的提示，执行下面的语句：</p>
-<pre><code class="bash">$ mkdir -p $HOME/.kube
-$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
-</code></pre>
+<p>还有许多文章，讲座和访谈，其中Go核心团队的各个成员支持 CSP 样式而不是像 <code>sync.Mutex</code> 这样的原语。</p>
+<p>因此，完全可以理解为什么Go团队选择公开内存访问同步原语。但令人困惑的是，你会看到频繁出现的同步原语，看到人们抱怨过度使用频道，还听到一些Go团队成员说可以使用它们。以下是关于此事的 Go <a href="https://github.com/golang/go/wiki/MutexOrChannel" target="_blank" rel="noopener">Wiki</a> 的引用：</p>
 <blockquote>
-<p>上面的语句需要在pi用户下执行！否则不管用！</p>
+<p>One of Go’s mottos is “Share memory by communicating, don’t communicate by sharing memory.” That said, Go does provide traditional locking mechanisms in the sync package. Most locking issues can be solved using either channels or traditional locks. So which should you use? Use whichever is most expressive and/or most simple.</p>
+<p>Go的一个主题是“通过通信共享内存，不通过共享内存进行通信。”</p>
+<p>也就是说，Go确实在同步包中提供了传统的锁定机制。</p>
+<p>使用通道或传统锁可以解决大多数加锁问题。</p>
+<p>那应该用哪个？使用最具表现力和/或最简单的表达方式。</p>
 </blockquote>
-<p>这步完成之后，执行下面的命令，你会发现master节点NotReady的消息，这是因为我们的网络需要依赖于flannel网络组件！</p>
-<blockquote class="colorquote info"><h2 id="Setup-networking-with-Weave-Net-or-Flannel"><a href="#Setup-networking-with-Weave-Net-or-Flannel" class="headerlink" title="Setup networking with Weave Net or Flannel"></a>Setup networking with Weave Net or Flannel</h2><p>Some users have reported stability issues with Weave Net on ARMHF. These issues do not appear to affect x86_64 (regular PCs/VMs). You may want to try Flannel instead of Weave Net for your RPi cluster.</p>
-<h3 id="Weave-Net"><a href="#Weave-Net" class="headerlink" title="Weave Net"></a>Weave Net</h3><p>Install <a href="https://www.weave.works/oss/net/" target="_blank" rel="noopener">Weave Net</a> network driver</p>
-<pre><code class="bash">$ kubectl apply -f <span class="string">"https://cloud.weave.works/k8s/net?k8s-version=<span class="variable">$(kubectl version | base64 | tr -d '\n')</span>"</span>
-</code></pre>
-<p>If you run into any issues with Weaveworks’ networking then <a href="https://github.com/coreos/flannel" target="_blank" rel="noopener">flannel</a> is also a popular choice for the ARM platform.</p>
-<h3 id="Flannel-alternative"><a href="#Flannel-alternative" class="headerlink" title="Flannel (alternative)"></a>Flannel (alternative)</h3><p>Apply the Flannel driver on the master:</p>
-<pre><code class="bash">$ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/c5d10c8/Documentation/kube-flannel.yml
-</code></pre>
-<p>On each node that joins including the master:</p>
-<pre><code class="bash">$ sudo sysctl net.bridge.bridge-nf-call-iptables=1
-</code></pre>
-</blockquote>
-<h2 id="其他节点设置"><a href="#其他节点设置" class="headerlink" title="其他节点设置"></a>其他节点设置</h2><p>其他节点和master类似，最后需要执行下面的命令就可以了！</p>
-<pre><code class="bash">$ kubeadm join 172.16.3.1:6443 --token xo78oj.02cia85vdh285aqj --discovery-token-ca-cert-hash sha256:9517c72036f8261ac912adaf8339b65583fdaa7dbb8dd60054c6e84e8880a3fd
-</code></pre>
+<p><img src="https://shenheng.xyz/img/2018112501.png" alt="决策树"></p>
+<p>决策树</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本节主要讲解了Go的并发哲学，并且为什么Go的并发那么优秀：基于CSP原则，然后讲了CSP是什么和它的设计原则，最后说明如何选择 “通道” 还是 “传统锁”！</p>
 
                 
 
@@ -433,12 +384,12 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2019/01/15/kubernetes/kubernetes-dashboard/" data-toggle="tooltip" data-placement="top" title="树莓派kuernetes集群中部署dashboard">&larr; Previous Post</a>
+                            <a href="/2018/11/28/golang/deep-understand-context-package/" data-toggle="tooltip" data-placement="top" title="Go语言中的并发机制系列-4/1 | 深入理解 context 包">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2018/11/28/golang/deep-understand-context-package/" data-toggle="tooltip" data-placement="top" title="Go语言中的并发机制系列-4/1 | 深入理解 context 包">Next Post &rarr;</a>
+                            <a href="/2018/11/23/kubernetes/kubeflow-deployment/" data-toggle="tooltip" data-placement="top" title="kubernetes学习笔记|利用 Kubeflow 管理 Tensorflow 程序">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -468,7 +419,7 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#引言"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">引言</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#系统准备-TL-DR"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">系统准备(TL;DR)</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#初始化系统"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">初始化系统</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Master节点设置"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Master节点设置</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#设置静态IP"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">设置静态IP</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#设置网络代理"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">设置网络代理</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装docker"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">安装docker</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#关闭swap"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">关闭swap</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#编辑-boot-cmdline-txt"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">编辑 /boot/cmdline.txt</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装kubernetes"><span class="toc-nav-number">3.6.</span> <span class="toc-nav-text">安装kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#修改docker的网络代理"><span class="toc-nav-number">3.7.</span> <span class="toc-nav-text">修改docker的网络代理</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#预先pull镜像"><span class="toc-nav-number">3.8.</span> <span class="toc-nav-text">预先pull镜像</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#初始化master节点"><span class="toc-nav-number">3.9.</span> <span class="toc-nav-text">初始化master节点</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Setup-networking-with-Weave-Net-or-Flannel"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Setup networking with Weave Net or Flannel</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Weave-Net"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">Weave Net</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Flannel-alternative"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">Flannel (alternative)</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#其他节点设置"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">其他节点设置</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#并发与并行的区别"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">并发与并行的区别</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#CSP"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">CSP</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#Go的并发设计哲学"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Go的并发设计哲学</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">总结</span></a></li></ol>
         
         </div>
       </aside>
@@ -488,11 +439,9 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                         
-                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                        
-                          <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
+                          <a class="tag" href="/tags/#Concurrency" title="Concurrency">Concurrency</a>
                         
                     </div>
                 </section>
@@ -531,8 +480,8 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "shenhengheng";
-    var disqus_identifier = "https://readailib.com/2019/01/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/";
-    var disqus_url = "https://readailib.com/2019/01/07/kubernetes/raspberrypi/build-a-kubernetes-cluster/";
+    var disqus_identifier = "https://readailib.com/2018/11/25/golang/concurracy-philosophy-and-csp/";
+    var disqus_url = "https://readailib.com/2018/11/25/golang/concurracy-philosophy-and-csp/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

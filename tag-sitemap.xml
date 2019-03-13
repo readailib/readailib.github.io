@@ -142,15 +142,22 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Golang/</loc>
+        <loc>https://readailib.com/tags/Go-Concurrency/</loc>
         <lastmod>2019-03-13T11:52:34.109Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Go-Concurrency/</loc>
-        <lastmod>2019-03-13T11:52:34.109Z</lastmod>
+        <loc>https://readailib.com/tags/Golang/</loc>
+        <lastmod>2019-03-13T11:55:12.418Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Concurrency/</loc>
+        <lastmod>2019-03-13T11:55:12.418Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
