@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          自动化构建生产环境下的 Docker 镜像 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.com/2018/11/21/cicd/build-cicd-system-with-jekins/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Jenkins" title="Jenkins">Jenkins</a>
+                            
+                        </div>
+                        <h1>自动化构建生产环境下的 Docker 镜像</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2018-11-21
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>本教程将会学习如何配置 Jenkins 来基于 Dockerfile 构建的 Docker 镜像，和如何使用 Docker 来实现（CICD）持续集成与开发。使用自动化镜像构建，在企业生产环境下将可以完成高效的升级与部署。</p>
+<blockquote>
+<p><strong>说明：</strong> 本教程借鉴于 <a href="https://www.katacoda.com/courses/cicd/build-docker-images-using-jenkins" target="_blank" rel="noopener">katacoda</a> 创建的关于CICD的教程.</p>
+</blockquote>
+<p>这次教程主要我尝试了两个版本：</p>
+<ul>
+<li>宿主机是 x86 架构的系统（系统：Ubuntu，Arch）</li>
+<li>宿主机是 给予Arm 的系统（树莓派，系统为Hypriot）</li>
+</ul>
+<h1 id="Linux下部署安装"><a href="#Linux下部署安装" class="headerlink" title="Linux下部署安装"></a>Linux下部署安装</h1><h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p><img src="https://shenheng.xyz/img/arch1.png" alt="三种安装部署方案"></p>
+<p>三种安装部署方案</p>
+<blockquote>
+<p>说明：这三种方案均测试过，大家可以从图中看到方案2可能是生产中所使用到的方案，方案 1 较为冗余，比较传统， 方案三是我本次教程所要使用的部署方案。</p>
+</blockquote>
+<p>是用这三种方案都需要安装 Docker， 并提供一个供外部访问的 REST API 守护程序（Docker daemon）， 类似于 kubernetes 的 kube-api-server一样。在 ubuntu 和 Hyproiot 中需要这样操作：</p>
+<pre><code class="bash">sudo mkdir -pv /etc/systemd/system/docker.service.d
+cat &lt;&lt; EOF &gt; /etc/systemd/system/docker.service.d/remote-api.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+</code></pre>
+<p>可以使用下面的命令测试</p>
+<pre><code class="bash"># 查看端口是否打开
+netstat -an | grep 2375
+ss -ntlp | grep 2375
+# 检查守护程序能否正常工作
+docker -H  172.16.3.16:2375 info
+</code></pre>
+<p>简便方法：可以直接是用下面命令启动守护程序，但在生产中是不允许的。</p>
+<pre><code class="bash"># listen using the default unix socket, and on 2 specific IP addresses on this host.
+$ sudo dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375
+</code></pre>
+<h2 id="启动-Jenkins"><a href="#启动-Jenkins" class="headerlink" title="启动 Jenkins"></a>启动 Jenkins</h2><p>首先创建一个数据卷，用来保存 Jenkins 安装的插件。</p>
+<pre><code class="bash">docker create -v /data --name jenkinsdata busybox
+</code></pre>
+<p>使用下面的命令启动一个 Jenkins 的docker容器，并关联/挂着到之前创建的数据卷。此时 Jenkins 容器中所有插件和配置文件都将会持久化到我们的 jenkinssdata 这个数据卷中。</p>
+<pre><code class="bash">docker run -d -u root --name jenkins \
+    -p 8080:8080 -p 50000:50000 \
+    --volumes-from jenkinsdata\
+    --restart always \
+    jenkins/jenkins:2.112-alpine
+</code></pre>
+<p><strong>注意</strong>: 当然可以直接挂载到指定的宿主机上的目录</p>
+<h2 id="启动Jenkins-仪表盘"><a href="#启动Jenkins-仪表盘" class="headerlink" title="启动Jenkins 仪表盘"></a>启动Jenkins 仪表盘</h2><p>可以通过访问 <a href="http://172.16.3.32:8080/" target="_blank" rel="noopener">http://172.16.3.32:8080/</a> 来访问 Jenkins 的仪表板</p>
+<p><img src="https://shenheng.xyz/img/login.png" alt="login page"></p>
+<p>login page</p>
+<p>这里需要输入 admin 的密码，密码是随机的，需要通过下面的命令查看初始密码。</p>
+<pre><code class="bash">docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+</code></pre>
+<p>Jenkins 可能需要几秒钟才能完成启动。在接下来的步骤中，将使用仪表板配置插件并开始构建Docker镜像。</p>
+<h2 id="安装与配置插件"><a href="#安装与配置插件" class="headerlink" title="安装与配置插件"></a>安装与配置插件</h2><p>第一步是配置 Docker 插件。该插件基于 Jenkins Cloud 插件。当构建需要 Docker 时，它将通过插件创建“Cloud Agent”。代理将是一个 Docker 容器，需要经过配置与我们的前面配置的 Docker 守护进程通信。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
+<li>在仪表板中，选择左侧的 系统管理。</li>
+<li>在“管理Jenkins”页面上，选择“管理插件”。</li>
+<li>“管理插件”页面将为您提供选项卡式界面。单击“可选插件”以查看可以安装的所有Jenkins插件。</li>
+<li>使用搜索框搜索Docker。有多个Docker插件，使用Cloud Providers标题下的复选框选择Docker。</li>
+<li>点击直接安装</li>
+<li>插件将会自动下载并安装，安装完成后点击返回即可完成安装。</li>
+</ul>
+<p><img src="https://shenheng.xyz/img/docker.png" alt="docker plugin"></p>
+<p>docker plugin</p>
+<h3 id="添加-docker-agent"><a href="#添加-docker-agent" class="headerlink" title="添加 docker agent"></a>添加 docker agent</h3><ul>
+<li>在仪表板中，选择左侧的 <strong>系统管理</strong> ；</li>
+<li>在系统管理中，选择 <strong>系统设置</strong> ；</li>
+<li>在底部，有一个下拉菜单叫 <strong>增加一个云</strong> ，从下拉列表中选择 Docker.</li>
+<li>Docker Host URI 是 Jenkins 启动 agent 容器的位置，在本教程中，我们将使用我们前面定义好的  <code>tcp://172.16.3.32:2375</code></li>
+<li>使用 Test Connection 来验证 Jenkins 是否可以与 Docker Daemon 通讯， 如果正常的话，你可以看到返回过来的 Docker version.</li>
+</ul>
+<h3 id="配置-Docker-Agent-Template"><a href="#配置-Docker-Agent-Template" class="headerlink" title="配置 Docker Agent Template"></a>配置 Docker Agent Template</h3><p>Docker Agent Template 是将会处理应用构建（比如自动化构建 Docker 镜像）的Container。</p>
+<ul>
+<li>单击 Docker Agent 模板…然后添加Docker模板。</li>
+<li>配置容器<ul>
+<li>将 agent 的标签设置为 docker-agent。表示我们的 Jenkins 将使用具有该标签的容器来构建我们的应用程序。（类似于 k8s 中的标签选择器）</li>
+<li>在 Docker Image 选项里填写 <code>benhall/dind-jenkins-agent:v2</code> 。 镜像可以从 <a href="https://hub.docker.com/r/benhall/dind-jenkins-agent/" target="_blank" rel="noopener">https://hub.docker.com/r/benhall/dind-jenkins-agent/</a> 获取。</li>
+</ul>
+</li>
+<li>在容器设置下，在 Volumn 文本框中输入 <code>/var/run/docker.sock:/var/run/docker.sock</code>。这允许我们的构建容器与主机通信。</li>
+<li>在 Connect Method 选项里选择 <code>Connect with SSH</code> 选项。由于上一步填写的镜像基于 <code>Jenkins SSH Slave</code> 映像，这意味着默认的 Inject SSH 密钥将处理身份验证。</li>
+<li>单击保存。</li>
+</ul>
+<p>Jenkins现在可以在需要时将Build Agent作为容器启动。</p>
+<p><img src="https://shenheng.xyz/img/docker-agent.png" alt="Configuration of docker agent"></p>
+<p>Configuration of docker agent</p>
+<h2 id="Create-New-Job"><a href="#Create-New-Job" class="headerlink" title="Create New Job"></a>Create New Job</h2><ul>
+<li>选择新建一个 jobs</li>
+<li>填写 job 的名字为 Katacoda Jenkins Demo, 然后选择 自由项目，点击 OK.</li>
+</ul>
+<p><img src="https://shenheng.xyz/img/job.png" alt="New a job"></p>
+<p>New a job</p>
+<ul>
+<li>接下来在 job 配置页中，选择 “Restrict where this project can be run”， 这时需要在标签表达式（类似于标签选择器）填写我们配置 Docker Agent 时填写的标签： docker-agent， 如果一切正常的话，你会看到”Label is serviced by no nodes and 1 cloud”.</li>
+</ul>
+<p><img src="https://shenheng.xyz/img/docker-agent-label-select.png" alt="标签选择"></p>
+<p>标签选择</p>
+<blockquote>
+<p>If you see the error message There’s no agent/cloud that matches this assignment. Did you mean ‘master’ instead of ‘docker-agent’?, then the Docker plugin and the Docker Agent has not been Enabled. Go back to configure the system options and enable both checkboxes.</p>
+</blockquote>
+<ul>
+<li>选择存储库（Repository）类型为 Git，并且设置仓库位置为 <a href="https://github.com/katacoda/katacoda-jenkins-demo" target="_blank" rel="noopener">https://github.com/katacoda/katacoda-jenkins-demo</a>.</li>
+<li>接下来添加一个构建步骤，选择执行 Shell 选项。Shell 命令如下</li>
+</ul>
+<pre><code class="bash">docker info
+docker build -t katacoda/jenkins-demo:${BUILD_NUMBER} .
+docker tag katacoda/jenkins-demo:${BUILD_NUMBER} katacoda/jenkins-demo:latest
+docker images
+</code></pre>
+<h2 id="开始构建项目"><a href="#开始构建项目" class="headerlink" title="开始构建项目"></a>开始构建项目</h2><p>现在我们可以回到我们刚刚新创建工作的主目录中，选择立即构建。一般情况下，初次构建过程时间比较长，因为要 pull 下来我们之前定义的Docker Agent的镜像，并且还要pull 下我们构建项目的 Docker镜像。</p>
+<p><img src="https://shenheng.xyz/img/build.png" alt="构建项目"></p>
+<p>构建项目</p>
+<p><img src="https://shenheng.xyz/img/build-success.png" alt="构建成功"></p>
+<p>构建成功</p>
+<p><img src="https://shenheng.xyz/img/build-procedure.png" alt="查看构建过程"></p>
+<p>查看构建过程</p>
+<h2 id="查看构建完成的镜像"><a href="#查看构建完成的镜像" class="headerlink" title="查看构建完成的镜像"></a>查看构建完成的镜像</h2><p>这时候可以查看宿主机的docker镜像，打印结果如下</p>
+<p>zsh~</p>
+<ul>
+<li></li>
+<li>$ docker images</li>
+<li>REPOSITORY                       TAG                 IMAGE ID            CREATED              SIZE</li>
+<li>katacoda/jenkins-demo            latest              63b4e5d2500e        About a minute ago   5.81MB</li>
+<li>postgres                         latest              67ebc8a2f066        3 months ago         237MB</li>
+<li>redis                            latest              4e8db158f18d        3 months ago         83.4MB</li>
+<li>golang                           latest              d0e7a411e3da        4 months ago         794MB</li>
+<li>benhall/dind-jenkins-agent       v2                  8f582645af33        8 months ago         1.14GB</li>
+<li>jenkins/jenkins                  2.112-alpine        481b49e06417        8 months ago         223MB</li>
+<li>$ _</li>
+<li></li>
+</ul>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>zsh~</p>
+<ul>
+<li></li>
+<li>$ docker run -d -p 80:80 katacoda/jenkins-demo:latest</li>
+<li>c716310a068f3ad95ab19c5e5a977981e8f061dec7209b8a55c6f2840700ecce</li>
+<li>$ curl localhost</li>
+<li><h1>This request was processed by host: c716310a068f</h1></li>
+<li></li>
+</ul>
+<h1 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h1><ul>
+<li>Jenkins 还没有达到完全自动化构建的目的</li>
+<li>Jenkins 配置较为复杂，坑比较多</li>
+</ul>
+<h1 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h1><ul>
+<li>分布式的CICD解决方案</li>
+<li>强大的社区</li>
+</ul>
+<h1 id="常遇到的坑总结"><a href="#常遇到的坑总结" class="headerlink" title="常遇到的坑总结"></a>常遇到的坑总结</h1><ul>
+<li>jenkins启动一直显示 Jenkins正在启动,请稍后…</li>
+</ul>
+<p><strong>解决方法：</strong></p>
+<pre><code class="bash">docker exec -it jenkins bash
+cd /var/jenkins_home/updates/ #到jenkins的工作目录下
+vim default.json
+# 把 &quot;connectionCheckUrl&quot;:&quot;http://www.google.com/&quot; 改为&quot;connectionCheckUrl&quot;:&quot;http://www.baidu.com/&quot;
+</code></pre>
+<ul>
+<li>最新版Jenkins首次安装一直停在向导界面问题</li>
+</ul>
+<p>jenkins启动后一直停在那个获取网络界面。 你需要修改下配置文件，因为你所在网络被限制了。配置文件是<code>$JENKINS_HOME/hudson.model.UpdateCenter.xml</code>，默认内容如下：</p>
+<pre><code class="xml">&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;
+ &lt;sites&gt;
+   &lt;site&gt;
+    &lt;id&gt;default&lt;/id&gt;
+    &lt;url&gt;http://updates.jenkins-ci.org/update-center.json&lt;/url&gt;
+   &lt;/site&gt;
+&lt;/sites&gt;
+</code></pre>
+<p>只需要将 url 改为 <a href="http://mirror.xmission.com/jenkins/updates/update-center.json" target="_blank" rel="noopener">http://mirror.xmission.com/jenkins/updates/update-center.json</a> 即可</p>
+<ul>
+<li>遇到问题有哪些 debug 方法<ul>
+<li>在 Jenkins 的系统配置中的日志记录中查看</li>
+<li>在宿主机中，运行下面的命令</li>
+</ul>
+</li>
+</ul>
+<pre><code class="bash">docker logs jenkins
+</code></pre>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Jenkins 是 自动化运维和DevOps不可缺少的工具，它会使你的工作变得轻松，不在纠结环境配置等等，它也作为很多开源项目的项目管理工具，推荐使用！！！</p>
+<p>接下来我将会介绍更加自动化构建项目的一种方案。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/11/23/kubernetes/kubeflow-deployment/" data-toggle="tooltip" data-placement="top" title="kubernetes学习笔记|利用 Kubeflow 管理 Tensorflow 程序">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/11/15/kubernetes/kubernetes-install-note/" data-toggle="tooltip" data-placement="top" title="K8s集群部署">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#Linux下部署安装"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Linux下部署安装</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">环境准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动-Jenkins"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">启动 Jenkins</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动Jenkins-仪表盘"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">启动Jenkins 仪表盘</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装与配置插件"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">安装与配置插件</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">1.4.1.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#添加-docker-agent"><span class="toc-nav-number">1.4.2.</span> <span class="toc-nav-text">添加 docker agent</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#配置-Docker-Agent-Template"><span class="toc-nav-number">1.4.3.</span> <span class="toc-nav-text">配置 Docker Agent Template</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Create-New-Job"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">Create New Job</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#开始构建项目"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">开始构建项目</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#查看构建完成的镜像"><span class="toc-nav-number">1.7.</span> <span class="toc-nav-text">查看构建完成的镜像</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#测试"><span class="toc-nav-number">1.8.</span> <span class="toc-nav-text">测试</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#undefined"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">This request was processed by host: c716310a068f</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#缺点"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">缺点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#优点"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">优点</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#常遇到的坑总结"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">常遇到的坑总结</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#总结"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">总结</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Jenkins" title="Jenkins">Jenkins</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.com/2018/11/21/cicd/build-cicd-system-with-jekins/";
+    var disqus_url = "https://readailib.com/2018/11/21/cicd/build-cicd-system-with-jekins/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

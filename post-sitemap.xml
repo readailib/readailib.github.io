@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2018/11/21/cicd/build-cicd-system-with-jekins/</loc>
+        <lastmod>2019-03-13T12:17:07.449Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2018/11/29/docker/build-effective-image/</loc>
         <lastmod>2019-03-13T12:12:37.914Z</lastmod>
         <changefreq>weekly</changefreq>
