@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2018/11/29/docker/build-effective-image/</loc>
+        <lastmod>2019-03-13T12:06:02.805Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2018/11/25/golang/concurracy-philosophy-and-csp/</loc>
         <lastmod>2019-03-13T12:02:38.388Z</lastmod>
         <changefreq>weekly</changefreq>

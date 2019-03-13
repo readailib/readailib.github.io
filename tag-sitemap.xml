@@ -128,13 +128,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Docker/</loc>
-        <lastmod>2019-03-13T10:59:08.507Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/Kubernetes/</loc>
         <lastmod>2019-03-13T10:59:08.507Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -158,6 +151,13 @@
     <url>
         <loc>https://readailib.com/tags/Concurrency/</loc>
         <lastmod>2019-03-13T12:02:38.388Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Docker/</loc>
+        <lastmod>2019-03-13T12:06:02.805Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
