@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/11/13/golang/concurracy-introduction-use-golang/</loc>
+        <lastmod>2019-03-13T11:58:15.234Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2018/11/25/golang/concurracy-philosophy-and-csp/</loc>
         <lastmod>2019-03-13T11:55:12.418Z</lastmod>
         <changefreq>weekly</changefreq>
