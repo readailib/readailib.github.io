@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          部署微服务到树莓派的kubernetes集群 - ShenHengheng&#39;s Blog
+          在kubernetes API和client-go中使用 Go modules - ShenHengheng&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/">
+    <link rel="canonical" href="https://readailib.com/2019/02/15/kubernetes/kubernetes-api-gomod/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -86,24 +86,18 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                            
                               <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                             
-                              <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
+                              <a class="tag" href="/tags/#Go modules" title="Go modules">Go modules</a>
                             
-                              <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
-                            
-                              <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
-                            
-                              <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                              <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
                             
                         </div>
-                        <h1>部署微服务到树莓派的kubernetes集群</h1>
+                        <h1>在kubernetes API和client-go中使用 Go modules</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by ShenHengheng on
-                            2019-03-01
+                            2019-02-15
                         </span>
                     </div>
                 
@@ -295,239 +289,117 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>最近一直在如何将微服务部署在我的边缘机器上（树莓派），通过kubernetes管理。然后就开始了今天的项目成果，为此特别对此总结。</p>
-<p>本次的微服务我使用的golang，主要因为golang的天然适合开发云端服务的特性并且golang的轻便，包的管理方便等特点。并且golang的docker镜像稍微小，占用空间小。</p>
-<a id="more"></a>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>那么下面就开始吧，本次的环境主要分为两台机器，分别我的本地计算机（这里使用的Mac），另外就是我需要部署的环境（有三个树莓派节点组成的kubernetes集群）。</p>
-<p>这里你需要：</p>
+                <p>现如今kubernetes和golang的发展非常之快，Golang的依赖管理也不断的更新换代，从最初的<code>Go dep</code> 到现在<code>go mod</code>。本篇文章主要介绍如何使用<code>go mod</code>来管理项目依赖。</p>
+<blockquote class="colorquote warning"><p>这篇文章不是 <strong><em>Go module</em></strong> 教程，网上有很多关于这个主题的资料。大家可以参考下面的：</p>
 <ul>
-<li>熟悉go语言</li>
-<li>熟悉微服务</li>
-<li>熟悉Docker</li>
-<li>熟悉kubernetes的部署与基本管理任务</li>
-<li>熟悉Linux</li>
+<li><a href="https://github.com/golang/go/wiki/Modules" target="_blank" rel="noopener">https://github.com/golang/go/wiki/Modules</a></li>
+<li><a href="https://www.youtube.com/watch?v=H_4eRD8aegk" target="_blank" rel="noopener">justforfunc #43: Migrating Go Modules to v2+</a></li>
 </ul>
-<p>本章主要参考了下面的文章：</p>
+</blockquote>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>在开始之前，需要确认以下：</p>
 <ul>
-<li><a href="https://41sh.cn/?id=16" target="_blank" rel="noopener">边缘智能-在树莓派上部署kubernetes集群</a></li>
-<li><a href="https://github.com/rh01/deploy-golang-applicaton-on-kubernetes" target="_blank" rel="noopener">https://github.com/rh01/deploy-golang-applicaton-on-kubernetes</a></li>
-<li><a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></li>
+<li>Go 的版本要在1.11以上</li>
+<li>在GOPATH之外，即 <code>$GOPATH/src</code> 之外新建了一个目录作为本地的项目文件夹</li>
+<li>确认 <code>GO111MODULE=on</code> 环境变量是否正确</li>
 </ul>
-<h2 id="编写golang的应用"><a href="#编写golang的应用" class="headerlink" title="编写golang的应用"></a>编写golang的应用</h2><p><strong>本小节全部在我们本地的计算机中做的！</strong></p>
-<p>在本地创建项目文件夹goappk8s，并且将该文件夹设置成临时的 GOPATH环境变量的Value值。</p>
-<pre><code class="bash">$ mkdir -pv k8sapp/src
-$ export GOPATH=/User/rh01/k8sapp/
+<p>为此，我在GOPATH之外创建了一个目录。我将创建一个简单的PVC控制器，它可以监控所需的PVC数量。</p>
+<h2 id="从-Dep-工具开始-或其他工具）"><a href="#从-Dep-工具开始-或其他工具）" class="headerlink" title="从 Dep 工具开始(或其他工具）"></a>从 Dep 工具开始(或其他工具）</h2><p>对于使用<a href="https://github.com/kubernetes/client-go" target="_blank" rel="noopener">client-go</a>编写Kubernetes API工具的大多数人来说，都可能正在使用<code>Dep</code>来管理依赖。幸运的是，<code>go mod</code>工具可以从<code>Dep</code>（以及其他工具，如Godep,Govendor和Glide）导入依赖项配置。我的示例项目使用<code>dep</code>与以下<code>Gopkg.toml</code>：</p>
+<pre><code class="toml">[[constraint]]
+  name = &quot;k8s.io/api&quot;
+  version = &quot;kubernetes-1.9.0&quot;
+[[constraint]]
+  name = &quot;k8s.io/apimachinery&quot;
+  version = &quot;kubernetes-1.9.0&quot;
+[[constraint]]
+  name = &quot;k8s.io/client-go&quot;
+  version = &quot;6.0.0&quot;
 </code></pre>
-<p>然后在<strong>src</strong>目录下面添加 golang 代码：</p>
-<pre><code class="bash">$ mkdir -pv github.com/rh01/goappk8s &amp;&amp; cd github.com/rh01/goappk8s
-$ cat &lt;&lt; EOF &gt;&gt; main.go
-package main
-
-import (
-    &quot;github.com/gin-gonic/gin&quot;
-    &quot;net/http&quot;
+<p>可以看出，代码使用旧版本的client-go版本6.0.0和Kubernetes API版本1.9。</p>
+<p>首先要做的是将项目初始化为模块。从代码的根目录，使用以下命令：</p>
+<pre><code class="bash">$ cd ./pvcwatch
+$ go mod init github.com/vladimirvivien/pvcwatch
+</code></pre>
+<p> <code>mod</code> 命令将会创建一个新的文件 <code>go.mod</code> 并复制Dep的依赖信息。</p>
+<pre><code class="bash">go: creating new go.mod: module github.com/vladimirvivien/pvcwatch
+go: copying requirements from Gopkg.lock
+</code></pre>
+<p>这时，可以看一下从<code>Gopkg.toml</code>生成的<code>go.mod</code>文件的内容。</p>
+<pre><code class="bash">module github.com/vladimirvivien/pvcwatch
+require (
+  github.com/PuerkitoBio/purell v1.1.0
+... 
+  k8s.io/api v0.0.0-20171214033149-af4bc157c3a2
+  k8s.io/apimachinery v0.0.0-20171207040834-180eddb345a5
+  k8s.io/client-go v6.0.0+incompatible
+  k8s.io/kube-openapi v0.0.0-20180216212618-50ae88d24ede
 )
-
-func main() {
-    router := gin.Default()
-    router.GET(&quot;/ping&quot;, func(c *gin.Context) {
-        c.String(http.StatusOK, &quot;PONG&quot;)
-    })
-    router.Run(&quot;:8080&quot;)
-}
-EOF
 </code></pre>
+<p>生成的<code>go.mod</code>文件依然遵循<code>Gopkg.toml</code>版本限制.</p>
 <blockquote>
-<p>注：上面的代码取自 <a href="https://github.com/cnych/goappk8s" target="_blank" rel="noopener">https://github.com/cnych/goappk8s</a></p>
-<p>另外上面的代码主要是创建了一个微服务，主要实现PING的功能</p>
+<p><code>go mod</code> <em>will resort to the latest version of discovered packages that do not have any version information (from Dep or otherwise). If you don’t want that, you can update or downgrade to your preferred version (discussed later).</em></p>
 </blockquote>
-<p>可以看到上面的代码中，我们导入了第三方包 github.com/gin-gonic/gin，这时可以手动将该依赖包下载下来放置到<strong>GOPATH</strong>下面，这里使用了 <strong>govendor</strong> 来进行管理，当然你可以使用其他的包管理工具，比如：dep、glid或者利用go mod 等等。</p>
-<p>在 <strong>github.com/rh01/goappk8s</strong> 目录下面执行下面的操作：</p>
-<blockquote class="colorquote info"><p><strong>如何安装 govendor：</strong></p>
-<p>在Mac中可以使用brew工具或者使用下面的命令</p>
-<pre><code class="bash">$ go get -u github.com/kardianos/govendor
+<p>此时，您可以像平常一样构建代码。除此之外，构建工具将显示包解析的进度：</p>
+<pre><code class="bash">$ go build .
+go: finding github.com/golang/protobuf v1.0.0
+...
+go: downloading github.com/modern-go/reflect2 v0.0.0-20180228065516-1df9eeb2bb81
+go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+go: downloading golang.org/x/sys v0.0.0-20180322165403-91ee8cde4354
 </code></pre>
-</blockquote>
-<p>下面我们使用govendor来将依赖包缓存到本地项目中，方便移植和项目管理。</p>
-<pre><code class="bash"># 初始化本地项目文件夹为使用vendor管理包
-$ govendor init
-# 将依赖包缓存到本地
-$ govendor fetch github.com/gin-gonic/gin
+<p>如果解析了所有包，将构建成功，此时拥有了可以运行的二进制文件。</p>
+<h2 id="从无到有"><a href="#从无到有" class="headerlink" title="从无到有"></a>从无到有</h2><p>假若我们此时的项目并没有依赖管理工具，这时怎么使用<code>go mod</code>来管理我们的依赖呢？</p>
+<p>首先第一步，将我们的项目初始化为一个Go module：</p>
+<pre><code class="bash">$ go mod init github.com/vladimirvivien/pvcwatch
+go: creating new go.mod: module github.com/vladimirvivien/pvcwatch
 </code></pre>
-<blockquote>
-<p>上面 fetch 需要设置代理才能通过，还是老办法：</p>
-<pre><code class="bash">$ export http_proxy=&quot;http://127.0.0.1:12333&quot;
-$ export https_proxy=&quot;http://127.0.0.1:12333&quot;
+<p>这时，生成的 <code>go.mod</code> 文件将会是空的，只有我们执行了Go的一些命令(比如<code>build</code>, <code>get</code>,<code>test</code>, 等等)之后，<code>go.mod</code>才会出现依赖项. 接下来, 在我们的项目文件夹下执行 <code>build</code> 命令。</p>
+<pre><code class="bash">$ cd ./pvcwatch
+$ go build .
+go: finding k8s.io/apimachinery/pkg/util/runtime latest
+...
+go: downloading golang.org/x/sys v0.0.0-20181021155630-eda9bb28ed51
+go: finding golang.org/x/text/unicode latest
+go: finding golang.org/x/text/secure latest
 </code></pre>
-</blockquote>
-<p>这样一个非常小的微服务应用就做完了，这时需要测试一下，看看是否正常运行。这时切换到 <strong>GOPARH</strong> 文件夹。执行下面的语句</p>
-<pre><code class="bash">$ go install github.com/rh01/goappk8s &amp;&amp; ./bin/goappk8s
-[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
-
-[GIN-debug] [WARNING] Running in &quot;debug&quot; mode. Switch to &quot;release&quot; mode in production.
- - using env:   export GIN_MODE=release
- - using code:  gin.SetMode(gin.ReleaseMode)
-
-[GIN-debug] GET    /ping                     --&gt; main.main.func1 (3 handlers)
-[GIN-debug] Listening and serving HTTP on :8080
+<p>在构建过程结束时，如果没有依赖性问题，我们应该获得构建的二进制文件。在这种情况下，<code>go mod</code>将自动提取所有已解析包的最新版本，如更新的go.mod文件中所示：</p>
+<pre><code class="bash">$&gt; cat go.mod
+module github.com/vladimirvivien/pvcwatch
+require (
+...
+    k8s.io/api v0.0.0-20181018013834-843ad2d9b9ae
+    k8s.io/apimachinery v0.0.0-20181015213631-60666be32c5d
+    k8s.io/client-go v9.0.0+incompatible
+)
 </code></pre>
-<p>这时会打印出如上面所示的日志信息，这时我们可以通过 curl 来访问。</p>
-<pre><code class="bash">$ curl localhost:8080/ping
-PONG
+<p><code>go.mod</code>显示正在使用client-go v9.0.0（最新的版本）（k8s.io/api和k8s.io/apimachinery尚未<em>SemVer’d</em>，因此使用了最新的HEAD版本）。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Trouble will come when you want to adjust (upgrade/downgrade) client-go to a specific version. For instance, in the previous section, <code>go mod</code> selected v9.0.0 of client-go. But, let us say we want do downgrade to v7.0.0 because:</p>
+<pre><code class="bash">$&gt; cd ./pvcwatch
+$&gt; go get k8s.io/client-go@v7.0.0
 </code></pre>
-<p>这时我们的服务是已经正常可以运行的了。</p>
-<h2 id="打包成Docker镜像（使用ARM）"><a href="#打包成Docker镜像（使用ARM）" class="headerlink" title="打包成Docker镜像（使用ARM）"></a>打包成Docker镜像（使用ARM）</h2><p>这里主要使用了 Docker 的多阶段构建来打造一个非常小的镜像，这对我们的边缘端来讲，是非常必要的，因为他们的资源是非常有限的。</p>
-<blockquote>
-<p>有关 Docker镜像的多阶段构建以及Docker镜像优化问题，请详见我之前的一篇文章：</p>
-<ul>
-<li><a href="https://www.41sh.cn/?id=25" target="_blank" rel="noopener">https://www.41sh.cn/?id=25</a></li>
-</ul>
-</blockquote>
-<p>下面我们看一下Dockerfile文件吧。</p>
-<pre><code class="dockerfile">FROM golang AS build-env
-ADD . /go/src/app
-WORKDIR /go/src/app
-
-ENV http_proxy http://192.168.1.9:12333
-ENV https_proxy http://192.168.1.9:12333
-
-RUN go get -u -v github.com/kardianos/govendor
-RUN govendor sync
-RUN GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server
-
-
-
-FROM armhf/alpine:latest
-RUN apk add -U tzdata
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
-COPY --from=build-env /go/src/app/app-server /usr/local/bin/app-server
-EXPOSE 8080
-CMD [ &quot;app-server&quot; ]
+<p>This, unfortunately, will create a version mismatch between client-go and its dependent packages <code>k8s.io/api</code> and <code>k8s.io/apimachinery</code>:</p>
+<pre><code class="bash">$&gt; go build .
+go: finding github.com/howeyc/gopass latest
+go: finding k8s.io/client-go v7.0.0+incompatible
+#../../pkg/apis/clientauthentication/v1alpha1/zz_generated.conversion.go:39:15: scheme.AddGeneratedConversionFuncs undefined (type *runtime.Scheme has no field or method AddGeneratedConversionFuncs)
 </code></pre>
-<blockquote class="colorquote info"><p>这里也参考了知乎的这片文章：<a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></p>
-<p>主要修改如下：</p>
-<p>(1).  增加了</p>
-<pre><code class="dockerfile"><span class="keyword">ENV</span> http_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
-<span class="keyword">ENV</span> https_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
+<p>现在，您必须手动确定您的依赖关系图。幸运的是，client-go附带了一个方便的兼容性矩阵，可以准确地告诉我们需要哪些版本（参见下图）。</p>
+<p><img src="./compatible-matrix.png" alt="client-go兼容性矩阵"></p>
+<p>根据矩阵可以看出，client-go v7.0.0与Kubernetes 1.10兼容。因此，让我们使用go get（其支持分支名称或非semver标记名称）将其他依赖组件降级到匹配版本。</p>
+<p>降级 k8s.io/api to Kubernets-1.10:</p>
+<pre><code class="bash"># Downgrade with a tag name
+$&gt; go get k8s.io/api@kubernetes-1.10.9
+go: finding k8s.io/api kubernetes-1.10.9
+go: downloading k8s.io/api v0.0.0-20180828232432-12444147eb11
+...
+# equivalent to using matching branch name
+$&gt; go get k8s.io/api@release-1.10
+go: finding k8s.io/api release-1.10
 </code></pre>
-<p>这是因为国内的网络环境，我们需要添加代理，才能拉取相关的依赖包</p>
-<p>(2).  修改了</p>
-<pre><code class="dockerfile"><span class="keyword">RUN</span><span class="bash"> GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server</span>
-</code></pre>
-<p> 这是因为我们需要在树莓派 arm架构下去编译和运行golang程序，因此需要交叉编译。</p>
-<p>(3). 修改了</p>
-<pre><code class="dockerfile"><span class="keyword">FROM</span> armhf/alpine:latest
-</code></pre>
-<p>这个也是因为硬件架构的不同进行相应的修改</p>
-</blockquote>
-<p>然后构建<code>Docker</code>镜像：</p>
-<pre><code class="bash">$ docker build -t rh02/goappk8s:v1.0.0 .
-.......(省略了)
-Successfully built 00751f94d8a9
-Successfully tagged cnych/goappk8s:v1.0.0
-$ docker push rh02/goappk8s:v1.0.0
-</code></pre>
-<p>上面的操作可以将我们本地的镜像<code>rh02/goappk8s:v1.0.0</code>推送到公共的<code>dockerhub</code>上面去（前提是你得先注册了dockerhub）。</p>
-<h2 id="将服务部署在kubernetes"><a href="#将服务部署在kubernetes" class="headerlink" title="将服务部署在kubernetes"></a>将服务部署在kubernetes</h2><p>如果要将微服务部署在kubernetes上，只需要写一个yaml文件，定义好你需要的资源对象即可，下面先给出我们的部署的yaml文件内容。</p>
-<pre><code class="yaml">---
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: goapp-deploy
-  namespace: kube-apps
-  labels:
-    k8s-app: goappk8s
-spec:
-  replicas: 2
-  revisionHistoryLimit: 10
-  minReadySeconds: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  template:
-    metadata:
-      labels:
-        k8s-app: goappk8s
-    spec:
-      containers:
-      - image: rh02/goappk8s:v1.1.0
-        imagePullPolicy: Always
-        name: goappk8s
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 50m
-            memory: 50Mi
-        livenessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 10
-          timeoutSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /ping
-            port: 8080
-          initialDelaySeconds: 10
-          timeoutSeconds: 2
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: goapp-svc
-  namespace: kube-apps
-  labels:
-    k8s-app: goappk8s
-spec:
-  ports:
-    - name: api
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-  selector:
-    k8s-app: goappk8s
-
----
-kind: Ingress
-apiVersion: extensions/v1beta1
-metadata:
-  name: goapp-ingress
-spec:
-  rules:
-  - host: k8sapp1.41sh.cn
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: goapp-svc
-          servicePort: api
-</code></pre>
-<blockquote>
-<p>这里的k8sapp1.41sh.cn 需要解析为ingress的node。详细可以参考 <a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></p>
-</blockquote>
-<p>因为我们编写了一个无状态的应用，因此上面主要创建了三个资源对象，分别为deployment（部署），service（服务）和ingress（主要负责负载均衡和提供一种访问的方式）对象。</p>
-<p>使用kubectl来创建这三个资源对象。</p>
-<pre><code class="bash">$ kubectl apply -f deployment.yaml
-deployment &quot;goapp-deploy&quot; created
-service &quot;goapp-svc&quot; created
-ingress &quot;goapp-ingress&quot; created
-</code></pre>
-<p>这时我们需要创建一个traefik的ingress应用，用来处理ingress的请求。</p>
-<pre><code class="bash">$ kubectl label node edge-node2 ingress-controller=traefik 
-$ kubectl apply -f traefik.yaml
-</code></pre>
-<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>这时，我们都已经做完了，这时我们可以打开我们的dashboard看看怎么样。并且可以通过在浏览器中访问 <a href="http://k8sapp1.41sh.cn/ping" target="_blank" rel="noopener">http://k8sapp1.41sh.cn/ping</a> 来访问我们的微服务。</p>
-<p>下面是成果截图。</p>
-<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423865486307.png" alt="屏幕快照 2019-03-01 下午3.03.48.png"></p>
-<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423899753911.png" alt="屏幕快照 2019-03-01 下午3.04.39.png"></p>
+<p>降级 k8s.io/apimachinery to Kubernetes-1.10</p>
+<pre><code>&gt; go get k8s.io/apimachinery@release-1.10
+go: finding k8s.io/apimachinery release-1.10
+go: downloading k8s.io/apimachinery v0.0.0-20180619225948-e386b2658ed2
+</code></pre><h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p><code>Dep</code>将`Go包管理推向了极致的高度。现在，Go模块及其与Go命令行工具的深度集成，已经将Go依赖管理做的更上一层楼了。</p>
 
                 
 
@@ -536,12 +408,12 @@ $ kubectl apply -f traefik.yaml
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/" data-toggle="tooltip" data-placement="top" title="在树莓派kubernetes集群部署gRPC框架编写的微服务">&larr; Previous Post</a>
+                            <a href="/2019/02/18/kubernetes/multi-nodes-kubernetes-using-minikube/" data-toggle="tooltip" data-placement="top" title="使用 Minikube 来部署本地 kubernetes 多节点集群">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/2019/02/22/kubernetes/istio-minikube/" data-toggle="tooltip" data-placement="top" title="使用minikube快速安装istio集群">Next Post &rarr;</a>
+                            <a href="/2019/01/15/kubernetes/add-heapster-to-dashboard/" data-toggle="tooltip" data-placement="top" title="在仪表盘上增加heapster指标">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -571,7 +443,7 @@ $ kubectl apply -f traefik.yaml
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#准备"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#编写golang的应用"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">编写golang的应用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#打包成Docker镜像（使用ARM）"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">打包成Docker镜像（使用ARM）</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#将服务部署在kubernetes"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">将服务部署在kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#尾声"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">尾声</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#准备"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#从-Dep-工具开始-或其他工具）"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">从 Dep 工具开始(或其他工具）</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#从无到有"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">从无到有</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#问题"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">问题</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#结论"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">结论</span></a></li></ol>
         
         </div>
       </aside>
@@ -591,17 +463,11 @@ $ kubectl apply -f traefik.yaml
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                        
                           <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                         
-                          <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
+                          <a class="tag" href="/tags/#Go modules" title="Go modules">Go modules</a>
                         
-                          <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
-                        
-                          <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
-                        
-                          <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                          <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
                         
                     </div>
                 </section>
@@ -640,8 +506,8 @@ $ kubectl apply -f traefik.yaml
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "shenhengheng";
-    var disqus_identifier = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
-    var disqus_url = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
+    var disqus_identifier = "https://readailib.com/2019/02/15/kubernetes/kubernetes-api-gomod/";
+    var disqus_url = "https://readailib.com/2019/02/15/kubernetes/kubernetes-api-gomod/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

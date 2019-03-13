@@ -37,9 +37,9 @@
     </summary>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="Tensorflow" scheme="https://readailib.com/tags/Tensorflow/"/>
     
@@ -63,9 +63,9 @@
     </summary>
     
     
-      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
     
       <category term="kubernetes" scheme="https://readailib.com/tags/kubernetes/"/>
     
@@ -102,11 +102,11 @@
     
       <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
       <category term="Simple Example" scheme="https://readailib.com/tags/Simple-Example/"/>
     
       <category term="RaspberryPi" scheme="https://readailib.com/tags/RaspberryPi/"/>
-    
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="Edge Computing" scheme="https://readailib.com/tags/Edge-Computing/"/>
     
@@ -169,6 +169,35 @@
       <category term="Dooker" scheme="https://readailib.com/tags/Dooker/"/>
     
       <category term="Calico" scheme="https://readailib.com/tags/Calico/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在kubernetes API和client-go中使用 Go modules</title>
+    <link href="https://readailib.com/2019/02/15/kubernetes/kubernetes-api-gomod/"/>
+    <id>https://readailib.com/2019/02/15/kubernetes/kubernetes-api-gomod/</id>
+    <published>2019-02-15T08:41:31.000Z</published>
+    <updated>2019-03-13T07:16:43.172Z</updated>
+    
+    <content type="html"><![CDATA[<p>现如今kubernetes和golang的发展非常之快，Golang的依赖管理也不断的更新换代，从最初的<code>Go dep</code> 到现在<code>go mod</code>。本篇文章主要介绍如何使用<code>go mod</code>来管理项目依赖。</p><blockquote class="colorquote warning"><p>这篇文章不是 <strong><em>Go module</em></strong> 教程，网上有很多关于这个主题的资料。大家可以参考下面的：</p><ul><li><a href="https://github.com/golang/go/wiki/Modules" target="_blank" rel="noopener">https://github.com/golang/go/wiki/Modules</a></li><li><a href="https://www.youtube.com/watch?v=H_4eRD8aegk" target="_blank" rel="noopener">justforfunc #43: Migrating Go Modules to v2+</a></li></ul></blockquote><h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>在开始之前，需要确认以下：</p><ul><li>Go 的版本要在1.11以上</li><li>在GOPATH之外，即 <code>$GOPATH/src</code> 之外新建了一个目录作为本地的项目文件夹</li><li>确认 <code>GO111MODULE=on</code> 环境变量是否正确</li></ul><p>为此，我在GOPATH之外创建了一个目录。我将创建一个简单的PVC控制器，它可以监控所需的PVC数量。</p><h2 id="从-Dep-工具开始-或其他工具）"><a href="#从-Dep-工具开始-或其他工具）" class="headerlink" title="从 Dep 工具开始(或其他工具）"></a>从 Dep 工具开始(或其他工具）</h2><p>对于使用<a href="https://github.com/kubernetes/client-go" target="_blank" rel="noopener">client-go</a>编写Kubernetes API工具的大多数人来说，都可能正在使用<code>Dep</code>来管理依赖。幸运的是，<code>go mod</code>工具可以从<code>Dep</code>（以及其他工具，如Godep,Govendor和Glide）导入依赖项配置。我的示例项目使用<code>dep</code>与以下<code>Gopkg.toml</code>：</p><pre><code class="toml">[[constraint]]  name = &quot;k8s.io/api&quot;  version = &quot;kubernetes-1.9.0&quot;[[constraint]]  name = &quot;k8s.io/apimachinery&quot;  version = &quot;kubernetes-1.9.0&quot;[[constraint]]  name = &quot;k8s.io/client-go&quot;  version = &quot;6.0.0&quot;</code></pre><p>可以看出，代码使用旧版本的client-go版本6.0.0和Kubernetes API版本1.9。</p><p>首先要做的是将项目初始化为模块。从代码的根目录，使用以下命令：</p><pre><code class="bash">$ cd ./pvcwatch$ go mod init github.com/vladimirvivien/pvcwatch</code></pre><p> <code>mod</code> 命令将会创建一个新的文件 <code>go.mod</code> 并复制Dep的依赖信息。</p><pre><code class="bash">go: creating new go.mod: module github.com/vladimirvivien/pvcwatchgo: copying requirements from Gopkg.lock</code></pre><p>这时，可以看一下从<code>Gopkg.toml</code>生成的<code>go.mod</code>文件的内容。</p><pre><code class="bash">module github.com/vladimirvivien/pvcwatchrequire (  github.com/PuerkitoBio/purell v1.1.0...   k8s.io/api v0.0.0-20171214033149-af4bc157c3a2  k8s.io/apimachinery v0.0.0-20171207040834-180eddb345a5  k8s.io/client-go v6.0.0+incompatible  k8s.io/kube-openapi v0.0.0-20180216212618-50ae88d24ede)</code></pre><p>生成的<code>go.mod</code>文件依然遵循<code>Gopkg.toml</code>版本限制.</p><blockquote><p><code>go mod</code> <em>will resort to the latest version of discovered packages that do not have any version information (from Dep or otherwise). If you don’t want that, you can update or downgrade to your preferred version (discussed later).</em></p></blockquote><p>此时，您可以像平常一样构建代码。除此之外，构建工具将显示包解析的进度：</p><pre><code class="bash">$ go build .go: finding github.com/golang/protobuf v1.0.0...go: downloading github.com/modern-go/reflect2 v0.0.0-20180228065516-1df9eeb2bb81go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1ddgo: downloading golang.org/x/sys v0.0.0-20180322165403-91ee8cde4354</code></pre><p>如果解析了所有包，将构建成功，此时拥有了可以运行的二进制文件。</p><h2 id="从无到有"><a href="#从无到有" class="headerlink" title="从无到有"></a>从无到有</h2><p>假若我们此时的项目并没有依赖管理工具，这时怎么使用<code>go mod</code>来管理我们的依赖呢？</p><p>首先第一步，将我们的项目初始化为一个Go module：</p><pre><code class="bash">$ go mod init github.com/vladimirvivien/pvcwatchgo: creating new go.mod: module github.com/vladimirvivien/pvcwatch</code></pre><p>这时，生成的 <code>go.mod</code> 文件将会是空的，只有我们执行了Go的一些命令(比如<code>build</code>, <code>get</code>,<code>test</code>, 等等)之后，<code>go.mod</code>才会出现依赖项. 接下来, 在我们的项目文件夹下执行 <code>build</code> 命令。</p><pre><code class="bash">$ cd ./pvcwatch$ go build .go: finding k8s.io/apimachinery/pkg/util/runtime latest...go: downloading golang.org/x/sys v0.0.0-20181021155630-eda9bb28ed51go: finding golang.org/x/text/unicode latestgo: finding golang.org/x/text/secure latest</code></pre><p>在构建过程结束时，如果没有依赖性问题，我们应该获得构建的二进制文件。在这种情况下，<code>go mod</code>将自动提取所有已解析包的最新版本，如更新的go.mod文件中所示：</p><pre><code class="bash">$&gt; cat go.modmodule github.com/vladimirvivien/pvcwatchrequire (...    k8s.io/api v0.0.0-20181018013834-843ad2d9b9ae    k8s.io/apimachinery v0.0.0-20181015213631-60666be32c5d    k8s.io/client-go v9.0.0+incompatible)</code></pre><p><code>go.mod</code>显示正在使用client-go v9.0.0（最新的版本）（k8s.io/api和k8s.io/apimachinery尚未<em>SemVer’d</em>，因此使用了最新的HEAD版本）。</p><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>Trouble will come when you want to adjust (upgrade/downgrade) client-go to a specific version. For instance, in the previous section, <code>go mod</code> selected v9.0.0 of client-go. But, let us say we want do downgrade to v7.0.0 because:</p><pre><code class="bash">$&gt; cd ./pvcwatch$&gt; go get k8s.io/client-go@v7.0.0</code></pre><p>This, unfortunately, will create a version mismatch between client-go and its dependent packages <code>k8s.io/api</code> and <code>k8s.io/apimachinery</code>:</p><pre><code class="bash">$&gt; go build .go: finding github.com/howeyc/gopass latestgo: finding k8s.io/client-go v7.0.0+incompatible#../../pkg/apis/clientauthentication/v1alpha1/zz_generated.conversion.go:39:15: scheme.AddGeneratedConversionFuncs undefined (type *runtime.Scheme has no field or method AddGeneratedConversionFuncs)</code></pre><p>现在，您必须手动确定您的依赖关系图。幸运的是，client-go附带了一个方便的兼容性矩阵，可以准确地告诉我们需要哪些版本（参见下图）。</p><p><img src="./compatible-matrix.png" alt="client-go兼容性矩阵"></p><p>根据矩阵可以看出，client-go v7.0.0与Kubernetes 1.10兼容。因此，让我们使用go get（其支持分支名称或非semver标记名称）将其他依赖组件降级到匹配版本。</p><p>降级 k8s.io/api to Kubernets-1.10:</p><pre><code class="bash"># Downgrade with a tag name$&gt; go get k8s.io/api@kubernetes-1.10.9go: finding k8s.io/api kubernetes-1.10.9go: downloading k8s.io/api v0.0.0-20180828232432-12444147eb11...# equivalent to using matching branch name$&gt; go get k8s.io/api@release-1.10go: finding k8s.io/api release-1.10</code></pre><p>降级 k8s.io/apimachinery to Kubernetes-1.10</p><pre><code>&gt; go get k8s.io/apimachinery@release-1.10go: finding k8s.io/apimachinery release-1.10go: downloading k8s.io/apimachinery v0.0.0-20180619225948-e386b2658ed2</code></pre><h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p><code>Dep</code>将`Go包管理推向了极致的高度。现在，Go模块及其与Go命令行工具的深度集成，已经将Go依赖管理做的更上一层楼了。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;现如今kubernetes和golang的发展非常之快，Golang的依赖管理也不断的更新换代，从最初的&lt;code&gt;Go dep&lt;/code&gt; 到现在&lt;code&gt;go mod&lt;/code&gt;。本篇文章主要介绍如何使用&lt;code&gt;go mod&lt;/code&gt;来管理项目依赖。&lt;/p
+      
+    
+    </summary>
+    
+      <category term="Go modules" scheme="https://readailib.com/categories/Go-modules/"/>
+    
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
+    
+      <category term="Go modules" scheme="https://readailib.com/tags/Go-modules/"/>
+    
+      <category term="client-go" scheme="https://readailib.com/tags/client-go/"/>
     
   </entry>
   
