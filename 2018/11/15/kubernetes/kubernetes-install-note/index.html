@@ -480,7 +480,12 @@ kubectl get cs
 </ul>
 </li>
 <li><p>安装时候最常见的就是time out，因为K8S镜像在国外，所以我们在前面就说到了提前把他下载下来，可以用一个国外机器采用habor搭建一个私有仓库把镜像都download下来。</p>
-<pre><code>[root@k8smaster ~]# kubeadm init[init] Using Kubernetes version: v1.10.0[init] Using Authorization modes: [Node RBAC][preflight] Running pre-flight checks.    [WARNING Service-Kubelet]: kubelet service is not enabled, please run &#39;systemctl enable kubelet.service&#39;
+<pre><code>[root@k8smaster ~]# kubeadm init
+[init] Using Kubernetes version: v1.10.0
+[init] Using Authorization modes: 
+[Node RBAC]
+[preflight] Running pre-flight checks.    
+[WARNING Service-Kubelet]: kubelet service is not enabled, please run &#39;systemctl enable kubelet.service&#39;
     [WARNING FileExisting-crictl]: crictl not found in system path
 Suggestion: go get github.com/kubernetes-incubator/cri-tools/cmd/crictl[preflight] Starting the kubelet service[certificates] Generated ca certificate and key.[certificates] Generated apiserver certificate and key.[certificates] apiserver serving cert is signed for DNS names [k8smaster kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 10.0.100.202][certificates] Generated apiserver-kubelet-client certificate and key.[certificates] Generated etcd/ca certificate and key.[certificates] Generated etcd/server certificate and key.[certificates] etcd/server serving cert is signed for DNS names [localhost] and IPs [127.0.0.1][certificates] Generated etcd/peer certificate and key.[certificates] etcd/peer serving cert is signed for DNS names [k8smaster] and IPs [10.0.100.202][certificates] Generated etcd/healthcheck-client certificate and key.[certificates] Generated apiserver-etcd-client certificate and key.[certificates] Generated sa key and public key.[certificates] Generated front-proxy-ca certificate and key.[certificates] Generated front-proxy-client certificate and key.[certificates] Valid certificates and keys now exist in &quot;/etc/kubernetes/pki&quot;[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/admin.conf&quot;[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/kubelet.conf&quot;[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/controller-manager.conf&quot;[kubeconfig] Wrote KubeConfig file to disk: &quot;/etc/kubernetes/scheduler.conf&quot;[controlplane] Wrote Static Pod manifest for component kube-apiserver to &quot;/etc/kubernetes/manifests/kube-apiserver.yaml&quot;[controlplane] Wrote Static Pod manifest for component kube-controller-manager to &quot;/etc/kubernetes/manifests/kube-controller-manager.yaml&quot;[controlplane] Wrote Static Pod manifest for component kube-scheduler to &quot;/etc/kubernetes/manifests/kube-scheduler.yaml&quot;[etcd] Wrote Static Pod manifest for a local etcd instance to &quot;/etc/kubernetes/manifests/etcd.yaml&quot;[init] Waiting for the kubelet to boot up the control plane as Static Pods from directory &quot;/etc/kubernetes/manifests&quot;.[init] This might take a minute or longer if the control plane images have to be pulled.
 Unfortunately, an error has occurred:
@@ -502,26 +507,28 @@ This error is likely caused by:
 <li><p>我们可能在使用kubeadm 安装完会出现下面的问题：</p>
 <pre><code>The connection to the server localhost:8080 was refused - did you specify the right host or port?
 </code></pre><p>解决方案如下：</p>
-<pre><code>sudo cp /etc/kubernetes/admin.conf $HOME/sudo chown $(id -u):$(id -g) $HOME/admin.confexport KUBECONFIG=$HOME/admin.conf
+<pre><code>$ sudo cp /etc/kubernetes/admin.conf $HOME/
+$ sudo chown $(id -u):$(id -g) $HOME/admin.conf
+$ export KUBECONFIG=$HOME/admin.conf
 </code></pre></li>
 <li><p>访问 apiserver 或者 dashboard 出现 <code>&quot;&lt;h3&gt;Unauthorized&lt;/h3&gt;&quot;</code></p>
 <p>可以查看当前的是否存在 <code>kubectl proxy</code> 进程</p>
-<pre><code>ps -aux | grep &#39;kubectl proxy&#39;
+<pre><code>$ ps -aux | grep &#39;kubectl proxy&#39;
 </code></pre><p>如果有，杀死该进程，执行下面的命令：</p>
-<pre><code>kubectl proxy --address 0.0.0.0 --accept-hosts &#39;.*&#39;
+<pre><code>$ kubectl proxy --address 0.0.0.0 --accept-hosts &#39;.*&#39;
 </code></pre></li>
 <li><p>可能在初始化集群出现下面的错误</p>
 <pre><code>[ERROR FileContent--proc-sys-net-bridge-bridge-nf-call-iptables]: /proc/sys/net/bridge/bridge-nf-call-iptables contents are not set to 1
     [ERROR Swap]: running with swap on is not supported. Please disable swap
 [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
 </code></pre><p>处理方法：</p>
-<pre><code>echo &quot;1&quot; &gt;/proc/sys/net/bridge/bridge-nf-call-iptables
+<pre><code>$ echo &quot;1&quot; &gt;/proc/sys/net/bridge/bridge-nf-call-iptables
 </code></pre></li>
 <li><p>可能出现 swap 不支持错误</p>
 <pre><code>[ERROR Swap]: running with swap on is not supported. Please disable swap
 [preflight] If you know what you are doing, you can make a check non-fatal with `--ignore-preflight-errors=...`
 </code></pre><p>关闭它：</p>
-<pre><code>swapoff -a
+<pre><code>$ swapoff -a
 </code></pre></li>
 </ol>
 
