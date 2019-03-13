@@ -405,7 +405,8 @@ kubeadm join 192.168.59.133:6443 --token 102952.1a7dd4cc8d1f4cc5 --discovery-tok
 </li>
 <li><p>配置kubectl认证信息 # 对于非root用户</p>
 <pre><code class="bash">$ mkdir -p $HOME/.kube
-$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/configsudo chown $(id -u):$(id -g) $HOME/.kube/config
+$ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+$ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 <p># 对于root用户</p>
 <pre><code class="bash">$ export KUBECONFIG=/etc/kubernetes/admin.conf
