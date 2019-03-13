@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          使用 Kubernetes API 写点东西 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.com/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                            
+                              <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
+                            
+                        </div>
+                        <h1>使用 Kubernetes API 写点东西</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2019-03-13
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>本篇文章翻译自博客：<a href="https://medium.com/programming-kubernetes/building-stuff-with-the-kubernetes-api-part-4-using-go-b1d0e3c1c899" target="_blank" rel="noopener">https://medium.com/programming-kubernetes/building-stuff-with-the-kubernetes-api-part-4-using-go-b1d0e3c1c899</a></p>
+<p>由于一直向通过一个<code>client-go</code>案例进入kubernetes api的开发，因此我想借这篇文章开启我之后的kubernetes api开发。当然 kubernetes的客户端不仅仅只有<code>client-go</code>一个，虽然<code>client-go</code>是最原生的一种客户端，另外还有python、java等实现的。下面将访问kubernetes集群的几种方式列举下来，仅供参考。（注：表格来自 <a href="https://jimmysong.io/kubernetes-handbook/develop/client-go-sample.html）" target="_blank" rel="noopener">https://jimmysong.io/kubernetes-handbook/develop/client-go-sample.html）</a></p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th style="text-align:left">特点</th>
+<th>支持者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kubernetes dashboard</td>
+<td style="text-align:left">直接通过Web UI进行操作，简单直接，可定制化程度低</td>
+<td>官方支持</td>
+</tr>
+<tr>
+<td>kubectl</td>
+<td style="text-align:left">命令行操作，功能最全，但是比较复杂，适合对其进行进一步的分装，定制功能，版本适配最好</td>
+<td>官方支持</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kubernetes/client-go" target="_blank" rel="noopener">client-go</a></td>
+<td style="text-align:left">从kubernetes的代码中抽离出来的客户端包，简单易用，但需要小心区分kubernetes的API版本</td>
+<td>官方支持</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kubernetes-incubator/client-python" target="_blank" rel="noopener">client-python</a></td>
+<td style="text-align:left">python客户端，kubernetes-incubator</td>
+<td>官方支持</td>
+</tr>
+<tr>
+<td><a href="https://github.com/fabric8io/kubernetes-client" target="_blank" rel="noopener">Java client</a></td>
+<td style="text-align:left">fabric8中的一部分，kubernetes的java客户端</td>
+<td>redhat</td>
+</tr>
+</tbody>
+</table>
+<p>下面将使用 <code>client-go</code> 实现一个简单的 <code>PVC</code> 对象监控工具，用于监控我们持久化卷的容量并告警。</p>
+<h2 id="The-Kubernetes-Go-Client-Project-client-go"><a href="#The-Kubernetes-Go-Client-Project-client-go" class="headerlink" title="The Kubernetes Go Client Project (client-go)"></a>The Kubernetes Go Client Project (client-go)</h2><p>在进入代码之前，了解Kubernetes Go客户端（或<em>client-go</em>）项目是非常有必要的。它是Kubernetes客户端框架中最古老的，最原生的，因此具有更多的机关和功能。Client-go不使用<code>Swagger</code>API生成器，就像我们在之前的帖子中介绍过的OpenAPI客户端一样。相反，它使用源自Kubernetes项目的源代码生成器来创建Kubernetes样式的API对象和序列化对象。</p>
+<p><code>client-go</code>是由很多包构成，可以满足从REST访问的编程范式到更复杂客户端的不同编程需求。</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/1*4noxYkVSvMPmlbt1kSOIHw.png" alt="img"></p>
+<p><em>RESTClient</em> 是一个基础包，它使用<em>api-machinery</em>存储库中的类型来提供对作为一组REST原语的API的访问。作为<em>RESTClient</em>之上的抽象而构建，<em>Clientset</em> 将是创建简单的Kubernetes客户端工具的起点。它公开了版本化的API资源及其序列化程序。&gt;</p>
+<blockquote>
+<p>There are several other packages in client-go including discovery, d<em>ynamic, and scale</em>. While we are not going to cover these packages, it is important to be aware of their capabilities.</p>
+</blockquote>
+<h2 id="A-simple-client-tool-for-Kubernetes"><a href="#A-simple-client-tool-for-Kubernetes" class="headerlink" title="A simple client tool for Kubernetes"></a>A simple client tool for Kubernetes</h2><p>Again, let us do a quick review of the tool we are going to build to illustrate the usage of the Go client framework. <strong>pvcwatch</strong>, is a simple CLI tool which watches the total claimed persistent storage capacity in a cluster. When the total reaches a specified threshold, it takes an action (in this example, it’s a simple notification on the screen).</p>
+<p><img src="https://cdn-images-1.medium.com/max/1600/0*0QuAKMfq9V8PkhOf." alt="img"></p>
+<blockquote>
+<p>You can find the complete example on <a href="https://github.com/vladimirvivien/k8s-client-examples" target="_blank" rel="noopener">GitHub</a>.</p>
+</blockquote>
+<p>这个例子涵盖了 kubernetes Go客户端的几个高阶的概念</p>
+<ul>
+<li>连接</li>
+<li>在集群中遍历资源列表</li>
+<li>监视资源对象</li>
+</ul>
+<h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><p>The client-go project supports both <em>Godep</em> and <em>dep</em> for vendoring management. I use <em>dep</em> for ease of use and continued adoption (yes, yes, I know <em>vgo</em>… I know). For instance, the following is the minimum <em>Gopkg.toml</em>config required to setup your code with dependency on client-go <em>version 6.0</em>and <em>version 1.9</em> of the Kubernetes API:</p>
+<p>client-go项目支持<em>Godep</em>和<em>dep</em>管理依赖。为了方便起见，这里使用<em>dep</em>（例如，以下是代码中所需的最小<em>Gopkg.toml</em>配置，它依赖于<em>client-go</em>版本<em>6.0</em>和版本<em>1.9</em>的Kubernetes API：</p>
+<pre><code class="toml">[[constraint]]
+  name = &quot;k8s.io/api&quot;
+  version = &quot;kubernetes-1.9.0&quot;
+[[constraint]]
+  name = &quot;k8s.io/apimachinery&quot;
+  version = &quot;kubernetes-1.9.0&quot;
+[[constraint]]
+  name = &quot;k8s.io/client-go&quot;
+  version = &quot;6.0.0&quot;
+</code></pre>
+<p>接下来，执行<code>dep ensure</code>完成后面的事情。</p>
+<h2 id="Connecting-to-the-API-server"><a href="#Connecting-to-the-API-server" class="headerlink" title="Connecting to the API server"></a>Connecting to the API server</h2><p>我们Go client程序第一步就是与API Server建立连接，为了实现连接，我们此时需要用到 <em>clientcmd</em> 包。</p>
+<pre><code class="go">import (
+...
+    &quot;k8s.io/client-go/tools/clientcmd&quot;
+)
+func main() {
+    kubeconfig := filepath.Join(
+         os.Getenv(&quot;HOME&quot;), &quot;.kube&quot;, &quot;config&quot;,
+    )
+    config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, kubeconfig)
+    if err != nil {
+        log.Fatal(err)
+    }
+...
+}
+</code></pre>
+<p>Client-go通过提供实用程序功能来从不同的上下文导入配置，从而使这成为一项微不足道的任务，主要有以下几种方式。</p>
+<h3 id="From-a-config-file"><a href="#From-a-config-file" class="headerlink" title="From a config file"></a>From a config file</h3><p>如上例所示，您可以从<em>kubeconfig</em>文件获取配置用于连接API服务器。当你的代码在集群外运行时，这是理想的选择。</p>
+<pre><code class="go">clientcmd.BuildConfigFromFlags(&quot;&quot;, configFile)
+</code></pre>
+<h3 id="From-a-cluster"><a href="#From-a-cluster" class="headerlink" title="From a cluster"></a>From a cluster</h3><p>如果您的代码将部署在Kubernetes集群中，则可以使用与上面相同但参数为空的函数，在客户端代码注定要在pod中运行时，使用集群信息配置连接。</p>
+<pre><code class="go">clientcmd.BuildConfigFromFlags(&quot;&quot;, &quot;&quot;)
+</code></pre>
+<p>或者，使用 <em>rest</em> 包直接从集群信息创建配置，如下所示：</p>
+<pre><code class="go">import &quot;k8s.io/client-go/rest&quot;
+...
+rest.InClusterConfig()
+</code></pre>
+<h3 id="Create-a-clientset"><a href="#Create-a-clientset" class="headerlink" title="Create a clientset"></a>Create a clientset</h3><p>我们需要创建一个客户端序列化对象来让我们访问API对象。<em>Clientset</em>类型来自 <em>kubernetes</em> 包，提供对生成的客户端序列化对象的访问，以访问版本化（比如：v1）API对象，如下所示。</p>
+<pre><code class="go">type Clientset struct {
+    *authenticationv1beta1.AuthenticationV1beta1Client
+    *authorizationv1.AuthorizationV1Client
+...
+    *corev1.CoreV1Client
+}
+</code></pre>
+<p>一旦我们完成了配置连接，我们就可以使用配置初始化一个<em>clientset</em>对象。如下所示</p>
+<pre><code class="go">func main() {
+    config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, kubeconfig)
+    ...
+    clientset, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+<p>对于我们的例子，我们使用`v1版本的API对象，因此接下来，我们将会使用<em>clientset</em>调用<em>CoreV1</em>方法来访问核心的API资源。</p>
+<pre><code class="go">func main() {
+    ...
+    clientset, err := kubernetes.NewForConfig(config)
+    if err != nil {
+        log.Fatal(err)
+    }
+    api := clientset.CoreV1()
+}
+</code></pre>
+<blockquote>
+<p>You can see the available clientsets <a href="https://github.com/kubernetes/client-go/blob/master/kubernetes/clientset.go" target="_blank" rel="noopener">here</a>.</p>
+</blockquote>
+<h2 id="Listing-cluster-PVCs"><a href="#Listing-cluster-PVCs" class="headerlink" title="Listing cluster PVCs"></a>Listing cluster PVCs</h2><p>我们可以对clientset执行的最基本操作之一是检索存储的API对象的资源列表。在这里我们将检索一个特定的<em>namespace</em>的PVC列表，如下所示。</p>
+<pre><code class="go">import (
+...
+    metav1 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;
+)
+func main() {
+    var ns, label, field string
+    flag.StringVar(&amp;ns, &quot;namespace&quot;, &quot;&quot;, &quot;namespace&quot;)
+    flag.StringVar(&amp;label, &quot;l&quot;, &quot;&quot;, &quot;Label selector&quot;)
+    flag.StringVar(&amp;field, &quot;f&quot;, &quot;&quot;, &quot;Field selector&quot;)
+...
+    api := clientset.CoreV1()
+    // setup list options
+    listOptions := metav1.ListOptions{
+        LabelSelector: label, 
+        FieldSelector: field,
+    }
+    pvcs, err := api.PersistentVolumeClaims(ns).List(listOptions)
+    if err != nil {
+        log.Fatal(err)
+    }
+    printPVCs(pvcs)
+...
+}
+
+</code></pre>
+<p>In the snippet above, we use <code>ListOptions</code> to specify label and field selectors (as well as namespace) to narrow down the PVC resources returned as type <code>v1.PeristentVolumeClaimList</code>. The next snippet shows how we can walk and print the list of PVCs that was retrieved from the server.</p>
+<p>在上面的代码片段中，我们使用<code>ListOptions</code>来指定标签和字段选择器（以及命名空间），以缩小返回的类型为<code>v1.PeristentVolumeClaimList</code>的PVC资源。下一个代码段显示了我们如何遍历和打印从集群中检索到的PVC列表。</p>
+<pre><code class="go">func printPVCs(pvcs *v1.PersistentVolumeClaimList) {
+    template := &quot;%-32s%-8s%-8s\n&quot;
+    fmt.Printf(template, &quot;NAME&quot;, &quot;STATUS&quot;, &quot;CAPACITY&quot;)
+    for _, pvc := range pvcs.Items {
+        quant := pvc.Spec.Resources.Requests[v1.ResourceStorage]
+        fmt.Printf(
+            template, 
+            pvc.Name, 
+            string(pvc.Status.Phase), 
+            quant.String())
+    }
+}
+
+</code></pre>
+<h2 id="Watching-the-cluster-PVCs"><a href="#Watching-the-cluster-PVCs" class="headerlink" title="Watching the cluster PVCs"></a>Watching the cluster PVCs</h2><p>Kubernetes Go客户端框架支持在指定的API对象生命周期事件中监视集群的能力，包括分别创建，更新和删除对象时生成的<code>ADDED</code>，<code>MODIFIED</code>，<code>DELETED</code>。对于我们的简单CLI工具，我们将使用此监视功能来监视已声明的持久存储对正在运行的群集的总容量。</p>
+<p>当给定命名空间的总的声明容量达到某个阈值（比如<code>200Gi</code>）时，我们将采取任意行动。为简单起见，我们将在屏幕上打印通知。但是，在更复杂的实现中，可以使用相同的方式来触发某些自动操作。</p>
+<h3 id="Setup-a-watch"><a href="#Setup-a-watch" class="headerlink" title="Setup a watch"></a>Setup a watch</h3><p>现在，让我们使用<code>Watch</code>方法为<code>PersistentVolumeClaim</code>资源创建一个监视器。然后，通过方法<code>ResultChan</code>从Go通道接受事件通知。</p>
+<pre><code class="go">func main() {
+...
+    api := clientset.CoreV1()
+    listOptions := metav1.ListOptions{
+        LabelSelector: label, 
+        FieldSelector: field,
+    }
+    watcher, err :=api.PersistentVolumeClaims(ns).
+       Watch(listOptions)
+    if err != nil {
+      log.Fatal(err)
+    }
+    ch := watcher.ResultChan()
+...
+}
+
+</code></pre>
+<h3 id="Loop-through-events"><a href="#Loop-through-events" class="headerlink" title="Loop through events"></a>Loop through events</h3><p>接下来，我们准备开始处理资源事件。然而，在我们处理事件之前，我们声明变量<code>maxClaimsQuant</code>和<code>totalClaimQuant</code>其中<code>totalClaimQuant</code>类型为<code>resource.Quantity</code>（表示k8s中的SI数量）来设置我们的数量阈值和运行总数。</p>
+<pre><code class="go">import(
+    &quot;k8s.io/apimachinery/pkg/api/resource&quot;
+    ...
+)
+func main() {
+    var maxClaims string
+    flag.StringVar(&amp;maxClaims, &quot;max-claims&quot;, &quot;200Gi&quot;, 
+        &quot;Maximum total claims to watch&quot;)
+    var totalClaimedQuant resource.Quantity
+    maxClaimedQuant := resource.MustParse(maxClaims)
+...
+    ch := watcher.ResultChan()
+    for event := range ch {
+        pvc, ok := event.Object.(*v1.PersistentVolumeClaim)
+        if !ok {
+            log.Fatal(&quot;unexpected type&quot;)
+        }
+        ...
+    }
+}
+
+</code></pre>
+<p>The <code>watcher</code>’s channel, in the <em>for-range</em> loop above, is used to process incoming event notifications from the server. Each event is assigned to variable <code>event</code> where <code>event.Object</code> value is asserted to be of type <code>PersistentVolumeClaim</code> so we can extract needed info.</p>
+<p>上面的<em>for-range</em>循环中的<code>watcher</code>的通道用于处理来自服务器的事件传入通知。每个事件都分配给变量<code>event</code>，其中<code>event.Object</code>值被声明为<code>PersistentVolumeClaim</code>类型，因此我们可以提取所需的信息。</p>
+<h3 id="Processing-ADDED-events"><a href="#Processing-ADDED-events" class="headerlink" title="Processing ADDED events"></a>Processing ADDED events</h3><p>When a new PVC is added, <code>event.Type</code> is set to value <code>watch.Added</code>. We then use the following code to extract the capacity of the added claim (<code>quant</code>), add it to the running total capacity (<code>totalClaimedQuant</code>). Lastly, we check to see if the total capacity is greater than the established max capacity (<code>maxClaimedQuant</code>). If so, the program can trigger an action.</p>
+<p>添加新PVC时，<code>event.Type</code>设置为值<code>watch.Added</code>。然后，我们使用以下代码提取添加的声明（<code>quant</code>）的容量，将其添加到运行总容量（<code>totalClaimedQuant</code>）。最后，我们检查总容量是否大于定义的最大容量（<code>maxClaimedQuant</code>）。如果是大于，程序可以触发一个动作。</p>
+<pre><code class="go">import(
+    &quot;k8s.io/apimachinery/pkg/watch&quot;
+    ...
+)
+func main() {
+...
+    for event := range ch {
+        pvc, ok := event.Object.(*v1.PersistentVolumeClaim)
+        if !ok {
+            log.Fatal(&quot;unexpected type&quot;)
+        }
+        quant := pvc.Spec.Resources.Requests[v1.ResourceStorage]
+        switch event.Type {
+            case watch.Added:
+                totalClaimedQuant.Add(quant)
+                log.Printf(&quot;PVC %s added, claim size %s\n&quot;, 
+                    pvc.Name, quant.String())
+                if totalClaimedQuant.Cmp(maxClaimedQuant) == 1 {
+                    log.Printf(
+                        &quot;\nClaim overage reached: max %s at %s&quot;,
+                        maxClaimedQuant.String(),
+                        totalClaimedQuant.String())
+                    // trigger action
+                    log.Println(&quot;*** Taking action ***&quot;)
+                }
+            }
+        ...
+        }
+    }
+}
+
+</code></pre>
+<h3 id="Process-DELETED-events"><a href="#Process-DELETED-events" class="headerlink" title="Process DELETED events"></a>Process DELETED events</h3><p>代码也会在删除PVC时做出反应。它从运行总计数中减少已删除的PVC大小。</p>
+<pre><code class="go">func main() {
+...
+    for event := range ch {
+        ...
+        switch event.Type {
+        case watch.Deleted:
+            quant := pvc.Spec.Resources.Requests[v1.ResourceStorage]
+            totalClaimedQuant.Sub(quant)
+            log.Printf(&quot;PVC %s removed, size %s\n&quot;, 
+               pvc.Name, quant.String())
+            if totalClaimedQuant.Cmp(maxClaimedQuant) &lt;= 0 {
+                log.Printf(&quot;Claim usage normal: max %s at %s&quot;,
+                    maxClaimedQuant.String(),
+                    totalClaimedQuant.String(),
+                )
+                // trigger action
+                log.Println(&quot;*** Taking action ***&quot;)
+            }
+        }
+        ...
+    }
+}
+
+</code></pre>
+<h2 id="Run-the-program"><a href="#Run-the-program" class="headerlink" title="Run the program"></a>Run the program</h2><p>当针对正在运行的集群执行程序时，它首先显示现有PVC的列表。然后它开始在集群中查看新的PersistentVolumeClaim事件。</p>
+<pre><code class="go">$&gt; ./pvcwatch
+Using kubeconfig:  /Users/vladimir/.kube/config
+--- PVCs ----
+NAME                            STATUS  CAPACITY
+my-redis-redis                  Bound   50Gi
+my-redis2-redis                 Bound   100Gi
+-----------------------------
+Total capacity claimed: 150Gi
+-----------------------------
+--- PVC Watch (max claims 200Gi) ----
+2018/02/13 21:55:03 PVC my-redis2-redis added, claim size 100Gi
+2018/02/13 21:55:03
+At 50.0% claim capcity (100Gi/200Gi)
+2018/02/13 21:55:03 PVC my-redis-redis added, claim size 50Gi
+2018/02/13 21:55:03
+At 75.0% claim capcity (150Gi/200Gi)
+</code></pre>
+<p>接下来，让我们将另一个应用程序部署到请求额外的<code>75Gi</code>存储声明的集群中（对于我们的示例，让我们使用<a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a>来部署一个实例，例如，<a href="https://github.com/kubernetes/charts/tree/master/stable/influxdb" target="_blank" rel="noopener">InfluxDB</a> 实例）。</p>
+<pre><code class="go">helm install --name my-influx \
+--set persistence.enabled=true,persistence.size=75Gi stable/influxdb
+</code></pre>
+<p>如下所示，我们的工具会立即对新的声明卷作出反应，并显示我们的警报，因为总声明容量超过了阈值。</p>
+<pre><code class="go">--- PVC Watch (max claims 200Gi) ----
+...
+2018/02/13 21:55:03
+At 75.0% claim capcity (150Gi/200Gi)
+2018/02/13 22:01:29 PVC my-influx-influxdb added, claim size 75Gi
+2018/02/13 22:01:29
+Claim overage reached: max 200Gi at 225Gi
+2018/02/13 22:01:29 *** Taking action ***
+2018/02/13 22:01:29
+At 112.5% claim capcity (225Gi/200Gi)
+</code></pre>
+<p>相反，当从集群中删除PVC时，该工具会相应地响应警报消息。</p>
+<pre><code class="go">...
+At 112.5% claim capcity (225Gi/200Gi)
+2018/02/14 11:30:36 PVC my-redis2-redis removed, size 100Gi
+2018/02/14 11:30:36 Claim usage normal: max 200Gi at 125Gi
+2018/02/14 11:30:36 *** Taking action ***
+</code></pre>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p>Series <a href="https://medium.com/programming-kubernetes/building-stuff-with-the-kubernetes-api-toc-84d751876650" target="_blank" rel="noopener">table of content</a></p>
+<p>Code — <a href="https://github.com/vladimirvivien/k8s-client-examples" target="_blank" rel="noopener">https://github.com/vladimirvivien/k8s-client-examples</a></p>
+<p>Kubernetes clients — <a href="https://kubernetes.io/docs/reference/client-libraries/" target="_blank" rel="noopener">https://kubernetes.io/docs/reference/client-libraries/</a></p>
+<p>Client-go — <a href="https://github.com/kubernetes/client-go" target="_blank" rel="noopener">https://github.com/kubernetes/client-go</a></p>
+<p>Kubernetes API reference — <a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/" target="_blank" rel="noopener">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/</a></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/03/07/golang/tensorflow/tensorflow-for-golang-on-raspberrypi/" data-toggle="tooltip" data-placement="top" title="在树莓派上编译安装Go版本的Tensorflow">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#The-Kubernetes-Go-Client-Project-client-go"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">The Kubernetes Go Client Project (client-go)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#A-simple-client-tool-for-Kubernetes"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">A simple client tool for Kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Setup"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Setup</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Connecting-to-the-API-server"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Connecting to the API server</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#From-a-config-file"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">From a config file</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#From-a-cluster"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">From a cluster</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Create-a-clientset"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">Create a clientset</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Listing-cluster-PVCs"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Listing cluster PVCs</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Watching-the-cluster-PVCs"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">Watching the cluster PVCs</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Setup-a-watch"><span class="toc-nav-number">6.1.</span> <span class="toc-nav-text">Setup a watch</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Loop-through-events"><span class="toc-nav-number">6.2.</span> <span class="toc-nav-text">Loop through events</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Processing-ADDED-events"><span class="toc-nav-number">6.3.</span> <span class="toc-nav-text">Processing ADDED events</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Process-DELETED-events"><span class="toc-nav-number">6.4.</span> <span class="toc-nav-text">Process DELETED events</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Run-the-program"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Run the program</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#References"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">References</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.com/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/";
+    var disqus_url = "https://readailib.com/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

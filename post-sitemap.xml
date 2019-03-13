@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/</loc>
+        <lastmod>2019-03-13T13:49:14.593Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2018/11/11/cicd/build-cicd-system-with-jekins/</loc>
         <lastmod>2019-03-13T12:23:04.146Z</lastmod>
         <changefreq>weekly</changefreq>
