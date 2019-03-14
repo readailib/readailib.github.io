@@ -144,14 +144,14 @@
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
@@ -384,7 +384,7 @@ prometheus-76b7745b64-pm68q               1/1       Running     0          1m
 </code></pre>
 <blockquote class="colorquote warning"><p><strong>遇到的坑：</strong>等等我遇到了一个istio-pilot内存不足的情况，因为我是两个节点，但是因为是在本地创建的两个虚拟机，所有内存和CPU资源都比较小，因此当出现资源不足的时候，就Pending了,这时候需要手动修改一下请求的内存资源的大小就可以了。</p>
 <p><em>使用到的命令</em>：</p>
-<pre><code class="bash">$ kubectl edit istio-pilot-xxx -n istio-system
+<pre><code class="bash">$ kubectl edit pods istio-pilot-xxx -n istio-system
 <span class="comment"># 修改resource的request的memory为100Mi即可</span>
 </code></pre>
 </blockquote>
