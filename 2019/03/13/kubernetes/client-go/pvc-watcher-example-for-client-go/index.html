@@ -86,11 +86,11 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                            
                               <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                             
                               <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
                             
                         </div>
                         <h1>使用 Kubernetes API 写点东西</h1>
@@ -559,8 +559,14 @@ func main() {
 }
 
 </code></pre>
-<h2 id="Run-the-program"><a href="#Run-the-program" class="headerlink" title="Run the program"></a>Run the program</h2><p>当针对正在运行的集群执行程序时，它首先显示现有PVC的列表。然后它开始在集群中查看新的PersistentVolumeClaim事件。</p>
-<pre><code class="go">$&gt; ./pvcwatch
+<h2 id="Run-the-program"><a href="#Run-the-program" class="headerlink" title="Run the program"></a>Run the program</h2><pre><code class="bash"># 创建两个pvc,此时观察程序的日志输出
+$ helm install --name my-redis2-redis    \
+--set persistence.enabled=true,persistence.size=100Gi stable/redis
+$ helm install --name my-redis-redis    \
+--set persistence.enabled=true,persistence.size=50Gi stable/redis
+</code></pre>
+<p>当针对正在运行的集群执行程序时，它首先显示现有PVC的列表。然后它开始在集群中查看新的PersistentVolumeClaim事件。</p>
+<pre><code class="bash">$ ./pvcwatch
 Using kubeconfig:  /Users/vladimir/.kube/config
 --- PVCs ----
 NAME                            STATUS  CAPACITY
@@ -578,11 +584,11 @@ At 50.0% claim capcity (100Gi/200Gi)
 At 75.0% claim capcity (150Gi/200Gi)
 </code></pre>
 <p>接下来，让我们将另一个应用程序部署到请求额外的<code>75Gi</code>存储声明的集群中（对于我们的示例，让我们使用<a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a>来部署一个实例，例如，<a href="https://github.com/kubernetes/charts/tree/master/stable/influxdb" target="_blank" rel="noopener">InfluxDB</a> 实例）。</p>
-<pre><code class="go">helm install --name my-influx \
+<pre><code class="bash">$ helm install --name my-influx \
 --set persistence.enabled=true,persistence.size=75Gi stable/influxdb
 </code></pre>
 <p>如下所示，我们的工具会立即对新的声明卷作出反应，并显示我们的警报，因为总声明容量超过了阈值。</p>
-<pre><code class="go">--- PVC Watch (max claims 200Gi) ----
+<pre><code class="bash">--- PVC Watch (max claims 200Gi) ----
 ...
 2018/02/13 21:55:03
 At 75.0% claim capcity (150Gi/200Gi)
@@ -594,7 +600,7 @@ Claim overage reached: max 200Gi at 225Gi
 At 112.5% claim capcity (225Gi/200Gi)
 </code></pre>
 <p>相反，当从集群中删除PVC时，该工具会相应地响应警报消息。</p>
-<pre><code class="go">...
+<pre><code class="bash">...
 At 112.5% claim capcity (225Gi/200Gi)
 2018/02/14 11:30:36 PVC my-redis2-redis removed, size 100Gi
 2018/02/14 11:30:36 Claim usage normal: max 200Gi at 125Gi
@@ -664,11 +670,11 @@ At 112.5% claim capcity (225Gi/200Gi)
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-                        
                           <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
                         
                           <a class="tag" href="/tags/#client-go" title="client-go">client-go</a>
+                        
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
                         
                     </div>
                 </section>
