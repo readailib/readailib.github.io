@@ -144,14 +144,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About Me</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About Me</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -440,7 +440,25 @@ istio-ingressgateway   LoadBalancer   10.101.64.224   &lt;pending&gt;     80:313
 <p>如果继续刷新，会发现有三个版本的应用出现，就是红色的星星，黑色的星星，没有星星这三个版本，会随机出现，我们可以使用istio来管理这些不同版本的应用，通过金丝雀发布，灰度发布等一些高级特性实现切流量的功能，后面的文章我会详细介绍有关istio的高级特性。</p>
 <p><img src="https://www.41sh.cn/zb_users/upload/2019/02/201902221550821049797553.png" alt="屏幕快照 2019-02-22 下午3.37.12.png"></p>
 <p><img src="https://www.41sh.cn/zb_users/upload/2019/02/201902221550821077460003.png" alt="屏幕快照 2019-02-22 下午3.37.39.png"></p>
-
+<h2 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h2><blockquote class="colorquote warning"><pre><code class="bash">devmapper: Thin Pool has 82984 free data blocks <span class="built_in">which</span> is less than minimum required 163840 free data blocks. Create more free space <span class="keyword">in</span> thin pool or use dm.min_free_space option to change behavior
+</code></pre>
+<p>解决办法：</p>
+<ol>
+<li>Cleanup exited processes:</li>
+</ol>
+<pre><code class="bash">docker rm $(docker ps -q -f status=exited)
+</code></pre>
+<ol start="2">
+<li>Cleanup dangling volumes:</li>
+</ol>
+<pre><code class="bash">docker volume rm $(docker volume ls -qf dangling=<span class="literal">true</span>)
+</code></pre>
+<ol start="3">
+<li>Cleanup dangling images:</li>
+</ol>
+<pre><code class="bash">docker rmi $(docker images --filter <span class="string">"dangling=true"</span> -q --no-trunc)
+</code></pre>
+</blockquote>
                 
 
                 <hr>
@@ -483,7 +501,7 @@ istio-ingressgateway   LoadBalancer   10.101.64.224   &lt;pending&gt;     80:313
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动minikube集群"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">启动minikube集群</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用helm安装istio"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">使用helm安装istio</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署一个应用"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署一个应用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#大功告成"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">大功告成</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#启动minikube集群"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">启动minikube集群</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#使用helm安装istio"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">使用helm安装istio</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署一个应用"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">部署一个应用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#大功告成"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">大功告成</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Bug"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Bug</span></a></li></ol>
         
         </div>
       </aside>
