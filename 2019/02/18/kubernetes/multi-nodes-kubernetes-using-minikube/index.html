@@ -361,7 +361,7 @@ $ kubeadm join --token ${TOKEN} ${MASTER_IP}:8443 \
 Run &#39;kubectl get nodes&#39; on the master to see this node join the cluster.
 </code></pre><blockquote class="colorquote warning"><p>1). 上面的 IP 有可能不同，请手动确认 Master 节点 IP。</p>
 <p>2).  如果上面的TOKEN失效，请使用下面的指令生成一个，或者生成TOKEN时指定tt值为-1</p>
-<pre><code class="bash">$ minikube --profile k8s-m1 ssh <span class="string">"sudo kubeadm token new"</span>
+<pre><code class="bash">$ minikube --profile k8s-m1 ssh <span class="string">"sudo kubeadm token create"</span>
 </code></pre>
 </blockquote>
 <p>接下来，我们可以通过 kuubectl 客户端检查Node是否加入到集群：</p>
