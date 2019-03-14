@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          部署微服务到树莓派的kubernetes集群 - ShenHengheng&#39;s Blog
+          post - ShenHengheng&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/">
+    <link rel="canonical" href="https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,7 +69,7 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/images/kube/bg.png')
+            background-image: url('undefined')
             /*post*/
         
     }
@@ -86,24 +86,20 @@
                     <div class="post-heading">
                         <div class="tags">
                             
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
                               <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
                             
-                              <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                              <a class="tag" href="/tags/#Helm" title="Helm">Helm</a>
                             
-                              <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
-                            
-                              <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
-                            
-                              <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
-                            
-                              <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                              <a class="tag" href="/tags/#Minikube" title="Minikube">Minikube</a>
                             
                         </div>
-                        <h1>部署微服务到树莓派的kubernetes集群</h1>
+                        <h1>post</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by ShenHengheng on
-                            2019-03-01
+                            2019-03-14
                         </span>
                     </div>
                 
@@ -295,239 +291,204 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>最近一直在如何将微服务部署在我的边缘机器上（树莓派），通过kubernetes管理。然后就开始了今天的项目成果，为此特别对此总结。</p>
-<p>本次的微服务我使用的golang，主要因为golang的天然适合开发云端服务的特性并且golang的轻便，包的管理方便等特点。并且golang的docker镜像稍微小，占用空间小。</p>
-<a id="more"></a>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>那么下面就开始吧，本次的环境主要分为两台机器，分别我的本地计算机（这里使用的Mac），另外就是我需要部署的环境（有三个树莓派节点组成的kubernetes集群）。</p>
-<p>这里你需要：</p>
+                <p>在Kubernetes集群中运行和管理应用程序的最简单方法是使用<a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a>。Helm允许使用安装，升级或删除等操作来管理应用程序。</p>
+<p><a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a> 是 Kubernetes Chart 的管理工具，Kubernetes Chart 是一套预先组织好的 Kubernetes 资源套件。使用 Helm 有以下几个好处：</p>
 <ul>
-<li>熟悉go语言</li>
-<li>熟悉微服务</li>
-<li>熟悉Docker</li>
-<li>熟悉kubernetes的部署与基本管理任务</li>
-<li>熟悉Linux</li>
+<li>查询与使用热门的 <a href="https://github.com/kubernetes/charts" target="_blank" rel="noopener">Kubernetes Chart</a> 软件。</li>
+<li>可以通过Kuberntes Chart来分享自己的软件</li>
+<li>可基于现有 Chart 开发自己的Chart。</li>
+<li>智能地管理 Kubernetes manifest 档案。</li>
+<li>管理最新发布的 Helm 版本</li>
 </ul>
-<p>本章主要参考了下面的文章：</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Helm 有三个重要的概念需要了解，分別为 Chart、Release 和 Repository，细节如下：</p>
 <ul>
-<li><a href="https://41sh.cn/?id=16" target="_blank" rel="noopener">边缘智能-在树莓派上部署kubernetes集群</a></li>
-<li><a href="https://github.com/rh01/deploy-golang-applicaton-on-kubernetes" target="_blank" rel="noopener">https://github.com/rh01/deploy-golang-applicaton-on-kubernetes</a></li>
-<li><a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></li>
+<li><strong>Chart</strong>：主要定义要被执行的应用程式中，所需要的工具、资源、服务等资料，有点类似 Homebrew 的 Formula 或是 APT 的 dpkg 安装包。</li>
+<li><strong>Release</strong>：一个被执行于 Kubernetes 的 Chart 实例。Chart 能够在一个集群中拥有多个 Release，例如 MySQL Chart，可以在集群中建立基于该 Chart 的两个资料库实例，其中每个 Release 都会有独立的名称。</li>
+<li><strong>Repository</strong>：主要用来存放 Chart 的仓库，如 <a href="https://kubeapps.com/" target="_blank" rel="noopener">KubeApps</a>。</li>
 </ul>
-<h2 id="编写golang的应用"><a href="#编写golang的应用" class="headerlink" title="编写golang的应用"></a>编写golang的应用</h2><p><strong>本小节全部在我们本地的计算机中做的！</strong></p>
-<p>在本地创建项目文件夹goappk8s，并且将该文件夹设置成临时的 GOPATH环境变量的Value值。</p>
-<pre><code class="bash">$ mkdir -pv k8sapp/src
-$ export GOPATH=/User/rh01/k8sapp/
+<p>可以理解 Helm 主要目标就是从 Chart Repository 中，查找需要的应用程式 Chart，然后以 Release 形式来部署到 Kubernetes 中进行管理。</p>
+<p>Helm由两部分组成：Helm（客户端）和Tiller（服务器）。</p>
+<p>下面是Helm的架构图：</p>
+<p><img src="./helm.png" alt="Helm的架构图"></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>按照以下步骤完成Helm和Tiller安装并创建必要的Kubernetes对象，以使Helm与基于角色的访问控制（RBAC）一起工作：</p>
+<pre><code class="bash">$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; get_helm.sh
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
 </code></pre>
-<p>然后在<strong>src</strong>目录下面添加 golang 代码：</p>
-<pre><code class="bash">$ mkdir -pv github.com/rh01/goappk8s &amp;&amp; cd github.com/rh01/goappk8s
-$ cat &lt;&lt; EOF &gt;&gt; main.go
-package main
-
-import (
-    &quot;github.com/gin-gonic/gin&quot;
-    &quot;net/http&quot;
-)
-
-func main() {
-    router := gin.Default()
-    router.GET(&quot;/ping&quot;, func(c *gin.Context) {
-        c.String(http.StatusOK, &quot;PONG&quot;)
-    })
-    router.Run(&quot;:8080&quot;)
-}
-EOF
-</code></pre>
-<blockquote>
-<p>注：上面的代码取自 <a href="https://github.com/cnych/goappk8s" target="_blank" rel="noopener">https://github.com/cnych/goappk8s</a></p>
-<p>另外上面的代码主要是创建了一个微服务，主要实现PING的功能</p>
-</blockquote>
-<p>可以看到上面的代码中，我们导入了第三方包 github.com/gin-gonic/gin，这时可以手动将该依赖包下载下来放置到<strong>GOPATH</strong>下面，这里使用了 <strong>govendor</strong> 来进行管理，当然你可以使用其他的包管理工具，比如：dep、glid或者利用go mod 等等。</p>
-<p>在 <strong>github.com/rh01/goappk8s</strong> 目录下面执行下面的操作：</p>
-<blockquote class="colorquote info"><p><strong>如何安装 govendor：</strong></p>
-<p>在Mac中可以使用brew工具或者使用下面的命令</p>
-<pre><code class="bash">$ go get -u github.com/kardianos/govendor
+<blockquote class="colorquote warning"><p>如果操作系统为OSX，请使用<a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>安装helm.</p>
+<pre><code class="bash">$ brew install helm
 </code></pre>
 </blockquote>
-<p>下面我们使用govendor来将依赖包缓存到本地项目中，方便移植和项目管理。</p>
-<pre><code class="bash"># 初始化本地项目文件夹为使用vendor管理包
-$ govendor init
-# 将依赖包缓存到本地
-$ govendor fetch github.com/gin-gonic/gin
-</code></pre>
-<blockquote>
-<p>上面 fetch 需要设置代理才能通过，还是老办法：</p>
-<pre><code class="bash">$ export http_proxy=&quot;http://127.0.0.1:12333&quot;
-$ export https_proxy=&quot;http://127.0.0.1:12333&quot;
-</code></pre>
-</blockquote>
-<p>这样一个非常小的微服务应用就做完了，这时需要测试一下，看看是否正常运行。这时切换到 <strong>GOPARH</strong> 文件夹。执行下面的语句</p>
-<pre><code class="bash">$ go install github.com/rh01/goappk8s &amp;&amp; ./bin/goappk8s
-[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
-
-[GIN-debug] [WARNING] Running in &quot;debug&quot; mode. Switch to &quot;release&quot; mode in production.
- - using env:   export GIN_MODE=release
- - using code:  gin.SetMode(gin.ReleaseMode)
-
-[GIN-debug] GET    /ping                     --&gt; main.main.func1 (3 handlers)
-[GIN-debug] Listening and serving HTTP on :8080
-</code></pre>
-<p>这时会打印出如上面所示的日志信息，这时我们可以通过 curl 来访问。</p>
-<pre><code class="bash">$ curl localhost:8080/ping
-PONG
-</code></pre>
-<p>这时我们的服务是已经正常可以运行的了。</p>
-<h2 id="打包成Docker镜像（使用ARM）"><a href="#打包成Docker镜像（使用ARM）" class="headerlink" title="打包成Docker镜像（使用ARM）"></a>打包成Docker镜像（使用ARM）</h2><p>这里主要使用了 Docker 的多阶段构建来打造一个非常小的镜像，这对我们的边缘端来讲，是非常必要的，因为他们的资源是非常有限的。</p>
-<blockquote>
-<p>有关 Docker镜像的多阶段构建以及Docker镜像优化问题，请详见我之前的一篇文章：</p>
-<ul>
-<li><a href="https://www.41sh.cn/?id=25" target="_blank" rel="noopener">https://www.41sh.cn/?id=25</a></li>
-</ul>
-</blockquote>
-<p>下面我们看一下Dockerfile文件吧。</p>
-<pre><code class="dockerfile">FROM golang AS build-env
-ADD . /go/src/app
-WORKDIR /go/src/app
-
-ENV http_proxy http://192.168.1.9:12333
-ENV https_proxy http://192.168.1.9:12333
-
-RUN go get -u -v github.com/kardianos/govendor
-RUN govendor sync
-RUN GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server
-
-
-
-FROM armhf/alpine:latest
-RUN apk add -U tzdata
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
-COPY --from=build-env /go/src/app/app-server /usr/local/bin/app-server
-EXPOSE 8080
-CMD [ &quot;app-server&quot; ]
-</code></pre>
-<blockquote class="colorquote info"><p>这里也参考了知乎的这片文章：<a href="https://zhuanlan.zhihu.com/p/33813413" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33813413</a></p>
-<p>主要修改如下：</p>
-<p>(1).  增加了</p>
-<pre><code class="dockerfile"><span class="keyword">ENV</span> http_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
-<span class="keyword">ENV</span> https_proxy http://<span class="number">192.168</span>.<span class="number">1.9</span>:<span class="number">12333</span>
-</code></pre>
-<p>这是因为国内的网络环境，我们需要添加代理，才能拉取相关的依赖包</p>
-<p>(2).  修改了</p>
-<pre><code class="dockerfile"><span class="keyword">RUN</span><span class="bash"> GOOS=linux GOARCH=arm GOARM=7 go build -v -o /go/src/app/app-server</span>
-</code></pre>
-<p> 这是因为我们需要在树莓派 arm架构下去编译和运行golang程序，因此需要交叉编译。</p>
-<p>(3). 修改了</p>
-<pre><code class="dockerfile"><span class="keyword">FROM</span> armhf/alpine:latest
-</code></pre>
-<p>这个也是因为硬件架构的不同进行相应的修改</p>
-</blockquote>
-<p>然后构建<code>Docker</code>镜像：</p>
-<pre><code class="bash">$ docker build -t rh02/goappk8s:v1.0.0 .
-.......(省略了)
-Successfully built 00751f94d8a9
-Successfully tagged cnych/goappk8s:v1.0.0
-$ docker push rh02/goappk8s:v1.0.0
-</code></pre>
-<p>上面的操作可以将我们本地的镜像<code>rh02/goappk8s:v1.0.0</code>推送到公共的<code>dockerhub</code>上面去（前提是你得先注册了dockerhub）。</p>
-<h2 id="将服务部署在kubernetes"><a href="#将服务部署在kubernetes" class="headerlink" title="将服务部署在kubernetes"></a>将服务部署在kubernetes</h2><p>如果要将微服务部署在kubernetes上，只需要写一个yaml文件，定义好你需要的资源对象即可，下面先给出我们的部署的yaml文件内容。</p>
-<pre><code class="yaml">---
-apiVersion: extensions/v1beta1
-kind: Deployment
+<p>使用以下内容创建ClusterRole配置文件。在此示例中，它名为clusterrole.yaml。</p>
+<pre><code class="yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
-  name: goapp-deploy
-  namespace: kube-apps
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: &quot;true&quot;
   labels:
-    k8s-app: goappk8s
-spec:
-  replicas: 2
-  revisionHistoryLimit: 10
-  minReadySeconds: 5
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  template:
-    metadata:
-      labels:
-        k8s-app: goappk8s
-    spec:
-      containers:
-      - image: rh02/goappk8s:v1.1.0
-        imagePullPolicy: Always
-        name: goappk8s
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 50m
-            memory: 50Mi
-        livenessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 10
-          timeoutSeconds: 3
-        readinessProbe:
-          httpGet:
-            path: /ping
-            port: 8080
-          initialDelaySeconds: 10
-          timeoutSeconds: 2
+    kubernetes.io/bootstrapping: rbac-defaults
+  name: cluster-admin
+rules:
+- apiGroups:
+  - &#39;*&#39;
+  resources:
+  - &#39;*&#39;
+  verbs:
+  - &#39;*&#39;
+- nonResourceURLs:
+  - &#39;*&#39;
+  verbs:
+  - &#39;*&#39;
+</code></pre>
+<p>要创建ClusterRole，请运行以下命令：</p>
+<pre><code class="bash">$ kubectl create -f clusterrole.yaml
+</code></pre>
+<p>创建ServiceAccount并将其与ClusterRole关联，请使用ClusterRoleBinding，如下所示：</p>
+<pre><code class="bash">$ kubectl create serviceaccount -n kube-system tiller
+$ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+</code></pre>
+<p>初始化Helm，如下所示：</p>
+<pre><code class="bash">$ helm init --service-account tiller
+</code></pre>
+<blockquote class="colorquote warning"><p>如果你之前已经初始化过helm，直接使用下面的指令升级helm。</p>
+<pre><code class="bash">$ helm init --upgrade --service-account tiller
+</code></pre>
+</blockquote>
+<p>使用 <em>kubectl get pods</em> 检查当前的Tiller是否正确安装。如下面所示：</p>
+<pre><code class="bash">$ kubectl --namespace kube-system get pods | grep tiller
+  tiller-deploy-dbb85cb99-p5cqt    0/1       ContainerCreating   0          46s
+</code></pre>
+<p>或者直接使用 <em>helm version</em>，检查是否安装正确。如下所示。</p>
+<pre><code class="bash">$ helm version                                                                                                      
+Client: &amp;version.Version{SemVer:&quot;v2.12.3&quot;, GitCommit:&quot;eecf22f77df5f65c823aacd2dbd30ae6c65f186e&quot;, GitTreeState:&quot;clean&quot;}
+Server: &amp;version.Version{SemVer:&quot;v2.12.3&quot;, GitCommit:&quot;eecf22f77df5f65c823aacd2dbd30ae6c65f186e&quot;, GitTreeState:&quot;clean&quot;}
+</code></pre>
+<p>一旦完成安装，就可以使用下面的命令执行相关的操作。</p>
+<p><img src="./helm-cmd.png" alt="helm command"></p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>通过执行helm install命令，应用程序将部署在Kubernetes集群上。您可以跨集群安装多个图表。</p>
+<blockquote class="colorquote warning"><p><strong>Important：</strong>如果没有使用<code>—name</code>选项指定版本名称，系统则会自动分配一个名称。</p>
+</blockquote>
+<p>你可以使用下面的Helm Chart 找到Redis的安装示例：</p>
+<pre><code class="bash">$ helm install stable/redis
+</code></pre>
+<p>也可以声明一个版本名称或者其他的选项。比如下面声明了一个版本名称为<code>my-redis</code>,并且指定该部署将使用持久化存储，大小为15G：</p>
+<pre><code class="bash">$ helm install --name my-redis \                           
+--set persistence.enabled=true,persistence.size=15Gi stable/redis
+</code></pre>
+<p>安装图表后，“注释”部分将显示在安装信息的底部。它包含有关如何获取应用程序的IP地址或凭证的说明.</p>
+<pre><code class="bash">NAME:   my-influx
+LAST DEPLOYED: Thu Mar 14 12:36:50 2019
+NAMESPACE: default
+STATUS: DEPLOYED
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: goapp-svc
-  namespace: kube-apps
-  labels:
-    k8s-app: goappk8s
-spec:
-  ports:
-    - name: api
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-  selector:
-    k8s-app: goappk8s
+RESOURCES:
+==&gt; v1beta1/Deployment
+NAME                   DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+my-influx-redis-slave  1        1        1           0          0s
 
----
-kind: Ingress
-apiVersion: extensions/v1beta1
-metadata:
-  name: goapp-ingress
-spec:
-  rules:
-  - host: k8sapp1.41sh.cn
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: goapp-svc
-          servicePort: api
+==&gt; v1beta2/StatefulSet
+NAME                    DESIRED  CURRENT  AGE
+my-influx-redis-master  1        0        0s
+
+==&gt; v1/Pod(related)
+NAME                                    READY  STATUS             RESTARTS  AGE
+my-influx-redis-slave-556f9894b7-wd5cf  0/1    ContainerCreating  0         0s
+my-influx-redis-master-0                0/1    Pending            0         0s
+
+==&gt; v1/Secret
+NAME             TYPE    DATA  AGE
+my-influx-redis  Opaque  1     0s
+
+==&gt; v1/ConfigMap
+NAME                    DATA  AGE
+my-influx-redis         3     0s
+my-influx-redis-health  3     0s
+
+==&gt; v1/Service
+NAME                    TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGE
+my-influx-redis-master  ClusterIP  10.107.184.240  &lt;none&gt;       6379/TCP  0s
+my-influx-redis-slave   ClusterIP  10.97.224.81    &lt;none&gt;       6379/TCP  0s
+
+
+NOTES:
+** Please be patient while the chart is being deployed **
+Redis can be accessed via port 6379 on the following DNS names from within your cluster:
+
+my-influx-redis-master.default.svc.cluster.local for read/write operations
+my-influx-redis-slave.default.svc.cluster.local for read-only operations
+
+
+To get your password run:
+
+    export REDIS_PASSWORD=$(kubectl get secret --namespace default my-influx-redis -o jsonpath=&quot;{.data.redis-password}&quot; | base64 --decode)
+
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   kubectl run --namespace default my-influx-redis-client --rm --tty -i --restart=&#39;Never&#39; \
+    --env REDIS_PASSWORD=$REDIS_PASSWORD \
+   --image docker.io/bitnami/redis:4.0.13 -- bash
+
+2. Connect using the Redis CLI:
+   redis-cli -h my-influx-redis-master -a $REDIS_PASSWORD
+   redis-cli -h my-influx-redis-slave -a $REDIS_PASSWORD
+
+To connect to your database from outside the cluster execute the following commands:
+
+    kubectl port-forward --namespace default svc/my-influx-redis 6379:6379 &amp;
+    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD
+</code></pre>
+<h2 id="刪除-Release"><a href="#刪除-Release" class="headerlink" title="刪除 Release"></a>刪除 Release</h2><p>Helm 除了基本的建立功能外，还包含了整個 Release 的生命周期管理功能，如我们不需要该 Release 时，就可以通过以下方式刪除：</p>
+<pre><code class="bash">$ helm ls                                                            
+NAME         REVISION    UPDATED                     STATUS      CHART          APP VERSION    NAMESPACE
+my-influx    1           Tue May 30 21:18:43 2017       DEPLOYED    redis-6.3.0    4.0.13         default  
+$ helm del  my-influx
+release &quot;my-influx&quot; deleted
+</code></pre>
+<p>此时并未完全删除，我们可以通过 <code>helm ls</code> 查看被刪除的 Release：</p>
+<pre><code class="bash">$ helm ls --all
+NAME         REVISION        UPDATED                         STATUS  CHART           NAMESPACE
+my-influx    2               Tue May 30 21:18:43 2017        DELETED redis-6.3.0   default
 </code></pre>
 <blockquote>
-<p>这里的k8sapp1.41sh.cn 需要解析为ingress的node。详细可以参考 <a href="https://github.com/rh01/traefik-for-pi" target="_blank" rel="noopener">https://github.com/rh01/traefik-for-pi</a></p>
+<p>当执行 <code>helm ls</code> 指令为加入 <code>--all</code> 选项时，表示只列出<code>DEPLOYED</code>状态的 Release。</p>
 </blockquote>
-<p>因为我们编写了一个无状态的应用，因此上面主要创建了三个资源对象，分别为deployment（部署），service（服务）和ingress（主要负责负载均衡和提供一种访问的方式）对象。</p>
-<p>使用kubectl来创建这三个资源对象。</p>
-<pre><code class="bash">$ kubectl apply -f deployment.yaml
-deployment &quot;goapp-deploy&quot; created
-service &quot;goapp-svc&quot; created
-ingress &quot;goapp-ingress&quot; created
+<pre><code class="bash">$ helm rollback my-influx 1
+Rollback was a success! Happy Helming!
+
+
+$ helm del my-influx --purge
+release &quot;my-influx&quot; deleted
+
+# 执行以下指令就不会看到已刪除的 Release.
+$ helm ls --all
 </code></pre>
-<p>这时我们需要创建一个traefik的ingress应用，用来处理ingress的请求。</p>
-<pre><code class="bash">$ kubectl label node edge-node2 ingress-controller=traefik 
-$ kubectl apply -f traefik.yaml
+<h2 id="建立简单的-Chart-结构"><a href="#建立简单的-Chart-结构" class="headerlink" title="建立简单的 Chart 结构"></a>建立简单的 Chart 结构</h2><p>Helm 提供了 <code>create</code> 指令建立一个 Chart 基本结构：</p>
+<pre><code class="bash">$ helm create example
+$ tree example/
+example/
+├── charts
+├── Chart.yaml
+├── templates
+│   ├── deployment.yaml
+│   ├── _helpers.tpl
+│   ├── ingress.yaml
+│   ├── NOTES.txt
+│   └── service.yaml
+└── values.yaml
 </code></pre>
-<h2 id="尾声"><a href="#尾声" class="headerlink" title="尾声"></a>尾声</h2><p>这时，我们都已经做完了，这时我们可以打开我们的dashboard看看怎么样。并且可以通过在浏览器中访问 <a href="http://k8sapp1.41sh.cn/ping" target="_blank" rel="noopener">http://k8sapp1.41sh.cn/ping</a> 来访问我们的微服务。</p>
-<p>下面是成果截图。</p>
-<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423865486307.png" alt="屏幕快照 2019-03-01 下午3.03.48.png"></p>
-<p><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903011551423899753911.png" alt="屏幕快照 2019-03-01 下午3.04.39.png"></p>
+<p>当我们设置完 Chart 后，就可以通过 helm 指令打包：</p>
+<pre><code class="bash">$ helm package example/
+example-0.1.0.tgz
+</code></pre>
+<p>最后通过<em>helm</em>安装</p>
+<pre><code class="bash">$ helm install ./example-0.1.0.tgz
+</code></pre>
+<h2 id="自己建立-Repository"><a href="#自己建立-Repository" class="headerlink" title="自己建立 Repository"></a>自己建立 Repository</h2><p>Helm 指令除了可以建立 Chart 基本结构外，也提供了建立 Helm Repository 的功能，建立方式如下：</p>
+<pre><code class="bash">$ helm serve --repo-path example-0.1.0.tgz
+$ helm repo add example http://repo-url
+</code></pre>
 
                 
 
@@ -535,13 +496,9 @@ $ kubectl apply -f traefik.yaml
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/" data-toggle="tooltip" data-placement="top" title="在树莓派kubernetes集群部署gRPC框架编写的微服务">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/2019/02/22/kubernetes/istio-minikube/" data-toggle="tooltip" data-placement="top" title="使用minikube快速安装istio集群">Next Post &rarr;</a>
+                            <a href="/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/" data-toggle="tooltip" data-placement="top" title="使用 Kubernetes API 写点东西">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -571,7 +528,7 @@ $ kubectl apply -f traefik.yaml
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#准备"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">准备</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#编写golang的应用"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">编写golang的应用</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#打包成Docker镜像（使用ARM）"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">打包成Docker镜像（使用ARM）</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#将服务部署在kubernetes"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">将服务部署在kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#尾声"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">尾声</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#概念"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">概念</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#例子"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">例子</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#刪除-Release"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">刪除 Release</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#建立简单的-Chart-结构"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">建立简单的 Chart 结构</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#自己建立-Repository"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">自己建立 Repository</span></a></li></ol>
         
         </div>
       </aside>
@@ -591,17 +548,13 @@ $ kubectl apply -f traefik.yaml
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
                           <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
                         
-                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                          <a class="tag" href="/tags/#Helm" title="Helm">Helm</a>
                         
-                          <a class="tag" href="/tags/#Simple Example" title="Simple Example">Simple Example</a>
-                        
-                          <a class="tag" href="/tags/#RaspberryPi" title="RaspberryPi">RaspberryPi</a>
-                        
-                          <a class="tag" href="/tags/#Edge Computing" title="Edge Computing">Edge Computing</a>
-                        
-                          <a class="tag" href="/tags/#Gin" title="Gin">Gin</a>
+                          <a class="tag" href="/tags/#Minikube" title="Minikube">Minikube</a>
                         
                     </div>
                 </section>
@@ -640,8 +593,8 @@ $ kubectl apply -f traefik.yaml
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES * * */
     var disqus_shortname = "shenhengheng";
-    var disqus_identifier = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
-    var disqus_url = "https://readailib.com/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/";
+    var disqus_identifier = "https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/";
+    var disqus_url = "https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/";
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

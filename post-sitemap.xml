@@ -7,6 +7,14 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/</loc>
+        <lastmod>2019-03-14T05:43:15.368Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>https://readailib.com/2019/03/13/kubernetes/client-go/pvc-watcher-example-for-client-go/</loc>
         <lastmod>2019-03-14T04:41:44.379Z</lastmod>
         <changefreq>weekly</changefreq>

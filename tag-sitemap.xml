@@ -121,13 +121,6 @@
     </url>
 
     <url>
-        <loc>https://readailib.com/tags/Docker/</loc>
-        <lastmod>2019-03-13T12:23:04.146Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://readailib.com/tags/Jenkins/</loc>
         <lastmod>2019-03-13T12:23:04.146Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -163,8 +156,29 @@
     </url>
 
     <url>
+        <loc>https://readailib.com/tags/Docker/</loc>
+        <lastmod>2019-03-14T05:43:15.368Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>https://readailib.com/tags/Kubernetes/</loc>
-        <lastmod>2019-03-14T04:41:44.379Z</lastmod>
+        <lastmod>2019-03-14T05:43:15.368Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Helm/</loc>
+        <lastmod>2019-03-14T05:43:15.368Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://readailib.com/tags/Minikube/</loc>
+        <lastmod>2019-03-14T05:43:15.368Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

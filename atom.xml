@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://readailib.com/"/>
-  <updated>2019-03-14T04:41:44.379Z</updated>
+  <updated>2019-03-14T05:43:15.368Z</updated>
   <id>https://readailib.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>post</title>
+    <link href="https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/"/>
+    <id>https://readailib.com/2019/03/14/kubernetes/helm-concepts-and-installation/</id>
+    <published>2019-03-14T04:57:35.000Z</published>
+    <updated>2019-03-14T05:43:15.368Z</updated>
+    
+    <content type="html"><![CDATA[<p>在Kubernetes集群中运行和管理应用程序的最简单方法是使用<a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a>。Helm允许使用安装，升级或删除等操作来管理应用程序。</p><p><a href="https://github.com/kubernetes/helm" target="_blank" rel="noopener">Helm</a> 是 Kubernetes Chart 的管理工具，Kubernetes Chart 是一套预先组织好的 Kubernetes 资源套件。使用 Helm 有以下几个好处：</p><ul><li>查询与使用热门的 <a href="https://github.com/kubernetes/charts" target="_blank" rel="noopener">Kubernetes Chart</a> 软件。</li><li>可以通过Kuberntes Chart来分享自己的软件</li><li>可基于现有 Chart 开发自己的Chart。</li><li>智能地管理 Kubernetes manifest 档案。</li><li>管理最新发布的 Helm 版本</li></ul><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Helm 有三个重要的概念需要了解，分別为 Chart、Release 和 Repository，细节如下：</p><ul><li><strong>Chart</strong>：主要定义要被执行的应用程式中，所需要的工具、资源、服务等资料，有点类似 Homebrew 的 Formula 或是 APT 的 dpkg 安装包。</li><li><strong>Release</strong>：一个被执行于 Kubernetes 的 Chart 实例。Chart 能够在一个集群中拥有多个 Release，例如 MySQL Chart，可以在集群中建立基于该 Chart 的两个资料库实例，其中每个 Release 都会有独立的名称。</li><li><strong>Repository</strong>：主要用来存放 Chart 的仓库，如 <a href="https://kubeapps.com/" target="_blank" rel="noopener">KubeApps</a>。</li></ul><p>可以理解 Helm 主要目标就是从 Chart Repository 中，查找需要的应用程式 Chart，然后以 Release 形式来部署到 Kubernetes 中进行管理。</p><p>Helm由两部分组成：Helm（客户端）和Tiller（服务器）。</p><p>下面是Helm的架构图：</p><p><img src="./helm.png" alt="Helm的架构图"></p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>按照以下步骤完成Helm和Tiller安装并创建必要的Kubernetes对象，以使Helm与基于角色的访问控制（RBAC）一起工作：</p><pre><code class="bash">$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get &gt; get_helm.sh$ chmod 700 get_helm.sh$ ./get_helm.sh</code></pre><blockquote class="colorquote warning"><p>如果操作系统为OSX，请使用<a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew</a>安装helm.</p><pre><code class="bash">$ brew install helm</code></pre></blockquote><p>使用以下内容创建ClusterRole配置文件。在此示例中，它名为clusterrole.yaml。</p><pre><code class="yaml">apiVersion: rbac.authorization.k8s.io/v1kind: ClusterRolemetadata:  annotations:    rbac.authorization.kubernetes.io/autoupdate: &quot;true&quot;  labels:    kubernetes.io/bootstrapping: rbac-defaults  name: cluster-adminrules:- apiGroups:  - &#39;*&#39;  resources:  - &#39;*&#39;  verbs:  - &#39;*&#39;- nonResourceURLs:  - &#39;*&#39;  verbs:  - &#39;*&#39;</code></pre><p>要创建ClusterRole，请运行以下命令：</p><pre><code class="bash">$ kubectl create -f clusterrole.yaml</code></pre><p>创建ServiceAccount并将其与ClusterRole关联，请使用ClusterRoleBinding，如下所示：</p><pre><code class="bash">$ kubectl create serviceaccount -n kube-system tiller$ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller</code></pre><p>初始化Helm，如下所示：</p><pre><code class="bash">$ helm init --service-account tiller</code></pre><blockquote class="colorquote warning"><p>如果你之前已经初始化过helm，直接使用下面的指令升级helm。</p><pre><code class="bash">$ helm init --upgrade --service-account tiller</code></pre></blockquote><p>使用 <em>kubectl get pods</em> 检查当前的Tiller是否正确安装。如下面所示：</p><pre><code class="bash">$ kubectl --namespace kube-system get pods | grep tiller  tiller-deploy-dbb85cb99-p5cqt    0/1       ContainerCreating   0          46s</code></pre><p>或者直接使用 <em>helm version</em>，检查是否安装正确。如下所示。</p><pre><code class="bash">$ helm version                                                                                                      Client: &amp;version.Version{SemVer:&quot;v2.12.3&quot;, GitCommit:&quot;eecf22f77df5f65c823aacd2dbd30ae6c65f186e&quot;, GitTreeState:&quot;clean&quot;}Server: &amp;version.Version{SemVer:&quot;v2.12.3&quot;, GitCommit:&quot;eecf22f77df5f65c823aacd2dbd30ae6c65f186e&quot;, GitTreeState:&quot;clean&quot;}</code></pre><p>一旦完成安装，就可以使用下面的命令执行相关的操作。</p><p><img src="./helm-cmd.png" alt="helm command"></p><h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>通过执行helm install命令，应用程序将部署在Kubernetes集群上。您可以跨集群安装多个图表。</p><blockquote class="colorquote warning"><p><strong>Important：</strong>如果没有使用<code>—name</code>选项指定版本名称，系统则会自动分配一个名称。</p></blockquote><p>你可以使用下面的Helm Chart 找到Redis的安装示例：</p><pre><code class="bash">$ helm install stable/redis</code></pre><p>也可以声明一个版本名称或者其他的选项。比如下面声明了一个版本名称为<code>my-redis</code>,并且指定该部署将使用持久化存储，大小为15G：</p><pre><code class="bash">$ helm install --name my-redis \                           --set persistence.enabled=true,persistence.size=15Gi stable/redis</code></pre><p>安装图表后，“注释”部分将显示在安装信息的底部。它包含有关如何获取应用程序的IP地址或凭证的说明.</p><pre><code class="bash">NAME:   my-influxLAST DEPLOYED: Thu Mar 14 12:36:50 2019NAMESPACE: defaultSTATUS: DEPLOYEDRESOURCES:==&gt; v1beta1/DeploymentNAME                   DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGEmy-influx-redis-slave  1        1        1           0          0s==&gt; v1beta2/StatefulSetNAME                    DESIRED  CURRENT  AGEmy-influx-redis-master  1        0        0s==&gt; v1/Pod(related)NAME                                    READY  STATUS             RESTARTS  AGEmy-influx-redis-slave-556f9894b7-wd5cf  0/1    ContainerCreating  0         0smy-influx-redis-master-0                0/1    Pending            0         0s==&gt; v1/SecretNAME             TYPE    DATA  AGEmy-influx-redis  Opaque  1     0s==&gt; v1/ConfigMapNAME                    DATA  AGEmy-influx-redis         3     0smy-influx-redis-health  3     0s==&gt; v1/ServiceNAME                    TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGEmy-influx-redis-master  ClusterIP  10.107.184.240  &lt;none&gt;       6379/TCP  0smy-influx-redis-slave   ClusterIP  10.97.224.81    &lt;none&gt;       6379/TCP  0sNOTES:** Please be patient while the chart is being deployed **Redis can be accessed via port 6379 on the following DNS names from within your cluster:my-influx-redis-master.default.svc.cluster.local for read/write operationsmy-influx-redis-slave.default.svc.cluster.local for read-only operationsTo get your password run:    export REDIS_PASSWORD=$(kubectl get secret --namespace default my-influx-redis -o jsonpath=&quot;{.data.redis-password}&quot; | base64 --decode)To connect to your Redis server:1. Run a Redis pod that you can use as a client:   kubectl run --namespace default my-influx-redis-client --rm --tty -i --restart=&#39;Never&#39; \    --env REDIS_PASSWORD=$REDIS_PASSWORD \   --image docker.io/bitnami/redis:4.0.13 -- bash2. Connect using the Redis CLI:   redis-cli -h my-influx-redis-master -a $REDIS_PASSWORD   redis-cli -h my-influx-redis-slave -a $REDIS_PASSWORDTo connect to your database from outside the cluster execute the following commands:    kubectl port-forward --namespace default svc/my-influx-redis 6379:6379 &amp;    redis-cli -h 127.0.0.1 -p 6379 -a $REDIS_PASSWORD</code></pre><h2 id="刪除-Release"><a href="#刪除-Release" class="headerlink" title="刪除 Release"></a>刪除 Release</h2><p>Helm 除了基本的建立功能外，还包含了整個 Release 的生命周期管理功能，如我们不需要该 Release 时，就可以通过以下方式刪除：</p><pre><code class="bash">$ helm ls                                                            NAME         REVISION    UPDATED                     STATUS      CHART          APP VERSION    NAMESPACEmy-influx    1           Tue May 30 21:18:43 2017       DEPLOYED    redis-6.3.0    4.0.13         default  $ helm del  my-influxrelease &quot;my-influx&quot; deleted</code></pre><p>此时并未完全删除，我们可以通过 <code>helm ls</code> 查看被刪除的 Release：</p><pre><code class="bash">$ helm ls --allNAME         REVISION        UPDATED                         STATUS  CHART           NAMESPACEmy-influx    2               Tue May 30 21:18:43 2017        DELETED redis-6.3.0   default</code></pre><blockquote><p>当执行 <code>helm ls</code> 指令为加入 <code>--all</code> 选项时，表示只列出<code>DEPLOYED</code>状态的 Release。</p></blockquote><pre><code class="bash">$ helm rollback my-influx 1Rollback was a success! Happy Helming!$ helm del my-influx --purgerelease &quot;my-influx&quot; deleted# 执行以下指令就不会看到已刪除的 Release.$ helm ls --all</code></pre><h2 id="建立简单的-Chart-结构"><a href="#建立简单的-Chart-结构" class="headerlink" title="建立简单的 Chart 结构"></a>建立简单的 Chart 结构</h2><p>Helm 提供了 <code>create</code> 指令建立一个 Chart 基本结构：</p><pre><code class="bash">$ helm create example$ tree example/example/├── charts├── Chart.yaml├── templates│   ├── deployment.yaml│   ├── _helpers.tpl│   ├── ingress.yaml│   ├── NOTES.txt│   └── service.yaml└── values.yaml</code></pre><p>当我们设置完 Chart 后，就可以通过 helm 指令打包：</p><pre><code class="bash">$ helm package example/example-0.1.0.tgz</code></pre><p>最后通过<em>helm</em>安装</p><pre><code class="bash">$ helm install ./example-0.1.0.tgz</code></pre><h2 id="自己建立-Repository"><a href="#自己建立-Repository" class="headerlink" title="自己建立 Repository"></a>自己建立 Repository</h2><p>Helm 指令除了可以建立 Chart 基本结构外，也提供了建立 Helm Repository 的功能，建立方式如下：</p><pre><code class="bash">$ helm serve --repo-path example-0.1.0.tgz$ helm repo add example http://repo-url</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;在Kubernetes集群中运行和管理应用程序的最简单方法是使用&lt;a href=&quot;https://github.com/kubernetes/helm&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Helm&lt;/a&gt;。Helm允许使用安装，升级或删除等操作来
+      
+    
+    </summary>
+    
+    
+      <category term="Docker" scheme="https://readailib.com/tags/Docker/"/>
+    
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
+      <category term="Helm" scheme="https://readailib.com/tags/Helm/"/>
+    
+      <category term="Minikube" scheme="https://readailib.com/tags/Minikube/"/>
+    
+  </entry>
   
   <entry>
     <title>使用 Kubernetes API 写点东西</title>
@@ -35,11 +64,11 @@
     </summary>
     
     
+      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
       <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="client-go" scheme="https://readailib.com/tags/client-go/"/>
-    
-      <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
     
   </entry>
   
@@ -127,9 +156,9 @@
       <category term="Microservice" scheme="https://readailib.com/categories/RPI-kubernetes/Kubernetes/Microservice/"/>
     
     
-      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
-    
       <category term="Kubernetes" scheme="https://readailib.com/tags/Kubernetes/"/>
+    
+      <category term="Golang" scheme="https://readailib.com/tags/Golang/"/>
     
       <category term="Simple Example" scheme="https://readailib.com/tags/Simple-Example/"/>
     
