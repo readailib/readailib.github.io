@@ -284,6 +284,60 @@
 
 <div class="post-preview">
 
+    <a href="/2019/03/20/kubernetes/gpu-device-plugins/">
+        <h2 class="post-title">
+            kubernetes GPU分布式集群配置与安装
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            最近单位刚来一台T630 GPU服务器，我想在日常的深度学习的训练此外，想让它docker容器化并且使其成为 Kubernetes 节点，让深度学习任务的训练在kubernetes中完成。注意：本教程的篇幅较长！
+主要分为以下几部分：
+
+环境准备
+安装cuda环境并测试
+安装docker
+安装kubernetes
+测试GPU
+
+环境准备
+
+
+节点
+ip
+配置
+
+
+
+
+gpu服务器
+172.1......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by ShenHengheng on
+            2019-03-20
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Docker" title="Docker">Docker</a>
+            
+              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+            
+              <a href="/tags/#Helm" title="Helm">Helm</a>
+            
+              <a href="/tags/#Minikube" title="Minikube">Minikube</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2019/03/14/kubernetes/helm-concepts-and-installation/">
         <h2 class="post-title">
             Helm 的基本概念与安装详解
@@ -625,44 +679,6 @@ Prerequisites: You have a kubernetes cluster with the dashboard plugin installed
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/01/15/kubernetes/kubernetes-dashboard/">
-        <h2 class="post-title">
-            树莓派kuernetes集群中部署dashboard
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            在最近关于在树莓派集群上使用kubeadm配置安装Kubernetes 1.13.0的教程中，默认情况下启用了RBAC，本文章将介绍如何在启用RBAC的情况下运行Kubernetes仪表板。
-
-准备
-部署和启动Kubernetes集群 (see 这篇文章)
-kubectl v. 1.13.0
-
-配置 kubeconfig配置本地树莓派（并非master），以便使用kubectl与上一个教程中......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by ShenHengheng on
-            2019-01-15
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Docker" title="Docker">Docker</a>
-            
-              <a href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
-            
-              <a href="/tags/#Dashboard" title="Dashboard">Dashboard</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -775,6 +791,10 @@ kubectl v. 1.13.0
     <ul>
       
         <li>
+          <a href="/2019/03/20/kubernetes/gpu-device-plugins/">kubernetes GPU分布式集群配置与安装</a>
+        </li>
+      
+        <li>
           <a href="/2019/03/14/kubernetes/helm-concepts-and-installation/">Helm 的基本概念与安装详解</a>
         </li>
       
@@ -790,10 +810,6 @@ kubectl v. 1.13.0
           <a href="/2019/03/05/kubernetes/raspberrypi/deploy-a-microservice-on-k8s/">在树莓派kubernetes集群部署gRPC框架编写的微服务</a>
         </li>
       
-        <li>
-          <a href="/2019/03/01/kubernetes/raspberrypi/simple-microservice-on-pis/">部署微服务到树莓派的kubernetes集群</a>
-        </li>
-      
     </ul>
   </div>
 </h5>
@@ -807,11 +823,11 @@ kubectl v. 1.13.0
     <div class="tags">
         
             
-            <a href="/tags/#Docker" title="Docker" rel="8">Docker</a>
+            <a href="/tags/#Docker" title="Docker" rel="9">Docker</a>
             
         
             
-            <a href="/tags/#Kubernetes" title="Kubernetes" rel="10">Kubernetes</a>
+            <a href="/tags/#Kubernetes" title="Kubernetes" rel="11">Kubernetes</a>
             
         
             

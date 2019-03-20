@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          kubernetes GPU分布式集群配置与安装 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.com/2019/03/20/kubernetes/gpu-device-plugins/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                            
+                              <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                            
+                              <a class="tag" href="/tags/#Helm" title="Helm">Helm</a>
+                            
+                              <a class="tag" href="/tags/#Minikube" title="Minikube">Minikube</a>
+                            
+                        </div>
+                        <h1>kubernetes GPU分布式集群配置与安装</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2019-03-20
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>最近单位刚来一台T630 GPU服务器，我想在日常的深度学习的训练此外，想让它docker容器化并且使其成为 Kubernetes 节点，让深度学习任务的训练在kubernetes中完成。注意：本教程的篇幅较长！</p>
+<p>主要分为以下几部分：</p>
+<ul>
+<li>环境准备</li>
+<li>安装cuda环境并测试</li>
+<li>安装docker</li>
+<li>安装kubernetes</li>
+<li>测试GPU</li>
+</ul>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>ip</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gpu服务器</td>
+<td>172.16.3.33</td>
+<td>centos7系统，2*GTX1080Ti</td>
+</tr>
+</tbody>
+</table>
+<h3 id="修改默认yum源为国内yum镜像源"><a href="#修改默认yum源为国内yum镜像源" class="headerlink" title="修改默认yum源为国内yum镜像源"></a>修改默认yum源为国内yum镜像源</h3><pre><code class="bash">$ cp /etc/yum.repos.d/CentOS-Base.repo{,.bak}
+$ wget http://mirrors.aliyun.com/repo/Centos-7.repo -O /etc/yum.repos.d/CentOS-Base.repo
+</code></pre>
+<h3 id="安装开发环境"><a href="#安装开发环境" class="headerlink" title="安装开发环境"></a>安装开发环境</h3><pre><code class="bash">$ yum groupinstall -y &quot;Development Tools&quot;
+</code></pre>
+<h3 id="网卡设备开机自启动"><a href="#网卡设备开机自启动" class="headerlink" title="网卡设备开机自启动"></a>网卡设备开机自启动</h3><pre><code class="bash">$ systemctl start network &amp;&amp; systemctl enable network
+$ ifup em1 # 默认centos网卡设备在开机时不启动
+$ sed -i &#39;s/ONBOOT=no/ONBOOT=yes/g&#39; /etc/sysconfig/network-scripts/ifcfg-em1
+$ sed -i &#39;s/ONBOOT=no/ONBOOT=yes/g&#39; /etc/sysconfig/network-scripts/ifcfg-em2
+</code></pre>
+<p>如果你想将其中一个网卡设置为静态网卡，可以参考下面的格式：(比如em1网卡)</p>
+<pre><code class="bash">$ cat /etc/sysconfig/network-scripts/ifcfg-em1
+TYPE=&quot;Ethernet&quot;
+BOOTPROTO=&quot;static&quot;
+DEFROUTE=&quot;yes&quot;
+PEERDNS=&quot;yes&quot;
+PEERROUTES=&quot;yes&quot;
+IPADDR=172.16.3.33
+GATEWAY=172.16.3.1
+NETMASK=255.255.255.0
+DNS1=172.16.3.1
+IPV4_FAILURE_FATAL=&quot;no&quot;
+IPV6INIT=&quot;yes&quot;
+IPV6_AUTOCONF=&quot;yes&quot;
+IPV6_DEFROUTE=&quot;yes&quot;
+IPV6_PEERDNS=&quot;yes&quot;
+IPV6_PEERROUTES=&quot;yes&quot;
+IPV6_FAILURE_FATAL=&quot;no&quot;
+NAME=em1
+UUID=5f2f3298-1185-43d8-8509-62795e7db8f9
+DEVICE=em1
+ONBOOT=yes
+</code></pre>
+<h2 id="安装cuda环境并测试"><a href="#安装cuda环境并测试" class="headerlink" title="安装cuda环境并测试"></a>安装cuda环境并测试</h2><h3 id="检查显卡驱动和型号"><a href="#检查显卡驱动和型号" class="headerlink" title="检查显卡驱动和型号"></a>检查显卡驱动和型号</h3><p>1) 添加软件源</p>
+<pre><code class="bash">$ sudo rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org 
+$ sudo rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+</code></pre>
+<p>2) 安装NVIDIA驱动检测</p>
+<pre><code class="bash">$ sudo yum install nvidia-detect
+$ nvidia-detect -v
+Probing for supported NVIDIA devices...
+[102b:0534] Matrox Electronics Systems Ltd. G200eR2
+[10de:1b06] NVIDIA Corporation GP102 [GeForce GTX 1080 Ti]
+This device requires the current 418.43 NVIDIA driver kmod-nvidia
+[10de:1b06] NVIDIA Corporation GP102 [GeForce GTX 1080 Ti]
+This device requires the current 418.43 NVIDIA driver kmod-nvidia
+</code></pre>
+<p>可以看出这两块GPU的型号和需要的驱动型号。</p>
+<h3 id="安装显卡驱动"><a href="#安装显卡驱动" class="headerlink" title="安装显卡驱动"></a>安装显卡驱动</h3><p>访问 <a href="https://www.geforce.cn/drivers" target="_blank" rel="noopener">https://www.geforce.cn/drivers</a> 网站，选择 手动搜索驱动程序。设置如下的条件，并开始搜索。</p>
+<p>选择搜索结果的第一项即可。</p>
+<p><a href="https://www.41sh.cn/zb_users/upload/2019/03/201903201553058815156821.png" target="_blank" rel="noopener"><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903201553058815156821.png" alt="屏幕快照 2019-03-20 下午1.13.07.png"></a></p>
+<p>点击获取下载链接：<a href="http://cn.download.nvidia.com/XFree86/Linux-x86_64/418.43/NVIDIA-Linux-x86_64-418.43.run，然后使用ssh登陆服务器使用wget工具即可下载。" target="_blank" rel="noopener">http://cn.download.nvidia.com/XFree86/Linux-x86_64/418.43/NVIDIA-Linux-x86_64-418.43.run，然后使用ssh登陆服务器使用wget工具即可下载。</a></p>
+<pre><code class="bash">$ cd ~/0315-cuda
+$ wget -r -np -nd http://cn.download.nvidia.com/XFree86/Linux-x86_64/418.43/NVIDIA-Linux-x86_64-418.43.run
+</code></pre>
+<h3 id="解决显卡冲突"><a href="#解决显卡冲突" class="headerlink" title="解决显卡冲突"></a>解决显卡冲突</h3><p>因为NVIDIA驱动会和系统自带nouveau驱动冲突，执行下面的命令查看该驱动状态：</p>
+<pre><code class="bash">$ lsmod | grep nouveau
+</code></pre>
+<p><a href="https://www.41sh.cn/zb_users/upload/2019/03/20190320133021_11625.png" target="_blank" rel="noopener"><img src="https://www.41sh.cn/zb_users/upload/2019/03/20190320133021_11625.png" alt="img"></a></p>
+<p>修改/etc/modprobe.d/blacklist.conf 文件，以阻止 nouveau 模块的加载，如果系统没有该文件需要新建一个，这里使用root权限，普通用户无法再在/etc内生成.conf文件。</p>
+<pre><code class="bash">$ su root -
+$ echo -e &quot;blacklist nouveau\noptions nouveau modeset=0&quot; &gt; /etc/modprobe.d/blacklist.conf
+</code></pre>
+<h3 id="重新建立initramfs-image文件"><a href="#重新建立initramfs-image文件" class="headerlink" title="重新建立initramfs image文件"></a>重新建立initramfs image文件</h3><pre><code class="bash">$ mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r).img.bak
+$ dracut /boot/initramfs-$(uname -r).img $(uname -r)
+</code></pre>
+<h3 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h3><pre><code class="bash">$ reboot
+</code></pre>
+<h3 id="安装显卡驱动-1"><a href="#安装显卡驱动-1" class="headerlink" title="安装显卡驱动"></a>安装显卡驱动</h3><p>如果此处安装了，那么安装cuda时就不安装，但建议和安装cuda时一起安装。</p>
+<pre><code class="bash">$ chmod +x NVIDIA-Linux-x86_64-418.43.run
+$ ./NVIDIA-Linux-x86_64-418.43.run
+</code></pre>
+<p>如果安装完成，可以运行命令查看显卡状态</p>
+<pre><code class="bash">$ nvidia-smi
+Wed Mar 20 13:23:40 2019       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 418.39       Driver Version: 418.39       CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 108...  Off  | 00000000:02:00.0 Off |                  N/A |
+| 20%   25C    P8     9W / 250W |      0MiB / 11178MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+|   1  GeForce GTX 108...  Off  | 00000000:04:00.0 Off |                  N/A |
+| 20%   23C    P8     8W / 250W |      0MiB / 11178MiB |      0%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+</code></pre>
+<p>如果出现上面所示的情况，证明你的驱动安装成功了。</p>
+<h3 id="安装cuda"><a href="#安装cuda" class="headerlink" title="安装cuda"></a>安装cuda</h3><p>官网下载包<a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener">https://developer.nvidia.com/cuda-downloads</a>，一定要对应自己的版本。</p>
+<pre><code class="bash">$ ./cuda_10.1.105_418.39_linux.run
+</code></pre>
+<p>如果上面已经安装了驱动，这里安装的时候就不需要安装驱动了。</p>
+<h3 id="测试cuda"><a href="#测试cuda" class="headerlink" title="测试cuda"></a>测试cuda</h3><pre><code class="bash">$ cd /root/NVIDIA_CUDA-10.1_Samples/1_Utilities/deviceQuery
+$ make
+$ ./deviceQuery
+  Run time limit on kernels:                     No
+  Integrated GPU sharing Host Memory:            No
+  Support host page-locked memory mapping:       Yes
+  Alignment requirement for Surfaces:            Yes
+  Device has ECC support:                        Disabled
+  Device supports Unified Addressing (UVA):      Yes
+  Device supports Compute Preemption:            Yes
+  Supports Cooperative Kernel Launch:            Yes
+  Supports MultiDevice Co-op Kernel Launch:      Yes
+  Device PCI Domain ID / Bus ID / location ID:   0 / 4 / 0
+  Compute Mode:
+     &lt; Default (multiple host threads can use ::cudaSetDevice() with device simultaneously) &gt;
+&gt; Peer access from GeForce GTX 1080 Ti (GPU0) -&gt; GeForce GTX 1080 Ti (GPU1) : Yes
+&gt; Peer access from GeForce GTX 1080 Ti (GPU1) -&gt; GeForce GTX 1080 Ti (GPU0) : Yes
+
+deviceQuery, CUDA Driver = CUDART, CUDA Driver Version = 10.1, CUDA Runtime Version = 10.1, NumDevs = 2
+Result = PASS
+</code></pre>
+<p>如果出现PASS，就证明你的cuda环境安装完成了。</p>
+<h2 id="安装docker和kubernetes"><a href="#安装docker和kubernetes" class="headerlink" title="安装docker和kubernetes"></a>安装docker和kubernetes</h2><p>请参考作者的另一篇博客文章：<a href="https://readailib.com/2018/11/15/kubernetes/kubernetes-install-note/">https://readailib.com/2018/11/15/kubernetes/kubernetes-install-note/</a></p>
+<h3 id="安装nvidia-docker"><a href="#安装nvidia-docker" class="headerlink" title="安装nvidia-docker"></a>安装nvidia-docker</h3><p>参考： <a href="https://github.com/NVIDIA/nvidia-docker" target="_blank" rel="noopener">https://github.com/NVIDIA/nvidia-docker</a></p>
+<p>docker-ce版本：</p>
+<pre><code class="bash"># If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
+docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
+sudo yum remove nvidia-docker
+
+# Add the package repositories
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.repo | \
+  sudo tee /etc/yum.repos.d/nvidia-docker.repo
+
+# Install nvidia-docker2 and reload the Docker daemon configuration
+sudo yum install -y nvidia-docker2
+sudo pkill -SIGHUP dockerd
+
+# Test nvidia-smi with the latest official CUDA image
+docker run --runtime=nvidia --rm nvidia/cuda:9.0-base nvidia-smi
+</code></pre>
+<h3 id="安装Nvidia-Device-Plugin"><a href="#安装Nvidia-Device-Plugin" class="headerlink" title="安装Nvidia Device Plugin"></a>安装Nvidia Device Plugin</h3><p>参考：<a href="https://k2r2bai.com/2018/03/01/kubernetes/nvidia-device-plugin/" target="_blank" rel="noopener">https://k2r2bai.com/2018/03/01/kubernetes/nvidia-device-plugin/</a></p>
+<p>参考：<a href="https://github.com/NVIDIA/k8s-device-plugin%EF%BC%88%E5%AE%98%E6%96%B9%EF%BC%89" target="_blank" rel="noopener">https://github.com/NVIDIA/k8s-device-plugin（官方）</a></p>
+<pre><code class="bash">$ cp /etc/docker/daemon.json{,.bak}
+$ vi /etc/docker/daemon.json
+{
+    &quot;default-runtime&quot;: &quot;nvidia&quot;,
+    &quot;runtimes&quot;: {
+        &quot;nvidia&quot;: {
+            &quot;path&quot;: &quot;/usr/bin/nvidia-container-runtime&quot;,
+            &quot;runtimeArgs&quot;: []
+        }
+    }
+}
+</code></pre>
+<p>注意：前提是已经安装好nvidia-docker</p>
+<p>接下来就是启动kubernetes集群，并且将gpu节点加入到集群中。具体的操作命令这里就不再赘述。</p>
+<h3 id="Enabling-GPU-Support-in-Kubernetes"><a href="#Enabling-GPU-Support-in-Kubernetes" class="headerlink" title="Enabling GPU Support in Kubernetes"></a>Enabling GPU Support in Kubernetes</h3><p>Once you have enabled this option on all the GPU nodes you wish to use, you can then enable GPU support in your cluster by deploying the following Daemonset:</p>
+<pre><code class="bash">$ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/1.0.0-beta/nvidia-device-plugin.yml
+</code></pre>
+<p>然后查看pod的运行状态：</p>
+<pre><code class="bash">$ kubectl -n kube-system get po -o wide
+NAME                                       READY     STATUS    RESTARTS   AGE       IP               NODE
+...
+nvidia-device-plugin-daemonset-bncw2       1/1       Running   0          2m        10.244.41.135    kube-gpu-node1
+nvidia-device-plugin-daemonset-ddnhd       1/1       Running   0          2m        10.244.152.132   kube-gpu-node2
+</code></pre>
+<h3 id="测试-GPU"><a href="#测试-GPU" class="headerlink" title="测试 GPU"></a>测试 GPU</h3><pre><code class="bash">$ kubectl get nodes &quot;-o=custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu&quot;
+NAME         GPU
+bigdata      &lt;none&gt;
+gpucluster   2
+</code></pre>
+<p>测试实例</p>
+<pre><code class="bash">$ cat &lt;&lt;EOF | kubectl create -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu-pod
+spec:
+  restartPolicy: Never
+  containers:
+  - image: nvidia/cuda
+    name: cuda    command: [&quot;nvidia-smi&quot;]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+EOF
+pod &quot;gpu-pod&quot; created
+$ kubectl get po -a -o wide
+NAME      READY     STATUS      RESTARTS   AGE       IP              NODE
+gpu-pod   0/1       Completed   0          50s       10.244.41.136   kube-gpu-node1
+
+$ kubectl logs gpu-pod -c cuda
+Wed Mar 20 04:23:49 2019       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 418.39       Driver Version: 418.39       CUDA Version: 10.1     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 108...  Off  | 00000000:02:00.0 Off |                  N/A |
+| 20%   24C    P8     8W / 250W |      0MiB / 11178MiB |      1%      Default |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+</code></pre>
+<p>测试tensorflow，新建一个deployment,名字为tf-gpu-dep.yaml</p>
+<pre><code class="yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tf-gpu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tf-gpu
+  template:
+    metadata:
+     labels:
+       app: tf-gpu
+    spec:
+      containers:
+      - name: tensorflow
+        image: tensorflow/tensorflow:latest-gpu
+        ports:
+        - containerPort: 8888
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+</code></pre>
+<p>利用 kubectl 建立 Deployment，并暴露 Jupyter port：</p>
+<pre><code class="bash">$ kubectl create -f tf-gpu-dp.yml
+deployment &quot;tf-gpu&quot; created
+
+$ kubectl expose deploy tf-gpu --type LoadBalancer --external-ip=172.16.3.33 --port 8888 --target-port 8888
+service &quot;tf-gpu&quot; exposed
+
+$ kubectl get po,svc -o wide
+NAME                         READY     STATUS    RESTARTS   AGE       IP               NODE
+po/tf-gpu-6f9464f94b-pq8t9   1/1       Running   0          1m        10.244.152.133   kube-gpu-node2
+
+NAME             TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)          AGE       SELECTOR
+svc/kubernetes   ClusterIP      10.96.0.1        &lt;none&gt;          443/TCP          23h       &lt;none&gt;
+svc/tf-gpu       LoadBalancer   10.105.104.183   172.22.132.53   8888:30093/TCP   12s       app=tf-gpu
+</code></pre>
+<blockquote>
+<p>确认无误后，通过 logs 指令取得 token。</p>
+</blockquote>
+<p>这里执行一个简单的例子，并在用 logs 指令查看就能看到 Pod 通过 NVIDIA Device Plugins 使用 GPU：</p>
+<pre><code class="bash">$ kubectl logs -f tf-gpu-6f9464f94b-pq8t9
+...
+2018-03-15 07:37:22.022052: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-03-15 07:37:22.155254: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:898] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-03-15 07:37:22.155565: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1212] Found device 0 with properties:
+name: GeForce GTX 1060 3GB major: 6 minor: 1 memoryClockRate(GHz): 1.7845
+pciBusID: 0000:01:00.0
+totalMemory: 2.95GiB freeMemory: 2.88GiB
+2018-03-15 07:37:22.155586: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1312] Adding visible gpu devices: 0
+2018-03-15 07:37:22.346590: I tensorflow/core/common_runtime/gpu/gpu_device.cc:993] Creating TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 2598 MB memory) -&gt; physical GPU (device: 0, name: GeForce GTX 1060 3GB, pci bus id: 0000:01:00.0, compute capability: 6.1)
+</code></pre>
+<p>最后因为目前 Pod 会绑定整张 GPU 使用，因此当无多余显卡時就让 Pod 处于 Pending：</p>
+<pre><code class="bash">$ kubectl scale deploy tf-gpu --replicas=3
+$ kubectl get po -o wide
+NAME                      READY     STATUS    RESTARTS   AGE       IP               NODE
+tf-gpu-6f9464f94b-42xcf   0/1       Pending   0          4s        &lt;none&gt;           &lt;none&gt;
+tf-gpu-6f9464f94b-nxdw5   1/1       Running   0          12s       10.244.41.138    kube-gpu-node1
+tf-gpu-6f9464f94b-pq8t9   1/1       Running   0          5m        10.244.152.133   kube-gpu-node2
+</code></pre>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/03/14/kubernetes/helm-concepts-and-installation/" data-toggle="tooltip" data-placement="top" title="Helm 的基本概念与安装详解">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#环境准备"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">环境准备</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#修改默认yum源为国内yum镜像源"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">修改默认yum源为国内yum镜像源</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装开发环境"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">安装开发环境</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#网卡设备开机自启动"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">网卡设备开机自启动</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装cuda环境并测试"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">安装cuda环境并测试</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#检查显卡驱动和型号"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">检查显卡驱动和型号</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装显卡驱动"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">安装显卡驱动</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#解决显卡冲突"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">解决显卡冲突</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#重新建立initramfs-image文件"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">重新建立initramfs image文件</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#重启"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">重启</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装显卡驱动-1"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">安装显卡驱动</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装cuda"><span class="toc-nav-number">2.7.</span> <span class="toc-nav-text">安装cuda</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#测试cuda"><span class="toc-nav-number">2.8.</span> <span class="toc-nav-text">测试cuda</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装docker和kubernetes"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">安装docker和kubernetes</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装nvidia-docker"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">安装nvidia-docker</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安装Nvidia-Device-Plugin"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">安装Nvidia Device Plugin</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Enabling-GPU-Support-in-Kubernetes"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">Enabling GPU Support in Kubernetes</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#测试-GPU"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">测试 GPU</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Docker" title="Docker">Docker</a>
+                        
+                          <a class="tag" href="/tags/#Kubernetes" title="Kubernetes">Kubernetes</a>
+                        
+                          <a class="tag" href="/tags/#Helm" title="Helm">Helm</a>
+                        
+                          <a class="tag" href="/tags/#Minikube" title="Minikube">Minikube</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.com/2019/03/20/kubernetes/gpu-device-plugins/";
+    var disqus_url = "https://readailib.com/2019/03/20/kubernetes/gpu-device-plugins/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
