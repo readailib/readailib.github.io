@@ -357,6 +357,32 @@ tf-hub-lb   LoadBalancer   10.109.167.223   172.16.3.4    8000:30962/TCP   34m
 </code></pre>
 <p><img src="https://shenheng.xyz/img/kubeflow.png" alt="img"></p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p><img src="https://shenheng.xyz/img/kubeflow-test.png" alt="img"></p>
+<h1 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h1><blockquote>
+<p>could not post report: HTTPSConnectionPool(host=’kubernaut.io’, port=443): Max</p>
+</blockquote>
+<p>For those who just got started with kubernetes in general. Here’s what you need to do</p>
+<p>kubectl edit configmap coredns -n kube-system<br>NOTE: the changes are permanent and will survive a reboot of the node.</p>
+<p>You’ll need to add 8.8.8.8 at two places, upstream and proxy</p>
+<pre><code class="yaml">...
+apiVersion: v1
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           upstream 8.8.8.8 8.8.4.4
+           fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        proxy . /etc/resolv.conf 8.8.8.8 8.8.4.4
+        cache 30
+        reload
+    }
+
+...
+</code></pre>
 
                 
 
@@ -400,9 +426,9 @@ tf-hub-lb   LoadBalancer   10.109.167.223   172.16.3.4    8000:30962/TCP   34m
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#参考"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">参考</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#介绍"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">介绍</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署-Kubeflow"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">部署 Kubeflow</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#测试"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">测试</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#参考"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">参考</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#介绍"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">介绍</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">安装</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#部署-Kubeflow"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">部署 Kubeflow</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#测试"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">测试</span></a></li></ol><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#Bug"><span class="toc-nav-number"></span> <span class="toc-nav-text">Bug</span></a>
         
-        </div>
+        </li></div>
       </aside>
     
 
