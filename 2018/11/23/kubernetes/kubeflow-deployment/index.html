@@ -361,7 +361,9 @@ tf-hub-lb   LoadBalancer   10.109.167.223   172.16.3.4    8000:30962/TCP   34m
 <p>could not post report: HTTPSConnectionPool(host=’kubernaut.io’, port=443): Max</p>
 </blockquote>
 <p>For those who just got started with kubernetes in general. Here’s what you need to do</p>
-<p>kubectl edit configmap coredns -n kube-system<br>NOTE: the changes are permanent and will survive a reboot of the node.</p>
+<pre><code class="bash">$ kubectl edit configmap coredns -n kube-system
+</code></pre>
+<p>NOTE: the changes are permanent and will survive a reboot of the node.</p>
 <p>You’ll need to add 8.8.8.8 at two places, upstream and proxy</p>
 <pre><code class="yaml">...
 apiVersion: v1
