@@ -143,6 +143,13 @@
 
                         
                         <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About Me</a>
                         </li>
                         
@@ -151,13 +158,6 @@
                         
                         <li>
                             <a href="/tags/">tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -414,13 +414,18 @@
 <h2 id="边缘工作负载"><a href="#边缘工作负载" class="headerlink" title="边缘工作负载"></a>边缘工作负载</h2><h3 id="流量治理"><a href="#流量治理" class="headerlink" title="流量治理"></a>流量治理</h3><h4 id="它是什么？"><a href="#它是什么？" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>流量治理包括管理Pods之间以及集群与其他网络之间的进出流量/带宽使用情况的任务。对于物联网边缘环境, 网络链接可能会更有限 (例如 SMB 非对称电缆调制解调器或蜂窝连接)。kubernetes 集群可能与其他计算机或进程共享该链接, 因此可能只需要分配一部分。 在网络带宽的这一部分中, 在 Kubernetes 中运行的不同工作负载可能更关键, 因此可能会被视为以不同的优先级运行。</p>
 <h4 id="Kubernetes-在哪里参与"><a href="#Kubernetes-在哪里参与" class="headerlink" title="Kubernetes 在哪里参与?"></a>Kubernetes 在哪里参与?</h4><p>需要一个集群范围或站点范围的流量管理设置</p>
 <ul>
-<li>策略更多的是关于访问和权限, 而不是资源使用<ul>
-<li><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/services-networking/network-policies/</a><ul>
-<li>听起来像在kubelet<br>○      <a href="https://github.com/kubernetes/kubernetes/issues/2856" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/2856</a><br>○      <a href="https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth" target="_blank" rel="noopener">https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth</a>   — </li>
-<li><a href="https://github.com/kubernetes/kubernetes/issues/11965" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/11965</a></li>
+<li><p>策略更多的是关于访问和权限, 而不是资源使用</p>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/services-networking/network-policies/</a></li>
 </ul>
 </li>
+<li><p>听起来像在kubelet</p>
+<pre><code> - &lt;https://github.com/kubernetes/kubernetes/issues/2856&gt;
+</code></pre><ul>
+<li><a href="https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth" target="_blank" rel="noopener">https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth</a>   — </li>
 </ul>
+</li>
+<li><p><a href="https://github.com/kubernetes/kubernetes/issues/11965" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/11965</a></p>
 </li>
 </ul>
 <h3 id="协议转换"><a href="#协议转换" class="headerlink" title="协议转换"></a>协议转换</h3><h4 id="它是什么？-1"><a href="#它是什么？-1" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>边缘环境中充满了许多不同的协议, 这些协议通常是由特殊行业或传统行业和专有环境开发而来的。”协议” 可适用于数据的内容和形状, 或适用于总线级格式。 许多工业协议在非 ip 串行总线上传输, 而其他现代 RF 协议也可能是非 ip 协议 (例如蓝牙)。严格地说, 这是 “数据处理” 的序言或子集, 但很常见, 可以将其突出显示为具体的工作量。</p>
