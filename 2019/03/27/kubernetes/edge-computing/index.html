@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <meta name="google-site-verification" content="wr0yzxswlBrw1yXEp211sdYpSlWoOeXRCAD6VZQqpys">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          物联网和边缘计算 - ShenHengheng&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://readailib.com/2019/03/27/kubernetes/edge-computing/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('undefined')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header">
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#edge computing" title="edge computing">edge computing</a>
+                            
+                              <a class="tag" href="/tags/#IoT" title="IoT">IoT</a>
+                            
+                        </div>
+                        <h1>物联网和边缘计算</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by ShenHengheng on
+                            2019-03-27
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">ShenH.&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About Me</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>当今许多开发团队的都在关注云原生应用开发, 这其实是有原因的。比如微服务和 devops 等概念，从根本上改变了开发团队构建应用程序的方式。</p>
+<p>但还有另一类应用程序, 乍一看并不属于这个世界（IT）。物联网和 Edge 应用程序有很多分布式组件, 一方面，这些组件通常不在同一数据中心基础架构之中。另一方面, 这些应用程序的开发人员将大大受益于云原生环境下中正在开发的概念、基础架构和工具。 </p>
+<p>本文件的目的是努力将这两个世界联系在一起, 为今后的工作奠定基础。为了做到这一点, 我们需要从定义<strong>常用术语</strong>并确保我们彼此了解。 </p>
+<p>接下来, 我们可以开始定义一些我们今天所用到的<strong>基本概念、用例和架构</strong>。请注意, 我们不会尝试深入讨论一般的物联网和边缘计算讨论, 因为有一些优秀的论文已经详细介绍了这些主题, 您可以在参考文献中找到它们。</p>
+<p>最后, 我们可以将 Kubernetes 作为开发物联网和边缘应用程序的平台。对于一些已确定的用例，我们将尝试定义<strong>使用**</strong>kubernete<strong>**进行管理的集群布局</strong>。另外还会介绍了当前在部署一些工作负载和用例方面存在的挑战。</p>
+<p>希望在我们的总体目标的基础之上，这将给我们<strong>未来的工作奠定</strong>足够的<strong>基础</strong>，改进文档并改进 Kubernetes, 使其成为物联网和边缘计算的最佳平台。但同时, 在必要时启动新项目, 使云原生计算和边缘计算更加紧密地结合在一起。</p>
+<h2 id="什么是边缘"><a href="#什么是边缘" class="headerlink" title="什么是边缘"></a>什么是边缘</h2><p>当在不同的环境下讨论IoT和边缘计算，你很快就会认识到这些概念对于不同的人来说意味着不同的东西，因此让我们花点时间来定义这些术语，以方便下文的理解。 </p>
+<p>通过<strong>物联网</strong> <strong>(Iot)</strong>, 我们将主要讨论如何<strong>将设备连接到云</strong>。这些设备是数据的来源, 它们使我们能够<strong>感知环境</strong>。但它们也是数据接收器, 因为它们通过接收来自云 (或本地) 应用程序的命令来<strong>控制环境</strong>。物联网解决方案的典型示例是下一代工厂自动化, 通常称为工业物联网 (或 IIoT)、智能家居、智慧城市等。 我们将在接下来的章节中更详细地描述与物联网相关的所有概念, 但总的来说, 我们将重点介绍如何使用 Kubernetes 改进物联网系统的部署和操作。</p>
+<p><strong>边缘计算</strong> <strong>(Edge Computing**</strong>)<strong> 是一个更泛化的术语, 在其最一般的背景下, </strong>与使计算机资源更接近终端用户和终端设备**。例如, 在物联网解决方案中, 设备通常是在地理上分散的, 因此, 出于多种原因 (我们将很快讨论), 将数据处理尽可能靠近设备的位置可能是有益的。还有许多其他有趣的非物联网相关的边缘应用程序, 如低延迟游戏服务器等等。但是, 这里的边缘是一种从主要的云数据中心分布在地理上分散的计算机资源。因此, 主要的挑战是我们如何扩展云中使用的资源管理系统, 以管理边缘资源。在此背景下, 我们的目标是描述与边缘计算相关的所有概念, 并了解如何使用 (以及在多大程度上) 来应对预期的挑战。</p>
+<h2 id="为什么边缘"><a href="#为什么边缘" class="headerlink" title="为什么边缘"></a>为什么边缘</h2><p>正如我们前面提到的, 有多种原因可以解释为什么人们希望在边缘端运行计算工作负载。在本节中, 我们将尝试列出主要的动机。根据用例的不同, 这些动机中的一个或多个可能同时适用, 并且它们的重要性排名也可能不同。 </p>
+<p>使边缘计算不同于纯粹的基于云的解决方案的关键因素之一是边缘计算最大限度地<strong>减少设备</strong> <strong>(**</strong>用户<strong>**)</strong> <strong>和工作负载之间更远距离的网络流量。</strong>这将以多种方式影响数据的处理, 并可被视为边缘计算的明显优势。 </p>
+<p>首先, 我们为系统增加了<strong>可靠性</strong>, 因为即使网络出现故障, 系统也能存活和正常运行。这对于许多使用可靠的网络连接很难连接边缘设备的用例非常重要。在这些情况下, 网络连接通常也很昂贵, 因此将所有数据从边缘端传输到云端并不总是具有成本效益的, 甚至网络是不可达的。因此, <strong>在边缘节点上处理数据</strong> <strong>(**</strong>数据预处理<strong>**)</strong> <strong>可以帮助我们处理带宽问题**</strong>,<strong> </strong>避免网络饱和度。**</p>
+<p><strong>边缘数据</strong> <strong>(**</strong>预处理<strong>**)</strong> <strong>处理</strong>的价值不仅可以避免受到网络带宽的限制, 还有助于减少系统的整体延迟, 这是边缘计算在许多应用中的主要驱动因素之一, 例如, VR应用场景或处理关键应用的工业应用基础设施。通过将计算推送到更接近设备和用户的地方, 这些用例可以从减少延迟中大大受益。</p>
+<p>除了数据处理外, <strong>数据局部性</strong>也是需要考虑的一个重要方面。通过使用边缘计算体系结构, 我们可以实施<strong>强制策略</strong>使敏感数据永远不会离开物理环境。我们也可以将 GDPR 和其他数据保护和隐私政策。通过在边缘实施策略, 我们应该能够为整个系统提供<strong>更好的安全性</strong>, 并为更接近和更容易攻击的来源 (设备) 添加保护层。 </p>
+<p>最后, 我们可以讨论边缘系统如何帮助我们扩展以前的集中式数据中心。在某些情况下, 在边缘端添加更多资源可能会更容易 (也更有效)。我们还可以使用更适合解决方案特殊需求的硬件, 并创建更好地与内部部署系统集成的系统。所有这些方面也都会明显影响部署解决方案的总成本。</p>
+<p>毫无疑问, 所有这些方面都可以改进当今存在的许多解决方案, 但我们当然期望整个领域将随着时间的推移而演变, 边缘计算的新趋势将在未来可用。</p>
+<h2 id="边缘资源分类"><a href="#边缘资源分类" class="headerlink" title="边缘资源分类"></a>边缘资源分类</h2><p>“边缘” 用于描述资源容量和位置的多种形态和大小。本节试图消除 “什么” 是边缘的歧义。我们将介绍不同的类别, 解释在这些环境中通常可以找到的环境和节点类型。</p>
+<p>但是，在我们深入了解之前，让我们先关注一个组件, 该组价是物联网应用的关键部分，但我们不认为它是边缘端托管的部分：受约束的设备。</p>
+<h4 id="受约束设备"><a href="#受约束设备" class="headerlink" title="受约束设备"></a>受约束设备</h4><p>物联网的基本组成部分是设备。它们在系统中有两个主要用途: 传感器和驱动（执行器）。<strong>在传感器角色中**</strong>,<strong> 设备正在感知其环境 (例如温度传感器), 并将该数据发送到云 (或我们将很快讨论的其他边缘组件)。</strong>在执行器角色中<strong>**,</strong> 它根据从其他系统组件接收到的命令来控制环境 (例如控制 AC)。设备通常同时是传感器和执行器, 并具有相应的控制器逻辑。 </p>
+<p>尽管术语 “设备” 可能会有所不同 (我们将在一分钟内看到), 但最常用的 “事物” 具有一些常见的技术属性。它们是由它们的主要属性定义的: 需要<strong>在任何地方大规模的部署</strong>和价格便宜. 这意味着他们是<strong>通常是电池供电</strong>这进一步决定了他们的其他技术方面。这通常意味着, 他们是非常<strong>有限的计算能力</strong>, 更不用说缺乏其他资源, 如存储, 例如。此外, 还对网络层和模式有影响, 这些设备如何与系统的其余部分进行通信。通常情况下, 他们是<strong>未启用</strong> <strong>ip</strong>并仅使用<strong>近场通讯协议</strong>, 像 BLE 或 ZigBee。它们通常在睡眠模式下运行, 偶尔醒来与云系统交换消息并执行必要的任务。</p>
+<p>从上面的讨论中, 我们可以看到为什么受约束的设备不被视为边缘的托管部分, 而更多的是连接到托管边缘基础结构的终端结点。另外它们不适合容器化, 不属于 IT (甚至 OT 环境), <strong>不能由集群控制或管理</strong></p>
+<p>但是, 请注意, 可能有并且通常是具有与受约束设备相同或类似功能的设备, 但这些设备的资源更丰富。我们将这些设备称为智能设备 (见下文部分), 它们可以是托管边缘的一部分。</p>
+<p>现在让我们回到上一级, 讨论不同类型的边缘组件。我们将这些组件分为两大类: <strong>设备边缘和基础结构边缘</strong>。这两个边缘域都位于最后一英里的两侧, 因此靠近物联网设备和/或终端用户。最大的区别是, 基础设施边缘通常由运营商 (电信或服务提供商) 拥有和运营, 而设备边缘位于客户前提下。物联网设备通常是设备边缘 (智能设备) 的一部分, 或直接连接到该设备 (受约束的设备)。</p>
+<p><a href="https://www.41sh.cn/zb_users/upload/2019/03/201903271553674496574051.png" target="_blank" rel="noopener"><img src="https://www.41sh.cn/zb_users/upload/2019/03/201903271553674496574051.png" alt="屏幕快照 2019-03-27 下午4.14.29.png"></a></p>
+<h3 id="边缘设备"><a href="#边缘设备" class="headerlink" title="边缘设备"></a>边缘设备</h3><p>有关边缘设备方案的一个关键功能是, 它们处于物理环境中, 通常不会作为面向 IT 的空间进行管理和维护。数据中心和城市互联 pop 地点在物理安全、电源冗余和备份、多个网络链接和高质量网络等方面有大量投资。物联网环境是指以前从<strong>未被视为计算基础结构的环境</strong>, <strong>或由 OT</strong> <strong>部门 (**</strong>而不是 IT)<strong> </strong>管理的环境,** 并且可能无法提供相同的环境标准。边缘设备环境的示例包括工厂、油田、火车或卡车等。 </p>
+<p>此环境的一个重要方面是网络连接。网络连接在可用性或带宽等方面受到许多很多的限制。通常情况下, 它们会带来高昂费用成本。 在那里运行的节点至少应该能够离线工作, 甚至可以在相当长的时间内工作。</p>
+<p>现在, 让我们来看看在设备边缘环境中找到的节点类型。</p>
+<h4 id="智能设备"><a href="#智能设备" class="headerlink" title="智能设备"></a>智能设备</h4><p>智能设备是更传统的计算资源, 例如手机或平板电脑。当然, 它们能够运行所有类型的复杂应用程序。它们能够运行不同类型的工作负载, 并直接连接到基础架构的其余部分。这些都是广泛使用的被广泛理解的设备, 所以没有必要更详细地解释。</p>
+<h4 id="IoT网关"><a href="#IoT网关" class="headerlink" title="IoT网关"></a>IoT网关</h4><p>在设备边缘上发现的另一个有趣的 “专用” 节点是物联网网关。它的主要目的是成为一个<strong>受约束设备的聚合点</strong>.那是什么意思？首先也是最重要的, 网关的工作是做一个传感器和执行器的IP-onboarding（打通IP）。正如我们前面说过的, 受限设备通常使用近场协议, 网关将它们与云平台之间的通信连接起来。他们使用一些 “云协议” 来做到这一点, 我们将在一点上更详细地介绍它们。此外, 他们还可以运行一些工作负载来对数据执行转换、正规化或聚合等操作然后发送到云上。当网关在设备边缘环境中运行时, 连接的所有方面都适用于此处, 这将同时影响在其上运行的工作负载以及云平台对其的管理方式。</p>
+<p>网关通常伴随着物联网云平台使用, 该平台管理网关本身和连接到它的设备。目前将物联网网关进行容器化并将其作为群集节点进行管理的兴趣越来越大。这样做的主要挑战之一是将上述网络进行连接。我们将在整个文档中更多地讨论这个问题。</p>
+<h4 id="边缘节点"><a href="#边缘节点" class="headerlink" title="边缘节点"></a>边缘节点</h4><ul>
+<li><p>其他名称: 边缘网关, IoT 边缘系统</p>
+</li>
+<li><p>更强大的网关, 可以进行数据存储和处理</p>
+</li>
+<li><p>没有足够的能力运行一个完整的kubernetes控制平面, 但足够可以运行几个容器</p>
+</li>
+<li><p>更多的重型应用程序从云移动到设备边缘节点, 如</p>
+<ul>
+<li>数据存储</li>
+<li>流式数据分析</li>
+<li>商业流程管理（BPM）</li>
+</ul>
+</li>
+<li><p>优点</p>
+<ul>
+<li>减少了网关与云之间的网络流量</li>
+<li>可以在你本地执行决策</li>
+<li>离线模式下可以提供更多的功能</li>
+</ul>
+</li>
+</ul>
+<h4 id="边缘集群"><a href="#边缘集群" class="headerlink" title="边缘集群"></a>边缘集群</h4><ul>
+<li><p>有足够的计算能力来运行完整的 Kubernetes 控制平面</p>
+</li>
+<li><p>存在于IoT 或OT环境</p>
+</li>
+<li><p>可能有下面的异构节点类型组成</p>
+<ul>
+<li>混合x86 和ARM 架构</li>
+<li>不同的硬件功能（GPU，SSD等）</li>
+<li>不同类别的物理安全</li>
+<li>节点也可能正在运行其他工作负载</li>
+</ul>
+</li>
+</ul>
+<h3 id="基础架构边缘端"><a href="#基础架构边缘端" class="headerlink" title="基础架构边缘端"></a>基础架构边缘端</h3><h4 id="网络边缘"><a href="#网络边缘" class="headerlink" title="网络边缘"></a>网络边缘</h4><ul>
+<li><p>替代名称：Edge cloudlets</p>
+</li>
+<li><p>与数据中心级基础架构相比，边缘云靠靠且可以低延迟的连接到云平台或数据中心</p>
+</li>
+<li><p>与数据中心基础架构相比，计算能力有限</p>
+</li>
+<li><p>重点是延迟的改善，因为网络边缘往往在分布在设备密集处</p>
+</li>
+<li><p>POP 或 CDN 点的基础结构可能已经存在</p>
+</li>
+<li><p>通常是 IT 管理的物理环境</p>
+</li>
+<li><p>可以执行与物理世界没有直接连接的工作负载, 因此不是 “物联网” (如低延迟游戏服务器)</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>可靠性</th>
+<th>带宽</th>
+<th>策略</th>
+<th>延迟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>网关</td>
+<td>轻度/中度</td>
+<td>轻度/中度</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>边缘节点</td>
+<td>-</td>
+<td>轻度/中度</td>
+<td>中度/严重</td>
+<td>-</td>
+</tr>
+<tr>
+<td>网络边缘</td>
+<td>-</td>
+<td>-</td>
+<td>中度/严重</td>
+<td>严重</td>
+</tr>
+</tbody>
+</table>
+<h2 id="边缘工作负载"><a href="#边缘工作负载" class="headerlink" title="边缘工作负载"></a>边缘工作负载</h2><h3 id="流量治理"><a href="#流量治理" class="headerlink" title="流量治理"></a>流量治理</h3><h4 id="它是什么？"><a href="#它是什么？" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>流量治理包括管理Pods之间以及集群与其他网络之间的进出流量/带宽使用情况的任务。对于物联网边缘环境, 网络链接可能会更有限 (例如 SMB 非对称电缆调制解调器或蜂窝连接)。kubernetes 集群可能与其他计算机或进程共享该链接, 因此可能只需要分配一部分。 在网络带宽的这一部分中, 在 Kubernetes 中运行的不同工作负载可能更关键, 因此可能会被视为以不同的优先级运行。</p>
+<h4 id="Kubernetes-在哪里参与"><a href="#Kubernetes-在哪里参与" class="headerlink" title="Kubernetes 在哪里参与?"></a>Kubernetes 在哪里参与?</h4><p>需要一个集群范围或站点范围的流量管理设置</p>
+<ul>
+<li>策略更多的是关于访问和权限, 而不是资源使用<ul>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/services-networking/network-policies/</a><ul>
+<li>听起来像在kubelet<br>○      <a href="https://github.com/kubernetes/kubernetes/issues/2856" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/2856</a><br>○      <a href="https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth" target="_blank" rel="noopener">https://godoc.org/k8s.io/kubernetes/pkg/util/bandwidth</a>   — </li>
+<li><a href="https://github.com/kubernetes/kubernetes/issues/11965" target="_blank" rel="noopener">https://github.com/kubernetes/kubernetes/issues/11965</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="协议转换"><a href="#协议转换" class="headerlink" title="协议转换"></a>协议转换</h3><h4 id="它是什么？-1"><a href="#它是什么？-1" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>边缘环境中充满了许多不同的协议, 这些协议通常是由特殊行业或传统行业和专有环境开发而来的。”协议” 可适用于数据的内容和形状, 或适用于总线级格式。 许多工业协议在非 ip 串行总线上传输, 而其他现代 RF 协议也可能是非 ip 协议 (例如蓝牙)。严格地说, 这是 “数据处理” 的序言或子集, 但很常见, 可以将其突出显示为具体的工作量。</p>
+<h4 id="Kubernetes-在哪里参与-1"><a href="#Kubernetes-在哪里参与-1" class="headerlink" title="Kubernetes 在哪里参与?"></a>Kubernetes 在哪里参与?</h4><p>对于数据内容转换, 这可以只是在容器中运行的逻辑, 而 Kubernetes 并不担心。对于网络层协议转换, 这通常需要特权容器 (root) 来访问硬件接口。节点污染 (tainted)和容忍度 (tolerate)可用于表示某些接口的存在。可以通过某些服务注释 (annotation) 的约定来公开这些硬件接口, 以便由无特权的容器使用, 从而建立约定。</p>
+<h3 id="工作负载优先级"><a href="#工作负载优先级" class="headerlink" title="工作负载优先级"></a>工作负载优先级</h3><h4 id="它是什么？-2"><a href="#它是什么？-2" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>边缘集群有可能由有限数量的节点组成, 并且没有集群自动缩放的优点。边缘环境也可能更有可能具有很大的工作负载优先级范围, 其中有几个关键的工作负载和其他更低的优先级。此条件对于边缘群集不是唯一的, 但考虑到通常较小的群集占用空间, 这种情况更有可能成为关注的问题。</p>
+<h4 id="Kubernetes-在哪里参与-2"><a href="#Kubernetes-在哪里参与-2" class="headerlink" title="Kubernetes 在哪里参与?"></a>Kubernetes 在哪里参与?</h4><p>对于工作负载, 可以进行以下交互:</p>
+<ul>
+<li><p><a href="https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/" target="_blank" rel="noopener">priority</a>: ~high</p>
+</li>
+<li><p><a href="https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/" target="_blank" rel="noopener">qos</a>: best effort</p>
+</li>
+<li><p><a href="https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/" target="_blank" rel="noopener">tolerance</a>: PreferNoSchedule</p>
+</li>
+</ul>
+<p>See also WG on <a href="https://docs.google.com/document/d/1Ynkey7UREOE5iny01L7fgKL84LFAzT7KViCHGrfZwsQ/edit#heading=h.oazh9v95dhnv" target="_blank" rel="noopener">oversubscription</a></p>
+<h3 id="缓冲区和批处理-即存储和转发"><a href="#缓冲区和批处理-即存储和转发" class="headerlink" title="缓冲区和批处理(即存储和转发)"></a>缓冲区和批处理(即存储和转发)</h3><h4 id="它是什么？-3"><a href="#它是什么？-3" class="headerlink" title="它是什么？"></a>它是什么？</h4><p>边缘集群可以作为生成数据的设备和云数据接收器之间的网关。集群和云之间的连接可能不可靠且时断时续。就跟踪失败的最终交付其有效负载而言, 生成数据的设备的逻辑和内存可能有限。</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/03/20/kubernetes/gpu-device-plugins/" data-toggle="tooltip" data-placement="top" title="kubernetes GPU分布式集群配置与安装">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                    <div class="comment">
+                        <div id="disqus_thread" class="disqus-thread"></div>
+                    </div>
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#edge computing" title="edge computing">edge computing</a>
+                        
+                          <a class="tag" href="/tags/#IoT" title="IoT">IoT</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://hwchiu.com" target="_blank">威猛邱牛的部落格</a></li>
+                    
+                        <li><a href="http://www.evanlin.com" target="_blank">吃草爸爸的部落格</a></li>
+                    
+                        <li><a href="https://ellis-wu.github.io" target="_blank">跟我一樣可悲的同事部落格</a></li>
+                    
+                        <li><a href="https://blog.pichuang.com.tw" target="_blank">小飛機的部落格</a></li>
+                    
+                        <li><a href="https://bestsamina.github.io/" target="_blank">超猛姍蓉的部落格</a></li>
+                    
+                        <li><a href="https://igene.tw" target="_blank">郭大俠的部落格</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus embedded js code start (one page only need to embed once) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "shenhengheng";
+    var disqus_identifier = "https://readailib.com/2019/03/27/kubernetes/edge-computing/";
+    var disqus_url = "https://readailib.com/2019/03/27/kubernetes/edge-computing/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus embedded js code start end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                    <li>
+                        <a href="/atom.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a target="_blank" href="https://twitter.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.facebook.com/shenhengheng">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/rh01">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/heng960509">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; ShenHengheng 2019
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a>
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span>
+                    re-Ported by <a href="http://beantech.org">BeanTech</a> |
+                    <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" width="91px" height="20px" src="https://ghbtns.com/github-btn.html?user=YenYuHsuan&repo=hexo-theme-beantech&type=star&count=true">
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://readailib.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="https://readailib.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
